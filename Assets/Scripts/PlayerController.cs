@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 movementInput;
 
+    [Header("Shooting Settings")]
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firePoint; // Opcjonalny punkt strzału; jeśli null, użyje pozycji gracza
+    [SerializeField] private float fireRate = 8f; // pocisków na sekundę przy przytrzymaniu LPM
+    private float nextFireTime = 0f;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -66,6 +73,9 @@ public class PlayerController : MonoBehaviour
         UpdateSprite();
 
         // Obracanie postaci jest teraz obsługiwane w UpdateSprite()
+
+        // Strzelanie spacją (klik lub przytrzymanie)
+        HandleShooting();
     }
 
     private void FixedUpdate()
@@ -177,5 +187,68 @@ public class PlayerController : MonoBehaviour
         // Przełączanie między dwoma klatkami animacji
         bool useFirstFrame = (Mathf.FloorToInt(walkTimer / walkAnimationSpeed) % 2) == 0;
         spriteRenderer.sprite = useFirstFrame ? sprite1 : sprite2;
+    }
+
+    private void HandleShooting()
+    {
+        // Strzelanie spacją
+        bool pressed = Input.GetKeyDown(KeyCode.Space);
+        bool held = Input.GetKey(KeyCode.Space);
+
+        if (!pressed && !held)
+            return;
+
+        // Ograniczenie szybkostrzelności przy przytrzymaniu
+        if (held && Time.time < nextFireTime)
+            return;
+
+        if (bulletPrefab == null)
+        {
+            Debug.LogWarning("Brak przypisanego prefab’u Bullet w PlayerController");
+            return;
+        }
+
+        Vector3 firePos = firePoint != null ? firePoint.position : transform.position;
+        // Kierunek strzału = aktualny kierunek postaci (4 kierunki)
+        Vector2 dir = GetFacingDirection4();
+        if (dir.sqrMagnitude < 0.0001f)
+            dir = Vector2.down; // domyślnie w dół, jak przy starcie
+
+        GameObject bulletObj = Instantiate(bulletPrefab, firePos, Quaternion.identity);
+        var bulletComp = bulletObj.GetComponent<Bullet>();
+        if (bulletComp != null)
+        {
+            bulletComp.SetDirection(dir);
+        }
+        else
+        {
+            var rb2d = bulletObj.GetComponent<Rigidbody2D>();
+            if (rb2d != null)
+            {
+                rb2d.linearVelocity = dir * 10f; // domyślna prędkość, jeśli brak skryptu Bullet
+            }
+        }
+
+        if (held)
+        {
+            nextFireTime = Time.time + (1f / Mathf.Max(0.01f, fireRate));
+        }
+    }
+
+    // Zwraca aktualny kierunek patrzenia jako 4-kierunkowy wektor (prawo/lewo/góra/dół)
+    private Vector2 GetFacingDirection4()
+    {
+        Vector2 dir = lastMoveDirection;
+        if (dir.sqrMagnitude < 0.0001f)
+            return Vector2.down; // domyślny
+
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            return dir.x >= 0f ? Vector2.right : Vector2.left;
+        }
+        else
+        {
+            return dir.y >= 0f ? Vector2.up : Vector2.down;
+        }
     }
 }
