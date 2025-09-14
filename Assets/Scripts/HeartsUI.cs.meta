@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 68057651975f60844ab7c82ca20594d1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - heartFull: {fileID: -1218823883695198015, guid: 376fe04b91da5c74997f973986ce8323, type: 3}
+  - heartLost: {fileID: -5639715768628909742, guid: bfc2807f3dc647f4481c659bae8ea188, type: 3}
+  - heartPrefab: {fileID: 4243653538782293391, guid: 5b8a93b053e686f40ac983e960268e60, type: 3}
+  - heartsContainer: {instanceID: 0}
+  - hpText: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
