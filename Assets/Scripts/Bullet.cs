@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [Header("Bullet Settings")]
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float lifetime = 3f;
-    [SerializeField] private int damage = 1;
-    
+
+    private float speed;
+    private float lifetime;
+    private int damage;
     private Vector2 direction;
     private Rigidbody2D rb;
-    
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -18,47 +17,80 @@ public class Bullet : MonoBehaviour
             rb = gameObject.AddComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
         }
+
+        if (GetComponent<Collider2D>() == null)
+        {
+            var collider = gameObject.AddComponent<CircleCollider2D>();
+            collider.isTrigger = true;
+            collider.radius = 0.1f;
+        }
+
+        // Pobranie wartości z StatsManager w Awake
+        if (StatsManager.Instance != null)
+        {
+            speed = StatsManager.Instance.bulletSpeed;
+            lifetime = StatsManager.Instance.bulletLifetime;
+            damage = StatsManager.Instance.bulletDamage;
+        }
+        else
+        {
+            Debug.LogWarning("StatsManager not found! Using fallback values for bullet.");
+        }
     }
-    
+
+
     private void Start()
     {
-        // Automatyczne zniszczenie pocisku po określonym czasie
-        Destroy(gameObject, lifetime);
+        // Ustawienie automatycznego zniszczenia pocisku po czasie życia
+        if (lifetime > 0)
+        {
+            Destroy(gameObject, lifetime);
+        }
     }
-    
+
     public void SetDirection(Vector2 dir)
     {
         direction = dir.normalized;
-        rb.linearVelocity = direction * speed;
-        
+
+        // Ustaw prędkość dopiero gdy mamy już speed ze Start()
+        if (speed > 0)
+        {
+            rb.linearVelocity = direction * speed;
+        }
+        else
+        {
+            // Jeśli Start() się jeszcze nie wykonał, użyj fallback
+            Debug.LogWarning("StatsManager not found! Using fallback values for bullet.");
+        }
+
         // Obracanie pocisku w kierunku lotu
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        Debug.Log($"Bullet direction set: {direction}, velocity: {rb.linearVelocity}");
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Sprawdź czy pocisk trafił w coś innego niż gracza
         if (other.CompareTag("Player"))
         {
             return; // Ignoruj kolizje z graczem
         }
-        
-        /* Sprawdź czy trafił w wroga (można dodać tag "Enemy")
+
+        Debug.Log($"Bullet hit: {other.name}");
+
+        /* Sprawdź czy trafił w wroga
         if (other.CompareTag("Enemy"))
         {
-            // Zadaj obrażenia wrogowi, jeżeli posiada komponent EnemyHealth
             other.GetComponent<EnemyHealth>()?.TakeDamage(damage);
         }*/
-        
-        // Zniszcz pocisk po trafieniu
+
         Destroy(gameObject);
     }
-    
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Zniszcz pocisk po kolizji z czymkolwiek
+        Debug.Log($"Bullet collided with: {collision.gameObject.name}");
         Destroy(gameObject);
     }
 }
-

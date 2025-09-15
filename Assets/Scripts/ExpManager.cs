@@ -15,7 +15,7 @@ public class ExpManager : MonoBehaviour
     public TMP_Text currentLevelText;
 
     public static event Action<int> OnLevelUp; 
-
+    /*
     private void Start()
     {
         UpdateUI();
@@ -63,7 +63,7 @@ public class ExpManager : MonoBehaviour
         expSlider.maxValue = expToNextLevel;
         expSlider.value = currentExp;
         currentLevelText.text = "Level " + level;
-    }
+    }*/
 
 
 }

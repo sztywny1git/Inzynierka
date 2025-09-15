@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,39 +7,33 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Sprite idleDownSprite;
     [SerializeField] private Sprite idleLeftSprite;
     [SerializeField] private Sprite idleRightSprite;
-    
+
     [Header("Walking Sprites 1")]
     [SerializeField] private Sprite walkUpSprite1;
     [SerializeField] private Sprite walkDownSprite1;
     [SerializeField] private Sprite walkLeftSprite1;
     [SerializeField] private Sprite walkRightSprite1;
-    
+
     [Header("Walking Sprites 2")]
     [SerializeField] private Sprite walkUpSprite2;
     [SerializeField] private Sprite walkDownSprite2;
     [SerializeField] private Sprite walkLeftSprite2;
     [SerializeField] private Sprite walkRightSprite2;
-    
+
     [Header("Animation Settings")]
     [SerializeField] private float walkAnimationSpeed = 0.2f;
-    
-    private SpriteRenderer spriteRenderer;
-    private float walkTimer = 0f;
-    private bool isWalking = false;
-    private Vector2 lastMoveDirection = Vector2.down; // Domyślnie patrzy w dół
-    [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float acceleration = 10f;
-    [SerializeField] private float deceleration = 15f;
-    [SerializeField] private float maxSpeed = 8f;
-
-    private Rigidbody2D rb;
-    private Vector2 movementInput;
 
     [Header("Shooting Settings")]
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private Transform firePoint; // Opcjonalny punkt strzału; jeśli null, użyje pozycji gracza
-    [SerializeField] private float fireRate = 8f; // pocisków na sekundę przy przytrzymaniu LPM
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float bulletOffset = 1f; // Offset od gracza
+
+    private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
+    private Vector2 movementInput;
+    private Vector2 lastMoveDirection = Vector2.down;
+    private float walkTimer = 0f;
+    private bool isWalking = false;
     private float nextFireTime = 0f;
 
     private void Awake()
@@ -52,7 +45,7 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
         }
-        
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
         {
@@ -63,34 +56,35 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // Pobieranie wejścia z klawiatury (strzałki lub WASD)
-        movementInput = new Vector2(
-            Input.GetAxisRaw("Horizontal"),
-            Input.GetAxisRaw("Vertical")
-        ).normalized; // Normalizacja, aby ruch po skosie nie był szybszy
+        if (StatsManager.Instance == null) return;
 
-        // Aktualizacja sprite'a w zależności od kierunku ruchu
+        // Pobranie wejścia
+        movementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+
+        // Aktualizacja sprite'a
         UpdateSprite();
 
-        // Obracanie postaci jest teraz obsługiwane w UpdateSprite()
-
-        // Strzelanie spacją (klik lub przytrzymanie)
+        // Obsługa strzelania
         HandleShooting();
     }
 
     private void FixedUpdate()
     {
-        // Obliczanie docelowej prędkości
+        if (StatsManager.Instance == null) return;
+
+        float moveSpeed = StatsManager.Instance.moveSpeed;
+        float acceleration = StatsManager.Instance.acceleration;
+        float deceleration = StatsManager.Instance.deceleration;
+        float maxSpeed = StatsManager.Instance.maxSpeed;
+
+        // Ruch
         Vector2 targetVelocity = movementInput * moveSpeed;
-        
-        // Płynne przejście do docelowej prędkości
         rb.linearVelocity = Vector2.Lerp(
             rb.linearVelocity,
             targetVelocity,
             (movementInput.magnitude > 0.1f ? acceleration : deceleration) * Time.fixedDeltaTime
         );
 
-        // Ograniczenie maksymalnej prędkości
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
@@ -100,8 +94,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateSprite()
     {
         if (spriteRenderer == null) return;
-        
-        // Aktualizacja timera animacji
+
         if (movementInput.magnitude > 0.1f)
         {
             isWalking = true;
@@ -112,107 +105,79 @@ public class PlayerController : MonoBehaviour
         {
             isWalking = false;
         }
-        
-        // Wybór odpowiedniego sprite'a w zależności od kierunku
+
         if (isWalking)
         {
-            // Określenie dominującego kierunku ruchu
             if (Mathf.Abs(movementInput.x) > Mathf.Abs(movementInput.y))
             {
-                // Ruch w poziomie
-                if (movementInput.x > 0)
-                {
-                    // W prawo
-                    transform.localScale = new Vector3(1, 1, 1);
-                    SetWalkingSprite(walkRightSprite1, walkRightSprite2);
-                }
-                else
-                {
-                    // W lewo
-                    transform.localScale = new Vector3(1, 1, 1);
-                    SetWalkingSprite(walkLeftSprite1, walkLeftSprite2);
-                }
+                // Poziomo
+                if (movementInput.x > 0) SetWalkingSprite(walkRightSprite1, walkRightSprite2);
+                else SetWalkingSprite(walkLeftSprite1, walkLeftSprite2);
             }
             else
             {
-                // Ruch w pionie
-                transform.localScale = new Vector3(1, 1, 1);
-                
-                if (movementInput.y > 0)
-                {
-                    // W górę
-                    SetWalkingSprite(walkUpSprite1, walkUpSprite2);
-                }
-                else if (movementInput.y < 0)
-                {
-                    // W dół
-                    SetWalkingSprite(walkDownSprite1, walkDownSprite2);
-                }
+                // Pionowo
+                if (movementInput.y > 0) SetWalkingSprite(walkUpSprite1, walkUpSprite2);
+                else SetWalkingSprite(walkDownSprite1, walkDownSprite2);
             }
         }
         else
         {
-            // Postać stoi - użyj odpowiedniego sprite'a spoczynkowego
+            // Idle
             if (Mathf.Abs(lastMoveDirection.x) > Mathf.Abs(lastMoveDirection.y))
             {
-                // Ostatni ruch był w poziomie
-                if (lastMoveDirection.x > 0)
-                {
-                    if (idleRightSprite != null) spriteRenderer.sprite = idleRightSprite;
-                }
-                else
-                {
-                    if (idleLeftSprite != null) spriteRenderer.sprite = idleLeftSprite;
-                }
+                if (lastMoveDirection.x > 0) spriteRenderer.sprite = idleRightSprite;
+                else spriteRenderer.sprite = idleLeftSprite;
             }
             else
             {
-                // Ostatni ruch był w pionie
-                if (lastMoveDirection.y > 0)
-                {
-                    if (idleUpSprite != null) spriteRenderer.sprite = idleUpSprite;
-                }
-                else
-                {
-                    if (idleDownSprite != null) spriteRenderer.sprite = idleDownSprite;
-                }
+                if (lastMoveDirection.y > 0) spriteRenderer.sprite = idleUpSprite;
+                else spriteRenderer.sprite = idleDownSprite;
             }
         }
     }
-    
+
     private void SetWalkingSprite(Sprite sprite1, Sprite sprite2)
     {
         if (sprite1 == null || sprite2 == null) return;
-        
-        // Przełączanie między dwoma klatkami animacji
         bool useFirstFrame = (Mathf.FloorToInt(walkTimer / walkAnimationSpeed) % 2) == 0;
         spriteRenderer.sprite = useFirstFrame ? sprite1 : sprite2;
     }
 
     private void HandleShooting()
     {
-        // Strzelanie spacją
+        if (StatsManager.Instance == null) return;
+
+        float fireRate = StatsManager.Instance.fireRate;
         bool pressed = Input.GetKeyDown(KeyCode.Space);
         bool held = Input.GetKey(KeyCode.Space);
 
-        if (!pressed && !held)
-            return;
-
-        // Ograniczenie szybkostrzelności przy przytrzymaniu
-        if (held && Time.time < nextFireTime)
-            return;
+        if (!pressed && !held) return;
+        if (held && Time.time < nextFireTime) return;
 
         if (bulletPrefab == null)
         {
-            Debug.LogWarning("Brak przypisanego prefab’u Bullet w PlayerController");
+            Debug.LogWarning("Brak prefab'u Bullet w PlayerController");
             return;
         }
 
-        Vector3 firePos = firePoint != null ? firePoint.position : transform.position;
-        // Kierunek strzału = aktualny kierunek postaci (4 kierunki)
         Vector2 dir = GetFacingDirection4();
-        if (dir.sqrMagnitude < 0.0001f)
-            dir = Vector2.down; // domyślnie w dół, jak przy starcie
+        if (dir.sqrMagnitude < 0.0001f) dir = Vector2.down;
+
+        // Oblicz pozycję spawnu bulleta z offsetem
+        Vector3 firePos;
+        if (firePoint != null)
+        {
+            firePos = firePoint.position;
+        }
+        else
+        {
+            // Spawn bulleta z offsetem w kierunku patrzenia
+            firePos = transform.position + (Vector3)(dir * bulletOffset);
+        }
+
+        // Debug informacje
+        Debug.Log($"Spawning bullet at: {firePos}, direction: {dir}");
 
         GameObject bulletObj = Instantiate(bulletPrefab, firePos, Quaternion.identity);
         var bulletComp = bulletObj.GetComponent<Bullet>();
@@ -222,33 +187,24 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning("Bullet prefab nie ma komponentu Bullet!");
             var rb2d = bulletObj.GetComponent<Rigidbody2D>();
             if (rb2d != null)
             {
-                rb2d.linearVelocity = dir * 10f; // domyślna prędkość, jeśli brak skryptu Bullet
+                rb2d.linearVelocity = dir * StatsManager.Instance.bulletSpeed;
             }
         }
 
-        if (held)
-        {
-            nextFireTime = Time.time + (1f / Mathf.Max(0.01f, fireRate));
-        }
+        if (held) nextFireTime = Time.time + (1f / Mathf.Max(0.01f, fireRate));
     }
 
-    // Zwraca aktualny kierunek patrzenia jako 4-kierunkowy wektor (prawo/lewo/góra/dół)
     private Vector2 GetFacingDirection4()
     {
         Vector2 dir = lastMoveDirection;
-        if (dir.sqrMagnitude < 0.0001f)
-            return Vector2.down; // domyślny
-
+        if (dir.sqrMagnitude < 0.0001f) return Vector2.down;
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
             return dir.x >= 0f ? Vector2.right : Vector2.left;
-        }
         else
-        {
             return dir.y >= 0f ? Vector2.up : Vector2.down;
-        }
     }
 }

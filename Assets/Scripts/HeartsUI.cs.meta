@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - heartFull: {fileID: -1218823883695198015, guid: 376fe04b91da5c74997f973986ce8323, type: 3}
   - heartLost: {fileID: -5639715768628909742, guid: bfc2807f3dc647f4481c659bae8ea188, type: 3}
-  - heartPrefab: {fileID: 4243653538782293391, guid: 5b8a93b053e686f40ac983e960268e60, type: 3}
+  - heartPrefab: {fileID: 6465420463983817905, guid: 61e15c85ddd6f5d40967fe51e0fcf1d4, type: 3}
   - heartsContainer: {instanceID: 0}
   - hpText: {instanceID: 0}
   executionOrder: 0

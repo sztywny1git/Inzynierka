@@ -1,2 +1,25 @@
 fileFormatVersion: 2
 guid: 508ccc65aab93b7488e21d7f196a5596
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - idleUpSprite: {instanceID: 0}
+  - idleDownSprite: {instanceID: 0}
+  - idleLeftSprite: {instanceID: 0}
+  - idleRightSprite: {instanceID: 0}
+  - walkUpSprite1: {instanceID: 0}
+  - walkDownSprite1: {instanceID: 0}
+  - walkLeftSprite1: {instanceID: 0}
+  - walkRightSprite1: {instanceID: 0}
+  - walkUpSprite2: {instanceID: 0}
+  - walkDownSprite2: {instanceID: 0}
+  - walkLeftSprite2: {instanceID: 0}
+  - walkRightSprite2: {instanceID: 0}
+  - bulletPrefab: {fileID: 4874226602770909059, guid: e85d4a432f227024bb759b8012971710, type: 3}
+  - firePoint: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
