@@ -12,14 +12,10 @@ public class HeartsUI : MonoBehaviour
     [SerializeField] private GameObject heartPrefab;
     [SerializeField] private Transform heartsContainer;
 
-    [Header("Config")]
-    [SerializeField] private int maxHearts = 3;
-
-    [Header("UI References")]
-    [SerializeField] private Text hpText; // <- dodany tekst do wyœwietlania liczby HP
+    //[Header("UI References")]
+    //[SerializeField] private Text hpText; // <- dodany tekst do wyœwietlania liczby HP
 
     private readonly List<Image> heartImages = new List<Image>();
-    private int currentHearts;
 
     private void Start()
     {
@@ -37,7 +33,7 @@ public class HeartsUI : MonoBehaviour
         heartImages.Clear();
 
         // Utwórz nowe serca
-        for (int i = 0; i < maxHearts; i++)
+        for (int i = 0; i < StatsManager.Instance.maxHearts; i++)
         {
             GameObject heartInstance = Instantiate(heartPrefab, heartsContainer);
 
@@ -53,10 +49,15 @@ public class HeartsUI : MonoBehaviour
             }
         }
 
-        SetHearts(maxHearts);
+        Refresh();
     }
 
-    public void SetHearts(int value)
+    private void Update()
+    {
+        Refresh(); // co klatkê odœwie¿amy widok serc
+    }
+
+    /*public void SetHearts(int value)
     {
         currentHearts = Mathf.Clamp(value, 0, maxHearts);
         Refresh();
@@ -70,10 +71,13 @@ public class HeartsUI : MonoBehaviour
     public void Damage(int amount = 1)
     {
         SetHearts(currentHearts - Mathf.Max(1, amount));
-    }
+    }*/
 
     private void Refresh()
     {
+        int currentHearts = StatsManager.Instance.currentHearts;
+        int maxHearts = StatsManager.Instance.maxHearts;
+
         if (heartFull == null || heartLost == null)
         {
             Debug.LogWarning("HeartsUI: przypisz heartFull oraz heartLost");
@@ -83,19 +87,15 @@ public class HeartsUI : MonoBehaviour
         for (int i = 0; i < heartImages.Count; i++)
         {
             if (i < currentHearts)
-            {
                 heartImages[i].sprite = heartFull;
-            }
             else
-            {
                 heartImages[i].sprite = heartLost;
-            }
         }
 
         // Update tekstu HP
-        if (hpText != null)
+        /*if (hpText != null)
         {
-            hpText.text = currentHearts.ToString();
-        }
+            hpText.text = currentHearts + " / " + maxHearts;
+        }*/
     }
 }

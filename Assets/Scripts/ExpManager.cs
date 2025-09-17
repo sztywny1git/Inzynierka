@@ -9,13 +9,13 @@ public class ExpManager : MonoBehaviour
 {
     public int level;
     public int currentExp;
-    public int expToNextLevel;
+    public int expToNextLevel = 1;
     public float expGrowthFactor = 1.3f; // 20% wiecej potrzebnego exp co kazdy level
     public Slider expSlider;
     public TMP_Text currentLevelText;
 
     public static event Action<int> OnLevelUp; 
-    /*
+
     private void Start()
     {
         UpdateUI();
@@ -25,11 +25,11 @@ public class ExpManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
-            GainExp(20); //Dodawanie expa dla testu
+            GainExperience(2); //Dodawanie expa dla testu
         }
     }
 
-    private void OnEnable()
+    /*private void OnEnable()
     {
         Enemy_Health.OnEnemyDefeated += GainExperience;
     }
@@ -37,7 +37,7 @@ public class ExpManager : MonoBehaviour
     private void OnDisable()
     {
         Enemy_Health.OnEnemyDefeated -= GainExperience;
-    }
+    }*/
 
     public void GainExperience(int amount)
     {
@@ -53,7 +53,7 @@ public class ExpManager : MonoBehaviour
     {
         level++;
         currentExp -= expToNextLevel;
-        expToNextLevel = Mathf.RoundToInt(expToNextLevel * expGrowthMultiplier);
+        expToNextLevel = Mathf.RoundToInt(expToNextLevel * expGrowthFactor);
         OnLevelUp?.Invoke(1);//Dostajemy 1pkt umj za lvl
     }
 
@@ -63,7 +63,7 @@ public class ExpManager : MonoBehaviour
         expSlider.maxValue = expToNextLevel;
         expSlider.value = currentExp;
         currentLevelText.text = "Level " + level;
-    }*/
+    }
 
 
 }

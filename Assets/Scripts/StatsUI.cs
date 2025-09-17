@@ -15,6 +15,18 @@ public class StatsUI : MonoBehaviour
         UpdateAllStats();
     }
 
+    private void OnEnable()
+    {
+        SkillSlot.OnAbilityPointSpent += OnStatsChanged;
+    }
+
+    private void OnDisable()
+    { 
+        SkillSlot.OnAbilityPointSpent -= OnStatsChanged;
+    }
+
+
+
     private void Update()
     {
         if (Input.GetButtonDown("ToggleStats"))
@@ -33,6 +45,12 @@ public class StatsUI : MonoBehaviour
             }
         }
     }
+
+    private void OnStatsChanged(SkillSlot slot)
+    {
+        UpdateAllStats();
+    }
+
 
     public void UpdateSpeed()
     {
