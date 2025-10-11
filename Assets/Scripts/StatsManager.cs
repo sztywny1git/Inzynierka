@@ -3,6 +3,7 @@ using UnityEngine;
 public class StatsManager : MonoBehaviour
 {
     public static StatsManager Instance;
+    public StatsUI statsUI;
 
     [Header("Movement Stats")]
     public float moveSpeed = 2f;
@@ -37,5 +38,6 @@ public class StatsManager : MonoBehaviour
     public void UpdateMaxSpeed(float amount)
     {
         moveSpeed = moveSpeed + amount;
+        statsUI.UpdateAllStats();
     }
 }
