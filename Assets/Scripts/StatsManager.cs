@@ -21,7 +21,7 @@ public class StatsManager : MonoBehaviour
 
     [Header("Health Stats")]
     public int maxHearts = 6;
-    public int currentHearts;
+    public int currentHearts = 3;
 
     private void Awake()
     {
@@ -38,6 +38,22 @@ public class StatsManager : MonoBehaviour
     public void UpdateMaxSpeed(float amount)
     {
         moveSpeed = moveSpeed + amount;
+        statsUI.UpdateAllStats();
+    }
+
+    public void UpdateMaxHealth(int amount)
+    {
+        currentHearts += amount;
+        maxHearts += amount;
+    }
+
+    public void UpdateHealth(int amount)
+    {
+        currentHearts += amount;
+        if (currentHearts > maxHearts)
+        {
+            currentHearts = maxHearts;
+        }
         statsUI.UpdateAllStats();
     }
 }

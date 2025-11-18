@@ -2,14 +2,6 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Health Settings")]
-    public int maxHealth = 6;      // maksymalne mo¿liwe HP
-    public int startHealth = 3;    // pocz¹tkowe HP
-    private int currentHealth;
-
-    [Header("UI Hearts")]
-    public GameObject[] hearts;    // przeci¹gnij w inspectorze wszystkie serca (6)
-
     [Header("Hit Settings")]
     public Transform hitbox;
     public float hitboxRadius;
@@ -22,45 +14,73 @@ public class PlayerHealth : MonoBehaviour
     public float knockBackForceUp = 2;
     public ParticleSystem hitParticle;
 
+    [Header("Health")]
+    public int currentHealth;
+    public int maxHealth;
+
+    public HealthDisplay healthDisplay;
+
+
+
     void Start()
     {
-        currentHealth = Mathf.Clamp(startHealth, 0, maxHealth); // startowe HP
+        currentHealth = StatsManager.Instance.currentHearts;
+        maxHealth = StatsManager.Instance.maxHearts;
+
         UpdateHearts();
     }
 
     void Update()
     {
-        // tylko dla testów: zmiana HP przy klawiszach (mo¿esz usun¹æ)
         if (Input.GetKeyDown(KeyCode.Minus)) TakeDamage(1);
         if (Input.GetKeyDown(KeyCode.Equals)) Heal(1);
     }
 
-    // Metoda zmieniaj¹ca serca w UI
-    void UpdateHearts()
+    private void SynchronizacjaStatsManager()
     {
-        for (int i = 0; i < hearts.Length; i++)
+        if (StatsManager.Instance != null)
         {
-            if (i < currentHealth)
-                hearts[i].SetActive(true);
-            else
-                hearts[i].SetActive(false);
+            StatsManager.Instance.currentHearts = currentHealth;
+            StatsManager.Instance.maxHearts = maxHealth;
         }
     }
 
-    // Zadawanie obra¿eñ
+
+    public void ChangeHealth(int amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        SynchronizacjaStatsManager();
+
+        if (currentHealth <= 0)
+        {
+            gameObject.SetActive(false);
+        }
+
+        UpdateHearts();
+    }
+
+
     public void TakeDamage(int amount)
     {
         if (hitCooldown) return;
 
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateHearts();
 
-        // tutaj mo¿esz dodaæ knockback, efekty cz¹steczkowe itd.
+        SynchronizacjaStatsManager();
+
         if (hitParticle != null) hitParticle.Play();
 
+        UpdateHearts();
+
+        if (currentHealth <= 0)
+            gameObject.SetActive(false);
+
+
         hitCooldown = true;
-        Invoke(nameof(ResetHitCooldown), 0.5f); // np. 0.5s invulnerability
+        Invoke(nameof(ResetHitCooldown), 0.5f);
     }
 
     void ResetHitCooldown()
@@ -68,18 +88,27 @@ public class PlayerHealth : MonoBehaviour
         hitCooldown = false;
     }
 
-    // Leczenie
     public void Heal(int amount)
     {
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        SynchronizacjaStatsManager();
+
         UpdateHearts();
     }
 
-    // Zwiêkszenie maksymalnego HP (np. zbieranie power-upa)
     public void IncreaseMaxHealth(int amount)
     {
-        maxHealth = Mathf.Clamp(maxHealth + amount, 0, hearts.Length); // nie wiêcej ni¿ serc w UI
-        Heal(amount); // opcjonalnie dodaj nowe HP
+        maxHealth = Mathf.Clamp(maxHealth + amount, 0, healthDisplay.hearts.Length);
+        Heal(amount);
+    }
+
+    void UpdateHearts()
+    {
+        if (healthDisplay != null)
+        {
+            healthDisplay.UpdateHearts(currentHealth, maxHealth);
+        }
     }
 }

@@ -10,10 +10,11 @@ public class ItemSO : ScriptableObject
     public Sprite icon;
 
     public bool isGold;
+    public int stackSize = 3;
 
     [Header("Stats")]
-    public int currentHealth;
-    public int maxHealth;
+    public int currentHearts;
+    public int maxHearts;
     public int speed;
     public int damage;
 
