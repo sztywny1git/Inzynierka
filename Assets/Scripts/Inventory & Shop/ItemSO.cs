@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Item")]
 public class ItemSO : ScriptableObject
@@ -8,19 +6,30 @@ public class ItemSO : ScriptableObject
     public string itemName;
     [TextArea] public string itemDescription;
     public Sprite icon;
-
     public bool isGold;
     public int stackSize = 3;
+
+    [Header("Item Type")]
+    public ItemType itemType = ItemType.Consumable;
 
     [Header("Stats")]
     public int currentHearts;
     public int maxHearts;
-    public int speed;
+    public float speed;
     public int damage;
+    public float fireRate;
 
     [Header("For Temporary Items")]
     public float duration;
+}
 
-
-
+public enum ItemType
+{
+    Consumable,
+    Ring,
+    Weapon,   
+    Helmet,
+    Chestplate,
+    Legs,
+    Boots      
 }
