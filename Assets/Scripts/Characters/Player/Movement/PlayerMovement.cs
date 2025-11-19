@@ -37,11 +37,13 @@ public class PlayerMovement : MonoBehaviour
         scale.x = Mathf.Abs(scale.x) * lastFacing;
         transform.localScale = scale;
 
+        if (animator == null || !animator.isActiveAndEnabled) return;
         // Update animator movement parameters
         animator.SetFloat("InputX", moveInput.x);
         animator.SetFloat("InputY", moveInput.y);
         animator.SetFloat("LastInputX", lastFacing);
         animator.SetFloat("LastInputY", moveInput.y != 0 ? Mathf.Sign(moveInput.y) : 0);
+        
     }
 
     void FixedUpdate()
