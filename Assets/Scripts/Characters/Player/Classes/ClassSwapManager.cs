@@ -10,7 +10,7 @@ public class ClassSwapManager : MonoBehaviour
 
     [Header("Setup")]
     [SerializeField] private ClassData startingClass;
-    [SerializeField] private CinemachineVirtualCameraBase virtualCamera; // Poprawny typ komponentu kamery
+    [SerializeField] private CinemachineCamera Camera; // Poprawny typ komponentu kamery
 
     private List<ControllableCharacter> allCharacters = new List<ControllableCharacter>();
     private ControllableCharacter activeCharacter;
@@ -70,9 +70,9 @@ public class ClassSwapManager : MonoBehaviour
         activeCharacter = newCharacter;
         activeCharacter.EnablePlayerControl();
 
-        if (virtualCamera != null)
+        if (Camera != null)
         {
-            virtualCamera.Follow = activeCharacter.transform;
+            Camera.Follow = activeCharacter.transform;
         }
     }
 }

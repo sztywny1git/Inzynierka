@@ -8,28 +8,23 @@ public class ClassSelectorNPC : MonoBehaviour
 
     void Update()
     {
-        // Sprawdzamy, czy można wejść w interakcję i czy naciśnięto klawisz
         if (playerCanInteract && Input.GetKeyDown(KeyCode.E))
         {
-            // Resetujemy flagę, aby uniknąć wielokrotnego wywołania
             playerCanInteract = false; 
             ClassSwapManager.Instance.SwapToClass(classToAssign);
         }
     }
 
+    // Ta metoda jest wywoływana, gdy JAKIKOLWIEK collider na tym obiekcie
+    // lub jego dzieciach (ustawiony jako trigger) zostanie aktywowany.
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // KROK 1: ZABEZPIECZENIE PRZED BŁĘDEM
-        // Sprawdź, czy obiekt, który wszedł, w ogóle istnieje
-        if (other == null || other.gameObject == null)
-        {
-            return;
-        }
+        // Zabezpieczenie przed błędami
+        if (other == null || other.gameObject == null) return;
 
-        // KROK 2: POPRAWIONA LOGIKA INTERAKCJI
-        // Interakcja jest możliwa tylko wtedy, gdy:
-        // - Obiekt, który wszedł, jest graczem ("Player")
-        // - Ten obiekt (NPC) nie jest graczem ("NPC")
+        // Logika jest teraz prosta, bo skrypt jest na głównym obiekcie:
+        // 1. Czy obiekt, który wszedł, jest graczem?
+        // 2. Czy JA jestem NPC?
         if (other.CompareTag("Player") && this.gameObject.CompareTag("NPC"))
         {
             playerCanInteract = true;
@@ -39,13 +34,8 @@ public class ClassSelectorNPC : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // ZABEZPIECZENIE PRZED BŁĘDEM
-        if (other == null || other.gameObject == null)
-        {
-            return;
-        }
-
-        // Zawsze resetuj interakcję, gdy gracz wychodzi z zasięgu
+        if (other == null || other.gameObject == null) return;
+        
         if (other.CompareTag("Player"))
         {
             playerCanInteract = false;

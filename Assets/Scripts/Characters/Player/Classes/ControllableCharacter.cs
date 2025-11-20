@@ -21,6 +21,7 @@ public class ControllableCharacter : MonoBehaviour
 
     public void EnablePlayerControl()
     {
+        playerMovement.StopMovement();
         playerAttack.enabled = true;
         playerMovement.enabled = true;
         this.gameObject.tag = "Player";
@@ -41,7 +42,8 @@ public class ControllableCharacter : MonoBehaviour
         playerAttack.enabled = false;
         playerMovement.enabled = false;
         this.gameObject.tag = "NPC";
-        
+        playerMovement.StopMovement();
+
         if (playerInput != null)
         {
             InputAction moveAction = playerInput.actions.FindAction("Move");

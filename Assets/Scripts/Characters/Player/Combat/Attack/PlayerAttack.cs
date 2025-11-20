@@ -51,7 +51,11 @@ public class PlayerAttack : MonoBehaviour
     // Called via Animation Event during attack
     public void PerformAttack()
     {
-        if (attackBehaviour == null || attackOrigin == null || projectileFactory == null) return;
+            Debug.Log("Metoda PerformAttack ZOSTAŁA WYWOŁANA!");
+
+        if (attackBehaviour == null) { Debug.LogError("attackBehaviour jest PUSTE!"); return; }
+        if (attackOrigin == null) { Debug.LogError("attackOrigin jest PUSTE!"); return; }
+        if (projectileFactory == null) { Debug.LogError("projectileFactory jest PUSTE!"); return; }
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 direction = (mousePos - (Vector2)attackOrigin.position).normalized;

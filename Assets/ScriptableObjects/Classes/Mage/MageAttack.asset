@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MageAttack
   m_EditorClassIdentifier: 
   baseDamage: 1
-  baseSpeed: 10
+  baseSpeed: 15
   attackType: 1
   fixedRange: 10
   maxHeight: 0

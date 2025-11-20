@@ -58,4 +58,24 @@ public class PlayerMovement : MonoBehaviour
         moveInput = context.ReadValue<Vector2>();
         if (context.canceled) moveInput = Vector2.zero;
     }
+
+    public void StopMovement()
+    {
+        // Zresetuj wewnętrzny wektor inputu
+        moveInput = Vector2.zero;
+
+        // Najważniejszy krok: Zresetuj prędkość Rigidbody
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        // Dodatkowo: Zresetuj animacje, aby postać od razu wróciła do stanu idle
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetFloat("InputX", 0);
+            animator.SetFloat("InputY", 0);
+        }
+    }
 }
