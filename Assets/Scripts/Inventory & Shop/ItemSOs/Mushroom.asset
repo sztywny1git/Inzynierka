@@ -18,8 +18,8 @@ MonoBehaviour:
   isGold: 0
   stackSize: 3
   itemType: 0
-  currentHearts: 2
-  maxHearts: 2
+  currentHearts: -5
+  maxHearts: 0
   speed: 10
   damage: 2
   fireRate: 2
