@@ -6,7 +6,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 3f;
+    private PlayerStats stats;
+
+    //[SerializeField] private float moveSpeed = 3f;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -20,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        stats = GetComponent<PlayerStats>();
     }
 
     void Update()
@@ -49,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Apply movement velocity
-        rb.linearVelocity = moveInput * moveSpeed;
+        rb.linearVelocity = moveInput * stats.MoveSpeed.FinalValue;
     }
 
     public void Move(InputAction.CallbackContext context)

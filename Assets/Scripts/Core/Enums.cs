@@ -1,4 +1,4 @@
-public enum ItemType
+/*public enum ItemType
 {
     Equipment,
     Consumable
@@ -13,7 +13,7 @@ public enum EquipmentSlot
     Boots,
     Weapon,
     Ring
-}
+}*/
 
 public enum StatType
 {
