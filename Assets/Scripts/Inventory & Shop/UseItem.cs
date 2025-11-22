@@ -6,7 +6,27 @@ using static Unity.VisualScripting.Member;
 
 public class UseItem : MonoBehaviour
 {
-    private PlayerStats playerStats;
+    /*private PlayerStats playerStats;
+    private void Awake()
+    {
+        playerStats = GetComponent<PlayerStats>();
+    }*/
+
+    [SerializeField] private PlayerStats playerStats;
+
+    private void Awake()
+    {
+        if (playerStats == null)
+        {
+            playerStats = GetComponent<PlayerStats>();
+        }
+
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats nie zosta³ przypisany ani znaleziony!");
+        }
+    }
+
     public void ApplyItemEffects(ItemSO itemSO)
     {
         // Tylko dla consumables
@@ -17,7 +37,7 @@ public class UseItem : MonoBehaviour
 
         if (itemSO.speed > 0)
             playerStats.MoveSpeed.AddModifier(
-                    new StatModifier(itemSO.speed, true, source)
+                    new StatModifier(itemSO.speed, true, source, itemSO.duration)
                 );
 
         /*if (itemSO.currentHearts > 0)
@@ -27,7 +47,7 @@ public class UseItem : MonoBehaviour
             StartCoroutine(EffectTimer(itemSO, itemSO.duration));*/
     }
 
-    private IEnumerator EffectTimer(ItemSO itemSO, float duration)
+    /*private IEnumerator EffectTimer(ItemSO itemSO, float duration)
     {
         yield return new WaitForSeconds(duration);
 
@@ -37,5 +57,9 @@ public class UseItem : MonoBehaviour
             playerStats.MoveSpeed.AddModifier(
                     new StatModifier(-itemSO.speed, true, source)
                 );
+    }*/
+    public void RemoveItemEffects(string source)
+    {
+        playerStats.MoveSpeed.RemoveModifierBySource(source);
     }
 }
