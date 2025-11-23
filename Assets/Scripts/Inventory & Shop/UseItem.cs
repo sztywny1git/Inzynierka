@@ -46,8 +46,10 @@ public class UseItem : MonoBehaviour
                     new StatModifier(itemSO.currentHearts, true, source, itemSO.duration)
                 );*/
             float newHealth = playerStats.CurrentHealth + itemSO.currentHearts;
-            playerStats.SetCurrentHealth(newHealth);//idk nie dziala na razie
+            playerStats.SetCurrentHealth(newHealth);//leczenie
+
         }
+
 
         /*if (itemSO.currentHearts > 0)
             StatsManager.Instance.UpdateHealth(itemSO.currentHearts);

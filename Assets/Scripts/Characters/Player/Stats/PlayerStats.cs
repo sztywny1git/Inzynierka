@@ -33,8 +33,8 @@ public class PlayerStats : MonoBehaviour
 
     private void Awake()
     {
-
-        Health.BaseValue = 150f;    // test max HP
+        //CurrentHealth = Health.FinalValue;
+        Health.BaseValue = 150f;    // testowe max hp na start
         CurrentHealth = 100f;
         CurrentResource = Resource.FinalValue;
 

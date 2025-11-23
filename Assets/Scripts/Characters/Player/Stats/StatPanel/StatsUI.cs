@@ -27,8 +27,13 @@ public class StatsUI : MonoBehaviour
         {
             playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(0, "MoveSpeed", value);
             playerStats.Armor.OnStatChanged += (value) => UpdateStat(1, "Armor", value);
-            playerStats.Health.OnStatChanged += (value) => UpdateStat(2, "Health", value);
+            //playerStats.Health.OnStatChanged += (value) => UpdateStat(2, "Health", value);
+            /*playerStats.OnHealthChangedEvent += (current, max) =>
+            {
+                UpdateStat(2, "Health", current);
+            };*/
             playerStats.Damage.OnStatChanged += (value) => UpdateStat(3, "Damage", value);
+            playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(4, "AttackSpeed", value);
             // itd...
         }
     }
@@ -87,8 +92,9 @@ public class StatsUI : MonoBehaviour
 
         UpdateStat(0, "MoveSpeed", playerStats.MoveSpeed.FinalValue);
         UpdateStat(1, "Armor", playerStats.Armor.FinalValue);
-        UpdateStat(2, "Health", playerStats.Health.FinalValue);
+        //UpdateStat(2, "Health", playerStats.Health.FinalValue);
         UpdateStat(3, "Damage", playerStats.Damage.FinalValue);
+        UpdateStat(3, "AttackSpeed", playerStats.AttackSpeed.FinalValue);
         // itd...
     }
 }

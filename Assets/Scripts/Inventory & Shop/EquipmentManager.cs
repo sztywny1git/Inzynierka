@@ -18,8 +18,21 @@ public class EquipmentManager : MonoBehaviour
 
     private Dictionary<ItemType, List<EquipmentSlot>> equipmentSlots;
 
+    [SerializeField] private PlayerStats playerStats;
+
+
     private void Awake()
     {
+        if (playerStats == null)
+        {
+            playerStats = GetComponent<PlayerStats>();
+        }
+
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats nie został przypisany ani znaleziony!");
+        }
+
         if (Instance == null)
         {
             Instance = this;
@@ -116,12 +129,12 @@ public class EquipmentManager : MonoBehaviour
 
     private void ApplyEquipmentStats(ItemSO itemSO, bool apply)
     {
-        PlayerStats playerStats = GetComponent<PlayerStats>();
+        /*PlayerStats playerStats = GetComponent<PlayerStats>();
         if (playerStats == null)
         {
             Debug.LogError("PlayerStats component not found!");
             return;
-        }
+        }*/
 
         string source = $"Equipment_{itemSO.name}";
 
@@ -135,13 +148,16 @@ public class EquipmentManager : MonoBehaviour
                 );
             }
 
-            if (itemSO.maxHearts != 0)
+            if (itemSO.currentHearts != 0)//zmieniamy z maxHearts bo przechodzimy po prostu na currenthearts
             {
-                playerStats.Health.AddModifier(
+                /*playerStats.Health.AddModifier(
                     new StatModifier(itemSO.maxHearts, true, source)
                 );
                 // Zaktualizuj maksymalne zdrowie
-                playerStats.SetCurrentHealth(playerStats.CurrentHealth);
+                playerStats.SetCurrentHealth(playerStats.CurrentHealth);*/
+                playerStats.Health.AddModifier(
+                    new StatModifier(itemSO.currentHearts, true, source)
+                );
             }
 
             if (itemSO.damage != 0)

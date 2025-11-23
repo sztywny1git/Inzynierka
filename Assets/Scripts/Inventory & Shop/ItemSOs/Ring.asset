@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63e6e6cf3d1339b4d94bf1e785636f0f, type: 3}
-  m_Name: Chestplate
+  m_Name: Ring
   m_EditorClassIdentifier: 
-  itemName: Chestplate
-  itemDescription: Chestplate test
-  icon: {fileID: -6834524911116659543, guid: 0b030494dec881c46b36f44e1664d604, type: 3}
+  itemName: ring
+  itemDescription: strong
+  icon: {fileID: -2532087816333192471, guid: ecb4acdb1584c4a4e9542a1e64f264c1, type: 3}
   isGold: 0
   stackSize: 1
-  itemType: 4
-  currentHearts: 20
+  itemType: 1
+  currentHearts: 0
   maxHearts: 0
   speed: 0
   damage: 0
-  fireRate: 0
+  fireRate: 6
   duration: 0
