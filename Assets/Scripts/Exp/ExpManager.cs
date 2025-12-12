@@ -9,8 +9,8 @@ public class ExpManager : MonoBehaviour
 {
     public int level;
     public int currentExp;
-    public int expToNextLevel = 1;
-    public float expGrowthFactor = 1.3f; // 20% wiecej potrzebnego exp co kazdy level
+    public int expToNextLevel = 5;
+    public float expGrowthFactor = 1.3f;
     public Slider expSlider;
     public TMP_Text currentLevelText;
 
@@ -55,6 +55,7 @@ public class ExpManager : MonoBehaviour
         currentExp -= expToNextLevel;
         expToNextLevel = Mathf.RoundToInt(expToNextLevel * expGrowthFactor);
         OnLevelUp?.Invoke(1);//Dostajemy 1pkt umj za lvl
+
     }
 
 
