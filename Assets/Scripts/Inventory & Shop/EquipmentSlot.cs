@@ -2,16 +2,43 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class EquipmentSlot : MonoBehaviour, IPointerClickHandler
+public class EquipmentSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public ItemSO equippedItem;
     public Image itemImage;
 
     private EquipmentManager equipmentManager;
+    private InventoryInfo inventoryInfo;
 
     private void Start()
     {
         equipmentManager = GetComponentInParent<EquipmentManager>();
+        inventoryInfo = FindObjectOfType<InventoryInfo>();
+    }
+
+    private void Update()
+    {
+        // ŒledŸ mysz podczas hover
+        if (equippedItem != null && inventoryInfo != null && inventoryInfo.infoPanel.alpha > 0)
+        {
+            inventoryInfo.FollowMouse();
+        }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (equippedItem != null && inventoryInfo != null)
+        {
+            inventoryInfo.ShowItemInfo(equippedItem);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (inventoryInfo != null)
+        {
+            inventoryInfo.HideItemInfo();
+        }
     }
 
     public void Equip(ItemSO itemSO)

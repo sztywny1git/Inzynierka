@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public ItemSO itemSO;
     public int quantity;
@@ -14,11 +14,22 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public TMP_Text quantityText;
 
     private InventoryManager inventoryManager;
+    private InventoryInfo inventoryInfo;
     private static ShopManager activeShop;
 
     private void Start()
     {
         inventoryManager = GetComponentInParent<InventoryManager>();
+        inventoryInfo = FindObjectOfType<InventoryInfo>();
+    }
+
+    private void Update()
+    {
+        // ŒledŸ mysz podczas hover
+        if (itemSO != null && inventoryInfo != null && inventoryInfo.infoPanel.alpha > 0)
+        {
+            inventoryInfo.FollowMouse();
+        }
     }
 
     private void OnEnable()
@@ -34,6 +45,22 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     private void HandleShopStateChanged(ShopManager shopManager, bool isOpen)
     {
         activeShop = isOpen ? shopManager : null;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (itemSO != null && inventoryInfo != null)
+        {
+            inventoryInfo.ShowItemInfo(itemSO);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (inventoryInfo != null)
+        {
+            inventoryInfo.HideItemInfo();
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
