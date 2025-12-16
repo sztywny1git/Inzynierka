@@ -25,15 +25,20 @@ public class StatsUI : MonoBehaviour
 
         if (playerStats != null)
         {
-            playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(5, "MoveSpeed", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(0, "Damage", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(1, "Crit Chance", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(2, "Crit Damage", value);
+            playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(3, "AttackSpeed", value);
             playerStats.Armor.OnStatChanged += (value) => UpdateStat(4, "Armor", value);
+            playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(5, "MoveSpeed", value);
+            
             //playerStats.Health.OnStatChanged += (value) => UpdateStat(2, "Health", value);
             /*playerStats.OnHealthChangedEvent += (current, max) =>
             {
                 UpdateStat(2, "Health", current);
             };*/
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(0, "Damage", value);
-            playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(3, "AttackSpeed", value);
+            
+            
             // itd...
         }
     }
@@ -91,8 +96,8 @@ public class StatsUI : MonoBehaviour
         if (playerStats == null) return;
 
         UpdateStat(0, "Damage", playerStats.Damage.FinalValue);
-        UpdateStat(1, "Critical Chance", playerStats.CriticalChance.FinalValue);
-        UpdateStat(2, "Critical Damage", playerStats.CriticalDamage.FinalValue);
+        UpdateStat(1, "Crit Chance", playerStats.CriticalChance.FinalValue);
+        UpdateStat(2, "Crit Damage", playerStats.CriticalDamage.FinalValue);
         UpdateStat(3, "AttackSpeed", playerStats.AttackSpeed.FinalValue);
         UpdateStat(4, "Armor", playerStats.Armor.FinalValue);//to mozna dac jako oddzielne pod hp na stale
         UpdateStat(5, "MoveSpeed", playerStats.MoveSpeed.FinalValue);
