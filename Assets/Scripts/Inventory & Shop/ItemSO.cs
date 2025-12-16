@@ -21,6 +21,9 @@ public class ItemSO : ScriptableObject
 
     [Header("For Temporary Items")]
     public float duration;
+
+    [Header("Value")]
+    public int value;
 }
 
 public enum ItemType

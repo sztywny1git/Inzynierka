@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   itemName: Sword
-  itemDescription: sword test
+  itemDescription: A sharp, gleaming sword designed for swift combat. Perfect for
+    warriors seeking precision and power, cutting through enemies with skill and
+    grace.
   icon: {fileID: -3753825769889500098, guid: a8cef5fa9d1e0074582c1995174af842, type: 3}
   isGold: 0
   stackSize: 1
@@ -24,3 +26,4 @@ MonoBehaviour:
   damage: 20
   fireRate: 0
   duration: 0
+  value: 14

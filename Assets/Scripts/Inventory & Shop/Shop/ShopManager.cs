@@ -59,16 +59,17 @@ public class ShopManager : MonoBehaviour
         if (itemSO == null)
             return;
 
-        foreach (var slot in shopSlots)
+        /*foreach (var slot in shopSlots)
         {
             if (slot.itemSO == itemSO)
-            {
+            {*/
                 //ile gosc daje przy sprzedazy
-                inventoryManager.gold += slot.price - 1;
+                //inventoryManager.gold += slot.price - 1;
+                inventoryManager.gold += itemSO.value;
                 inventoryManager.goldText.text = inventoryManager.gold.ToString();
                 return;
-            }
-        }
+        /*    }
+        }*/
 
     }
 }

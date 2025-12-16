@@ -24,3 +24,4 @@ MonoBehaviour:
   damage: 0
   fireRate: 6
   duration: 0
+  value: 13

@@ -8,6 +8,8 @@ public class InventoryInfo : MonoBehaviour
     public TMP_Text itemNameText;
     public TMP_Text itemDescriptionText;
 
+    public TMP_Text valueText;
+
     [Header("Stat Fields")]
     public TMP_Text[] statTexts;
 
@@ -23,6 +25,8 @@ public class InventoryInfo : MonoBehaviour
         infoPanel.alpha = 1;
         itemNameText.text = itemSO.itemName;
         itemDescriptionText.text = itemSO.itemDescription;
+
+        valueText.text = itemSO.value.ToString();
 
         List<string> stats = new List<string>();
 
@@ -66,6 +70,7 @@ public class InventoryInfo : MonoBehaviour
         infoPanel.alpha = 0;
         itemNameText.text = "";
         itemDescriptionText.text = "";
+        valueText.text = "";
 
         foreach (var statText in statTexts)
         {
@@ -76,7 +81,7 @@ public class InventoryInfo : MonoBehaviour
     public void FollowMouse()
     {
         Vector3 mousePosition = Input.mousePosition;
-        Vector3 offset = new Vector3(10, -10, 0);
+        Vector3 offset = new Vector3(10, -100, 0);
         infoPanelRect.position = mousePosition + offset;
     }
 }
