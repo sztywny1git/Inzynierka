@@ -12,6 +12,12 @@ public class ShopKeeper : MonoBehaviour
     public CanvasGroup shopCanvasGroup;
     public ShopManager shopManager;
 
+    public CanvasGroup UltimateEqCanvas;
+    private bool UltimateEqPanel = true;
+    //public GameObject UltimateShop;
+    public GameObject EqPanel;
+    public GameObject StatsPanel;
+
     [SerializeField] private List<ShopItems> shopItems;
 
     public static event Action<ShopManager, bool> OnShopStateChanged;
@@ -22,11 +28,20 @@ public class ShopKeeper : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))//Input.GetButtonDown("Interact") ale trzeba ustawic w edit i project settings
+        if (playerInRange && Input.GetButtonDown("OpenShop"))
         {
             if (!isShopOpen)
             {
                 Time.timeScale = 0; // Pause the game
+
+                //UltimateShop.SetActive(true);
+                EqPanel.SetActive(false);
+                StatsPanel.SetActive(false);
+
+                UltimateEqCanvas.alpha = 1;
+                UltimateEqCanvas.blocksRaycasts = true;
+
+
                 isShopOpen = true;
                 OnShopStateChanged?.Invoke(shopManager, true);
                 shopCanvasGroup.alpha = 1;
@@ -42,6 +57,15 @@ public class ShopKeeper : MonoBehaviour
                 shopCanvasGroup.alpha = 0;
                 shopCanvasGroup.blocksRaycasts = false;
                 shopCanvasGroup.interactable = false;
+
+                UltimateEqCanvas.alpha = 0;
+                UltimateEqCanvas.blocksRaycasts = false;
+                UltimateEqPanel = false;
+
+                EqPanel.SetActive(true);
+                StatsPanel.SetActive(true);
+
+
             }
         }
     }

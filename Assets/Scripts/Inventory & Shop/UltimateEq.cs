@@ -6,7 +6,12 @@ using System.Collections.Generic;
 public class UltimateEq : MonoBehaviour
 {
     public CanvasGroup UltimateEqCanvas;
+
+    //public GameObject UltimateShop;
+    public GameObject EqPanel;
+    public GameObject StatsPanel;
     private bool UltimateEqPanel = true;
+
 
     void Start()
     {
@@ -23,6 +28,11 @@ public class UltimateEq : MonoBehaviour
                 UltimateEqCanvas.alpha = 0;
                 UltimateEqCanvas.blocksRaycasts = false;
                 UltimateEqPanel = false;
+
+                //UltimateShop.SetActive(false);
+                EqPanel.SetActive(true);
+                StatsPanel.SetActive(true);
+
             }
             else
             {

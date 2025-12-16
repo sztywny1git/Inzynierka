@@ -429,6 +429,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8171639163652642805}
     m_Modifications:
+    - target: {fileID: 4760347656847552065, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760347656847552065, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 7.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5270281249708126417, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
       propertyPath: m_Name
       value: StatsSlot
@@ -659,14 +667,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8171639163652642805}
     m_Modifications:
-    - target: {fileID: 4760347656847552065, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: -15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4760347656847552065, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 7.5
-      objectReference: {fileID: 0}
     - target: {fileID: 5270281249708126417, guid: c411542b7e8cb384aa2579f5daea11c6, type: 3}
       propertyPath: m_Name
       value: StatsSlot (1)
