@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Helmet
   m_EditorClassIdentifier: 
   itemName: Helmet
-  itemDescription: just a helmet
-  icon: {fileID: 8161378235129280194, guid: c3cd53aafcab13743ba2b365156f7f5c, type: 3}
+  itemDescription: A reinforced metal helmet that protects the head from critical
+    damage while maintaining visibility and balance in combat.
+  icon: {fileID: 21300000, guid: a5d5645fe500d0e4598f24ae9ea2073a, type: 3}
   isGold: 0
   stackSize: 1
   itemType: 3

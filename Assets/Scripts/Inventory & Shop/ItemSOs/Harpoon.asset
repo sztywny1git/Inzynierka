@@ -10,20 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63e6e6cf3d1339b4d94bf1e785636f0f, type: 3}
-  m_Name: Boots
+  m_Name: Harpoon
   m_EditorClassIdentifier: 
-  itemName: Boots
-  itemDescription: Sturdy leather boots providing comfort, protection, and style.
-    Ideal for long journeys, battles, or adventuring through rough terrains with
-    confidence and durability.
-  icon: {fileID: 21300000, guid: 622044012dace2048829db7ade63f932, type: 3}
+  itemName: Harpoon
+  itemDescription: A heavy steel harpoon built for close combat and pulling enemies
+    closer, commonly used by sailors and underwater hunters.
+  icon: {fileID: 21300000, guid: dd17bd3bdc8e64544bb3818b880d66a5, type: 3}
   isGold: 0
   stackSize: 1
-  itemType: 6
+  itemType: 2
   currentHearts: 0
-  maxHearts: 0
-  speed: 20
-  damage: 10
-  fireRate: 5
+  maxHearts: 5
+  speed: 1
+  damage: 2
+  fireRate: 3
   duration: 0
-  value: 6
+  value: 5
