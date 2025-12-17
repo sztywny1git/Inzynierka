@@ -12690,6 +12690,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1078599583378754053, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1203b9153fc1ff74685f6711b06d047a, type: 3}
     - target: {fileID: 2303333091718952084, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
       propertyPath: m_Name
       value: ShopKeeper
@@ -12734,6 +12738,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3673908042934108812, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4038471133493563563, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d245ce82cc5f8904aa8302ed67eb501f, type: 2}
     - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
       propertyPath: EqPanel
       value: 
