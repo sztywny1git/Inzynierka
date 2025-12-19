@@ -126,10 +126,6 @@ public static class Direction2D
          new Vector2Int(-1,0), // LEFT
          new Vector2Int(-1,1) // LEFT-UP
     };
-
-
-
-
     public static Vector2Int GetRandomCardinalDirection()
     {
         return cardinalDirectionList[Random.Range(0,cardinalDirectionList.Count)];
