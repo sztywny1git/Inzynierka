@@ -11,9 +11,14 @@ public class AugmentManager : MonoBehaviour
 
     [Header("UI Reference")]
     public AugmentSelectionUI selectionUI;
+    public ActiveAugmentsUI activeAugmentsUI;
 
     // S³ownik przechowuj¹cy aktywne augmenty gracza
     private Dictionary<AugmentSO, int> activeAugments = new Dictionary<AugmentSO, int>();
+
+    // Event do powiadamiania o zmianach
+    public delegate void AugmentChanged(AugmentSO augment, int stacks);
+    public static event AugmentChanged OnAugmentAdded;
 
     private void Awake()
     {
@@ -93,6 +98,12 @@ public class AugmentManager : MonoBehaviour
         //ApplyAugmentEffect(augment);
 
         Debug.Log($"Wybrano augment: {augment.augmentName} (Stack: {activeAugments[augment]})");
+
+        OnAugmentAdded?.Invoke(augment, activeAugments[augment]);
+        if (activeAugmentsUI != null)
+        {
+            activeAugmentsUI.RefreshUI();
+        }
 
         // Wznów grê
         Time.timeScale = 1f;

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd7fd781e52af64999d75309d640f5e, type: 3}
   m_Name: TestAugment 2
   m_EditorClassIdentifier: 
-  augmentName: testestg
-  description: dfsfgsdfg
-  icon: {fileID: -6834524911116659543, guid: 0b030494dec881c46b36f44e1664d604, type: 3}
-  augmentType: 5
+  augmentName: Movespeed+
+  description: + 5 Movespeed
+  icon: {fileID: 21300000, guid: b64b6f5c9ace2324f8a97a4db8c1e5b5, type: 3}
+  augmentType: 2
   value: 0
   isStackable: 0
   maxStacks: 1

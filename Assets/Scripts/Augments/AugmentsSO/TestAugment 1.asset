@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd7fd781e52af64999d75309d640f5e, type: 3}
   m_Name: TestAugment 1
   m_EditorClassIdentifier: 
-  augmentName: test1
-  description: test1
-  icon: {fileID: 21300000, guid: 2b7e3b8dbd20bec4490c07a875045b36, type: 3}
+  augmentName: Damage+
+  description: + 10dmg
+  icon: {fileID: 21300000, guid: 17560ef3acb35b74cafd18f6396ae2f2, type: 3}
   augmentType: 0
   value: 0
   isStackable: 1
