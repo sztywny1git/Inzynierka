@@ -10,21 +10,27 @@ public class UltimateEq : MonoBehaviour
     //public GameObject UltimateShop;
     public GameObject EqPanel;
     public GameObject StatsPanel;
-    private bool UltimateEqPanel = true;
+    private bool UltimateEqPanel = false;
+
+    public AudioSource audioSource;
+    public AudioClip inventoryOpenSound;
 
 
     void Start()
     {
-        
+        CloseEq();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetButtonDown("ToggleUltimateEq"))
         {
             if (UltimateEqPanel)
             {
                 Time.timeScale = 1; //pazuje gre
+
+                //audioSource.PlayOneShot(inventoryOpenSound);
+
                 UltimateEqCanvas.alpha = 0;
                 UltimateEqCanvas.blocksRaycasts = false;
                 UltimateEqPanel = false;
@@ -37,10 +43,50 @@ public class UltimateEq : MonoBehaviour
             else
             {
                 Time.timeScale = 1; //odpauzuje gre
+
+                //audioSource.Stop();
+
                 UltimateEqCanvas.alpha = 1;
                 UltimateEqCanvas.blocksRaycasts = true;
                 UltimateEqPanel = true;
             }
         }
+    }*/
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("ToggleUltimateEq"))
+        {
+            if (UltimateEqPanel)
+                CloseEq();
+            else
+                OpenEq();
+        }
     }
+
+    void OpenEq()
+    {
+        Time.timeScale = 0;
+
+        audioSource.PlayOneShot(inventoryOpenSound);
+
+        UltimateEqCanvas.alpha = 1;
+        UltimateEqCanvas.blocksRaycasts = true;
+        UltimateEqPanel = true;
+    }
+
+    void CloseEq()
+    {
+        Time.timeScale = 1;
+
+        audioSource.Stop();
+
+        UltimateEqCanvas.alpha = 0;
+        UltimateEqCanvas.blocksRaycasts = false;
+        UltimateEqPanel = false;
+
+        EqPanel.SetActive(true);
+        StatsPanel.SetActive(true);
+    }
+
 }

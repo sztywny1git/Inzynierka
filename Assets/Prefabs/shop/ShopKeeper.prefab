@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 4038471133493563563}
   - component: {fileID: 5940216493136111559}
   - component: {fileID: 7954621207995981944}
+  - component: {fileID: 5414822647489112945}
   m_Layer: 0
   m_Name: ShopKeeper
   m_TagString: Untagged
@@ -167,7 +168,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7900879094460491225, guid: 086a6faa7ba84b54e8c6278cbc5cde22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1203b9153fc1ff74685f6711b06d047a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -188,7 +189,7 @@ Animator:
   m_GameObject: {fileID: 2303333091718952084}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4abfa4c13b81ca04f813ac9c8a8f68a3, type: 2}
+  m_Controller: {fileID: 9100000, guid: d245ce82cc5f8904aa8302ed67eb501f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -251,17 +252,125 @@ MonoBehaviour:
   anim: {fileID: 5019591969984843561}
   shopCanvasGroup: {fileID: 0}
   shopManager: {fileID: 0}
+  UltimateEqCanvas: {fileID: 0}
+  EqPanel: {fileID: 0}
+  StatsPanel: {fileID: 0}
   shopItems:
   - itemSO: {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
-    price: 4
-  - itemSO: {fileID: 11400000, guid: c30fb43b70084ec469bc81a62e4838bc, type: 2}
-    price: 5
+    price: 2
   - itemSO: {fileID: 11400000, guid: 0dbfb342e35a62944b3325e68027723c, type: 2}
-    price: 12
+    price: 3
   - itemSO: {fileID: 11400000, guid: 71b40181a30395c4cb4d5cd92665e338, type: 2}
-    price: 22
+    price: 4
   - itemSO: {fileID: 11400000, guid: 27b6cb6c77b212d4496c6b34d7708a4f, type: 2}
-    price: 33
+    price: 66
+  - itemSO: {fileID: 11400000, guid: 52e83fedc1739a3449209b9fca0cdfa6, type: 2}
+    price: 66
+  - itemSO: {fileID: 11400000, guid: d248ef9b734354e46b5ab400df0e1e8f, type: 2}
+    price: 66
+  - itemSO: {fileID: 11400000, guid: b9c78b763d12a4b4ba4f6245f8120b41, type: 2}
+    price: 66
+  - itemSO: {fileID: 11400000, guid: 27366c746bfe9064eb8b9d94df456817, type: 2}
+    price: 66
+  audioSource: {fileID: 5414822647489112945}
+  shopOpenSound: {fileID: 8300000, guid: 4d7e26c4680c0fc4581c22a9aecba40f, type: 3}
+--- !u!82 &5414822647489112945
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2303333091718952084}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5528805926969958589
 GameObject:
   m_ObjectHideFlags: 0

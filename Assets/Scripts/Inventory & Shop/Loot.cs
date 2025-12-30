@@ -10,8 +10,14 @@ public class Loot : MonoBehaviour
     public Animator anim;
 
     public bool canBePickedUp = true;
+    private bool pickedUp = false;
+
     public int quantity;
     public static event Action<ItemSO, int> OnItemLooted;
+
+    public AudioSource audioSource;
+    public AudioClip goldPickupSound;
+    public AudioClip itemPickupSound;
 
 
     private void OnValidate()
@@ -26,8 +32,15 @@ public class Loot : MonoBehaviour
     {
         this.itemSO = itemSO;
         this.quantity = quantity;
-        canBePickedUp = false;
+        //canBePickedUp = false;
         UpdateAppearance();
+        StartCoroutine(EnablePickupAfterDelay());
+    }
+
+    private IEnumerator EnablePickupAfterDelay()
+    {
+        yield return new WaitForSeconds(0.2f);
+        canBePickedUp = true;
     }
 
     private void UpdateAppearance()
@@ -38,19 +51,35 @@ public class Loot : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (pickedUp) return;
+
         if (collision.CompareTag("Player") && canBePickedUp == true)
         {
+            pickedUp = true;
+            canBePickedUp = false;
+            GetComponent<Collider2D>().enabled = false;
+
             anim.Play("LootPickup");
+
+            if (itemSO.isGold)
+            {
+                audioSource.PlayOneShot(goldPickupSound);
+            }
+            else
+            {
+                audioSource.PlayOneShot(itemPickupSound);
+            }
+
             OnItemLooted?.Invoke(itemSO, quantity);
             Destroy(gameObject, .5f);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    /*private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             canBePickedUp = true;
         }
-    }
+    }*/
 }

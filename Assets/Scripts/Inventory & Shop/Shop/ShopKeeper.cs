@@ -24,6 +24,9 @@ public class ShopKeeper : MonoBehaviour
     private bool playerInRange;
     private bool isShopOpen;
 
+    public AudioSource audioSource;
+    public AudioClip shopOpenSound;
+
 
 
     void Update()
@@ -33,6 +36,8 @@ public class ShopKeeper : MonoBehaviour
             if (!isShopOpen)
             {
                 Time.timeScale = 0; // Pause the game
+
+                audioSource.PlayOneShot(shopOpenSound);
 
                 //UltimateShop.SetActive(true);
                 EqPanel.SetActive(false);
@@ -52,6 +57,9 @@ public class ShopKeeper : MonoBehaviour
             else
             {
                 Time.timeScale = 1; // Pause the game
+
+                audioSource.Stop();
+
                 isShopOpen = false;
                 OnShopStateChanged?.Invoke(shopManager, false);
                 shopCanvasGroup.alpha = 0;

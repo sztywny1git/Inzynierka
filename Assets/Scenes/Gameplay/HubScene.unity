@@ -833,6 +833,7 @@ GameObject:
   - component: {fileID: 80855046}
   - component: {fileID: 80855050}
   - component: {fileID: 80855051}
+  - component: {fileID: 80855052}
   m_Layer: 5
   m_Name: UltimateEqCanvas
   m_TagString: Untagged
@@ -937,8 +938,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UltimateEqCanvas: {fileID: 80855051}
-  EqPanel: {fileID: 344835059}
+  EqPanel: {fileID: 522661150}
   StatsPanel: {fileID: 1994582306}
+  audioSource: {fileID: 80855052}
+  inventoryOpenSound: {fileID: 8300000, guid: 64c3becd074528045a7e6084eef7a148, type: 3}
 --- !u!225 &80855051
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -947,10 +950,107 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 80855045}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!82 &80855052
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80855045}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &82290612
 GameObject:
   m_ObjectHideFlags: 0
@@ -11148,7 +11248,7 @@ PrefabInstance:
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -6834524911116659543, guid: 0b030494dec881c46b36f44e1664d604, type: 3}
+      objectReference: {fileID: 21300000, guid: e0fe52a0078a0b649a60e9a19f17198b, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.6663687
@@ -12280,7 +12380,7 @@ PrefabInstance:
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 2b7e3b8dbd20bec4490c07a875045b36, type: 3}
+      objectReference: {fileID: 21300000, guid: 622044012dace2048829db7ade63f932, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.95
@@ -12786,7 +12886,7 @@ PrefabInstance:
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -2532087816333192471, guid: ecb4acdb1584c4a4e9542a1e64f264c1, type: 3}
+      objectReference: {fileID: 21300000, guid: 17d8412792cdc794083cfdf65d6d680f, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.4436452
@@ -13088,10 +13188,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1078599583378754053, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 1203b9153fc1ff74685f6711b06d047a, type: 3}
     - target: {fileID: 2303333091718952084, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
       propertyPath: m_Name
       value: ShopKeeper
@@ -13140,14 +13236,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4038471133493563563, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: d245ce82cc5f8904aa8302ed67eb501f, type: 2}
     - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
       propertyPath: EqPanel
       value: 
-      objectReference: {fileID: 344835059}
+      objectReference: {fileID: 522661150}
     - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
       propertyPath: StatsPanel
       value: 
@@ -13164,74 +13256,6 @@ PrefabInstance:
       propertyPath: UltimateEqCanvas
       value: 
       objectReference: {fileID: 80855051}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[0].price
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[1].price
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[2].price
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[3].price
-      value: 66
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[4].price
-      value: 66
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[5].price
-      value: 66
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[6].price
-      value: 66
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[7].price
-      value: 66
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[0].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[1].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 0dbfb342e35a62944b3325e68027723c, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[2].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 71b40181a30395c4cb4d5cd92665e338, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[3].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 27b6cb6c77b212d4496c6b34d7708a4f, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[4].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 52e83fedc1739a3449209b9fca0cdfa6, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[5].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: d248ef9b734354e46b5ab400df0e1e8f, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[6].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: b9c78b763d12a4b4ba4f6245f8120b41, type: 2}
-    - target: {fileID: 7954621207995981944, guid: ba041a82e405ad8498f7e5411404f011, type: 3}
-      propertyPath: shopItems.Array.data[7].itemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: 27366c746bfe9064eb8b9d94df456817, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14472,7 +14496,7 @@ PrefabInstance:
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -3753825769889500098, guid: a8cef5fa9d1e0074582c1995174af842, type: 3}
+      objectReference: {fileID: 21300000, guid: d386fb9d01dca5448977ccb1d60ca83c, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6374221
@@ -23397,6 +23421,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Health potion
       objectReference: {fileID: 0}
+    - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b77e12cbddd8130478f109cb9217800c, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.2436113

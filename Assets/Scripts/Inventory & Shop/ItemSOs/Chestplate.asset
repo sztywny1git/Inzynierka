@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Chestplate
   itemDescription: Chestplate test
-  icon: {fileID: -6834524911116659543, guid: 0b030494dec881c46b36f44e1664d604, type: 3}
+  icon: {fileID: 21300000, guid: e0fe52a0078a0b649a60e9a19f17198b, type: 3}
   isGold: 0
   stackSize: 1
   itemType: 4

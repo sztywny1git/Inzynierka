@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: ring
   itemDescription: strong
-  icon: {fileID: -2532087816333192471, guid: ecb4acdb1584c4a4e9542a1e64f264c1, type: 3}
+  icon: {fileID: 21300000, guid: 17d8412792cdc794083cfdf65d6d680f, type: 3}
   isGold: 0
   stackSize: 1
   itemType: 1
