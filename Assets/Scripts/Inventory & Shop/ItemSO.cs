@@ -24,7 +24,20 @@ public class ItemSO : ScriptableObject
 
     [Header("Value")]
     public int value;
+
+    [Header("Rarity")]
+    public Rarity rarity;
+
 }
+
+public enum Rarity
+{
+    Common,
+    Rare,
+    Epic,
+    Legendary
+}
+
 
 public enum ItemType
 {

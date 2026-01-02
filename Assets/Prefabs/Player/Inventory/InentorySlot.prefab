@@ -169,6 +169,7 @@ MonoBehaviour:
   quantity: 0
   itemImage: {fileID: 8679272282776853117}
   quantityText: {fileID: 1951824358219208562}
+  WholeSlot: {fileID: 266001207081555783}
 --- !u!1 &5309208074367075906
 GameObject:
   m_ObjectHideFlags: 0

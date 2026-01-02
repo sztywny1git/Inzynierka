@@ -22,7 +22,8 @@ public class ShopKeeper : MonoBehaviour
 
     public static event Action<ShopManager, bool> OnShopStateChanged;
     private bool playerInRange;
-    private bool isShopOpen;
+
+    public static bool isShopOpen;//wspolna zmienna dla calej gry a nie inna dla kazdej instancji obiektu
 
     public AudioSource audioSource;
     public AudioClip shopOpenSound;
@@ -56,7 +57,7 @@ public class ShopKeeper : MonoBehaviour
             }
             else
             {
-                Time.timeScale = 1; // Pause the game
+                Time.timeScale = 1; // unPause the game
 
                 audioSource.Stop();
 

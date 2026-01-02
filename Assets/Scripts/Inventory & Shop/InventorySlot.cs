@@ -13,6 +13,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public Image itemImage;
     public TMP_Text quantityText;
 
+    //public Image WholeSlot;
+
+
     private InventoryManager inventoryManager;
     private InventoryInfo inventoryInfo;
     private static ShopManager activeShop;
@@ -118,6 +121,38 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                type == ItemType.Boots;
     }
 
+    /*private Color ColorFromHex(string hex)
+    {
+        Color color;
+        if (ColorUtility.TryParseHtmlString(hex, out color))
+            return color;
+        else
+            return Color.white; // fallback jeœli hex niepoprawny
+    }
+
+    private void ApplyRarityColor(ItemSO item)
+    {
+        if (itemImage == null)
+            return;
+
+        switch(item.rarity)
+        {
+            case Rarity.Common:
+                WholeSlot.color = Color.gray;
+                break;
+            case Rarity.Rare:
+                WholeSlot.color = ColorFromHex("#87CEFA");
+                break;
+            case Rarity.Epic:
+                WholeSlot.color = ColorFromHex("#B026FF");
+                break;
+            case Rarity.Legendary:
+                WholeSlot.color = new Color(1f, 0.6f, 0f); // z³oty
+                break;
+        }
+    }*/
+
+
     public void UpdateUI()
     {
         if (quantity <= 0)
@@ -127,6 +162,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             itemImage.sprite = itemSO.icon;
             itemImage.gameObject.SetActive(true);
+
+
+            //ApplyRarityColor(itemSO);
+
+
 
             // Nie pokazuj liczby dla equipment
             if (IsEquipment(itemSO.itemType))

@@ -26,3 +26,4 @@ MonoBehaviour:
   fireRate: 1
   duration: 0
   value: 33
+  rarity: 1

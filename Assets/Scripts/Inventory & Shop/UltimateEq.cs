@@ -55,6 +55,9 @@ public class UltimateEq : MonoBehaviour
 
     private void Update()
     {
+        if (ShopKeeperIsOpen())
+            return;
+
         if (Input.GetButtonDown("ToggleUltimateEq"))
         {
             if (UltimateEqPanel)
@@ -63,6 +66,12 @@ public class UltimateEq : MonoBehaviour
                 OpenEq();
         }
     }
+
+    bool ShopKeeperIsOpen()
+    {
+        return ShopKeeper.isShopOpen;
+    }
+
 
     void OpenEq()
     {
