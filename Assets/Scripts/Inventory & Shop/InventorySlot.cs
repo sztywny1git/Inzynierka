@@ -77,6 +77,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                     activeShop.SellItem(itemSO);
                     quantity--;
                     UpdateUI();
+                    inventoryManager.SyncSlotsPublic(this);
                 }
                 else
                 {
@@ -95,6 +96,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                                     itemSO = null;
                                 }
                                 UpdateUI();
+                                inventoryManager.SyncSlotsPublic(this);
                             }
                         }
                     }

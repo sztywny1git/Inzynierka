@@ -166,3 +166,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   equippedItem: {fileID: 0}
   itemImage: {fileID: 3116419018750121241}
+  backgroundImage: {fileID: 5603631593944201552}
+  emptyBackground: {fileID: 0}
+  equippedBackground: {fileID: 0}

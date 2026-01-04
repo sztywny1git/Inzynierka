@@ -13,6 +13,16 @@ public class InventoryManager : MonoBehaviour
     public GameObject lootPrefab;
     public Transform player;
 
+    [System.Serializable]
+    public struct SlotSyncPair
+    {
+        public InventorySlot slotA;
+        public InventorySlot slotB;
+    }
+
+    [SerializeField] private SlotSyncPair[] syncPairs;
+
+
     private void Start()
     {
         foreach (var slot in itemSlots)
@@ -30,6 +40,49 @@ public class InventoryManager : MonoBehaviour
     {
         Loot.OnItemLooted -= AddItem;
     }
+
+    public void SyncSlotsPublic(InventorySlot changedSlot)//zeby korzystac w innych plikach
+    {
+        SyncSlots(changedSlot);
+    }
+
+    private void SyncSlots(InventorySlot changedSlot)
+    {
+        foreach (var pair in syncPairs)
+        {
+            if (changedSlot == pair.slotA)
+            {
+                CopySlot(pair.slotA, pair.slotB);
+                return;
+            }
+            else if (changedSlot == pair.slotB) 
+            {
+                CopySlot(pair.slotB, pair.slotA);
+                return;
+            }
+        }
+    }
+
+
+    /*private void CopySlot(InventorySlot from, InventorySlot to)
+    {
+        bool changed = to.itemSO != from.itemSO || to.quantity != from.quantity;
+
+        to.itemSO = from.itemSO;
+        to.quantity = from.quantity;
+
+        if (changed)
+            to.UpdateUI();
+    }*/
+    private void CopySlot(InventorySlot from, InventorySlot to)
+    {
+        to.itemSO = from.itemSO;
+        to.quantity = from.quantity;
+        to.UpdateUI();
+    }
+
+
+
 
     public void AddItem(ItemSO itemSO, int quantity)
     {
@@ -50,7 +103,10 @@ public class InventoryManager : MonoBehaviour
                 slot.quantity += amountToAdd;
                 quantity -= amountToAdd;
 
+                SyncSlots(slot);
+
                 slot.UpdateUI();
+                
 
                 if (quantity <= 0)
                     return; // All items have been added
@@ -64,7 +120,10 @@ public class InventoryManager : MonoBehaviour
                     int amountToAdd = Mathf.Min(itemSO.stackSize, quantity);
                     slot.itemSO = itemSO;
                     slot.quantity = quantity;
+
+                    SyncSlots(slot);
                     slot.UpdateUI();
+                
                     return;
                 }
             }
@@ -83,7 +142,12 @@ public class InventoryManager : MonoBehaviour
         {
             slot.itemSO = null;
         }
+        
+
         slot.UpdateUI();
+
+        SyncSlots(slot);
+
     }
 
 
@@ -104,7 +168,10 @@ public class InventoryManager : MonoBehaviour
             {
                 slot.itemSO = null;
             }
+           
+
             slot.UpdateUI();
+            SyncSlots(slot);
         }
     }
 

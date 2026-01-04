@@ -7,8 +7,14 @@ public class EquipmentSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public ItemSO equippedItem;
     public Image itemImage;
 
+
     private EquipmentManager equipmentManager;
     private InventoryInfo inventoryInfo;
+
+    [Header("Slot background")]
+    public Image backgroundImage;
+    public Sprite emptyBackground;
+    public Sprite equippedBackground;
 
     private void Start()
     {
@@ -59,10 +65,16 @@ public class EquipmentSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         {
             itemImage.sprite = equippedItem.icon;
             itemImage.gameObject.SetActive(true);
+
+            if (backgroundImage != null && equippedBackground != null)
+                backgroundImage.sprite = equippedBackground;
         }
         else
         {
             itemImage.gameObject.SetActive(false);
+
+            if (backgroundImage != null && emptyBackground != null)
+                backgroundImage.sprite = emptyBackground;
         }
     }
 
