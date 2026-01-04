@@ -6,7 +6,13 @@ using UnityEngine.UI;
 public class InventoryInfo : MonoBehaviour
 {
     public CanvasGroup infoPanel;
+
+    public Image itemIcon;
+
     public TMP_Text itemNameText;
+
+    public TMP_Text itemTypeText;
+
     public TMP_Text itemDescriptionText;
 
     public TMP_Text valueText;
@@ -24,7 +30,7 @@ public class InventoryInfo : MonoBehaviour
         infoPanelRect = GetComponent<RectTransform>();
     }
 
-    private Color ColorFromHex(string hex)
+    public Color ColorFromHex(string hex)
     {
         Color color;
         if (ColorUtility.TryParseHtmlString(hex, out color))
@@ -34,7 +40,7 @@ public class InventoryInfo : MonoBehaviour
     }
 
 
-    private void ApplyRarity(ItemSO item)
+    public void ApplyRarity(ItemSO item)
     {
         switch (item.rarity)
         {
@@ -73,7 +79,13 @@ public class InventoryInfo : MonoBehaviour
 
         ApplyRarity(itemSO);
 
+        itemIcon.sprite = itemSO.icon;
+        itemIcon.enabled = itemSO.icon != null; // w³¹cz/wy³¹cz jeœli brak ikony
+
         itemNameText.text = itemSO.itemName;
+
+        itemTypeText.text = itemSO.itemType.ToString();
+
         itemDescriptionText.text = itemSO.itemDescription;
 
         valueText.text = itemSO.value.ToString();
@@ -122,9 +134,13 @@ public class InventoryInfo : MonoBehaviour
     {
         infoPanel.alpha = 0;
         itemNameText.text = "";
+        itemTypeText.text = "";
         itemDescriptionText.text = "";
         rarityText.text = "";
         valueText.text = "";
+
+        itemIcon.sprite = null;
+        itemIcon.enabled = false;
 
         foreach (var statText in statTexts)
         {

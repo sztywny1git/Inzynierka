@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sword
   itemDescription: A sharp, gleaming sword designed for swift combat. Perfect for
-    warriors seeking precision and power, cutting through enemies with skill and
-    grace.
+    warriors seeking precision and power.
   icon: {fileID: 21300000, guid: d386fb9d01dca5448977ccb1d60ca83c, type: 3}
   isGold: 0
   stackSize: 1
@@ -27,3 +26,4 @@ MonoBehaviour:
   fireRate: 0
   duration: 0
   value: 14
+  rarity: 0

@@ -18,6 +18,8 @@ public class ShopKeeper : MonoBehaviour
     public GameObject EqPanel;
     public GameObject StatsPanel;
 
+    public GameObject hotbar;
+
     [SerializeField] private List<ShopItems> shopItems;
 
     public static event Action<ShopManager, bool> OnShopStateChanged;
@@ -43,6 +45,7 @@ public class ShopKeeper : MonoBehaviour
                 //UltimateShop.SetActive(true);
                 EqPanel.SetActive(false);
                 StatsPanel.SetActive(false);
+                hotbar.SetActive(false);
 
                 UltimateEqCanvas.alpha = 1;
                 UltimateEqCanvas.blocksRaycasts = true;
@@ -73,6 +76,7 @@ public class ShopKeeper : MonoBehaviour
 
                 EqPanel.SetActive(true);
                 StatsPanel.SetActive(true);
+                hotbar.SetActive(true);
 
 
             }

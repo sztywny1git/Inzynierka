@@ -6,7 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IEndDragHandler, IDropHandler, IBeginDragHandler,
+    IPointerDownHandler, IPointerUpHandler
 {
     public ItemSO itemSO;
     public int quantity;
@@ -20,10 +21,25 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     private InventoryInfo inventoryInfo;
     private static ShopManager activeShop;
 
+    /*dla przenoszenia itemow:*/
+    private static Image dragIcon;
+    private static Canvas rootCanvas;
+    private static InventorySlot draggedSlot;
+
+    private static bool isHoldingItem;
+
+
+
+
     private void Start()
     {
         inventoryManager = GetComponentInParent<InventoryManager>();
         inventoryInfo = FindObjectOfType<InventoryInfo>();
+
+        //ruszanie itemow
+        if (rootCanvas == null)
+            rootCanvas = GetComponentInParent<Canvas>();
+
     }
 
     private void Update()
@@ -52,6 +68,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+
+        if (isHoldingItem || draggedSlot != null)//kiedy ruszamy item to nie pokazuj info
+            return;
+
         if (itemSO != null && inventoryInfo != null)
         {
             inventoryInfo.ShowItemInfo(itemSO);
@@ -113,6 +133,110 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             }
         }
     }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (itemSO == null)
+            return;
+
+        draggedSlot = this;
+
+        if (inventoryInfo != null)//jak przytrzymujemy to chowamy info
+            inventoryInfo.HideItemInfo();
+
+        if (rootCanvas == null)
+            rootCanvas = GetComponentInParent<Canvas>();
+
+        if (dragIcon == null)
+        {
+            GameObject go = new GameObject("DragIcon");
+            go.transform.SetParent(rootCanvas.transform, false);
+            dragIcon = go.AddComponent<Image>();
+            dragIcon.raycastTarget = false;
+        }
+
+        dragIcon.sprite = itemImage.sprite;
+        dragIcon.enabled = true;
+        dragIcon.transform.position = eventData.position;
+    }
+
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (dragIcon == null)
+            return;
+
+        dragIcon.transform.position = eventData.position;
+    }
+
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (draggedSlot == null || draggedSlot == this)
+            return;
+
+        SwapOrMove(draggedSlot, this);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (dragIcon != null)
+            dragIcon.enabled = false;
+
+        draggedSlot = null;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        if (itemSO == null)
+            return;
+
+        isHoldingItem = true;
+
+        if (inventoryInfo != null)
+            inventoryInfo.HideItemInfo();
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isHoldingItem = false;
+    }
+
+
+    private void SwapOrMove(InventorySlot from, InventorySlot to)
+    {
+        if (to.itemSO == null)
+        {
+            // przeniesienie
+            to.itemSO = from.itemSO;
+            to.quantity = from.quantity;
+
+            from.itemSO = null;
+            from.quantity = 0;
+        }
+        else
+        {
+            // zamiana
+            ItemSO tempItem = to.itemSO;
+            int tempQty = to.quantity;
+
+            to.itemSO = from.itemSO;
+            to.quantity = from.quantity;
+
+            from.itemSO = tempItem;
+            from.quantity = tempQty;
+        }
+
+        from.UpdateUI();
+        to.UpdateUI();
+
+        inventoryManager.SyncSlotsPublic(from);
+        inventoryManager.SyncSlotsPublic(to);
+    }
+
 
     private bool IsEquipment(ItemType type)
     {

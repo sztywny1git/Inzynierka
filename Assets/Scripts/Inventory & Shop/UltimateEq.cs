@@ -12,6 +12,8 @@ public class UltimateEq : MonoBehaviour
     public GameObject StatsPanel;
     private bool UltimateEqPanel = false;
 
+    public GameObject hotbar;
+
     public AudioSource audioSource;
     public AudioClip inventoryOpenSound;
 
@@ -82,6 +84,8 @@ public class UltimateEq : MonoBehaviour
         UltimateEqCanvas.alpha = 1;
         UltimateEqCanvas.blocksRaycasts = true;
         UltimateEqPanel = true;
+
+        hotbar.SetActive(false);
     }
 
     void CloseEq()
@@ -96,6 +100,7 @@ public class UltimateEq : MonoBehaviour
 
         EqPanel.SetActive(true);
         StatsPanel.SetActive(true);
+        hotbar.SetActive(true);
     }
 
 }
