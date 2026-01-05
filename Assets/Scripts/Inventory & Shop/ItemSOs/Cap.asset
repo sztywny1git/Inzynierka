@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Cap
   itemDescription: A simple cloth cap that offers minimal protection while adding
-    a casual and practical look for everyday adventures.
+    a casual and practical look for adventures.
   icon: {fileID: 21300000, guid: d846bd7c62dff414a94f7d20d909832c, type: 3}
   isGold: 0
   stackSize: 1

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Harpoon
   itemDescription: A heavy steel harpoon built for close combat and pulling enemies
-    closer, commonly used by sailors and underwater hunters.
+    closer, commonly used by sailors.
   icon: {fileID: 21300000, guid: dd17bd3bdc8e64544bb3818b880d66a5, type: 3}
   isGold: 0
   stackSize: 1
@@ -26,3 +26,4 @@ MonoBehaviour:
   fireRate: 3
   duration: 0
   value: 5
+  rarity: 0

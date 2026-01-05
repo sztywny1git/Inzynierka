@@ -151,7 +151,41 @@ public class InventoryInfo : MonoBehaviour
     public void FollowMouse()
     {
         Vector3 mousePosition = Input.mousePosition;
-        Vector3 offset = new Vector3(10, -100, 0);
-        infoPanelRect.position = mousePosition + offset;
+        Vector3 offset = new Vector3(-120, -70, 0);
+        Vector3 targetPosition = mousePosition + offset;
+
+        float panelWidth = infoPanelRect.sizeDelta.x;
+        float panelHeight = infoPanelRect.sizeDelta.y;
+
+        // Pivot panelu
+        float pivotX = infoPanelRect.pivot.x;
+        float pivotY = infoPanelRect.pivot.y;
+
+        // Lewa granica
+        if (targetPosition.x - panelWidth * pivotX < 0)
+        {
+            targetPosition.x = panelWidth * pivotX;
+        }
+
+        // Prawa granica
+        if (targetPosition.x + panelWidth * (1 - pivotX) > Screen.width)
+        {
+            targetPosition.x = Screen.width - panelWidth * (1 - pivotX);
+        }
+
+        // Dolna granica
+        if (targetPosition.y - panelHeight * pivotY < 0)
+        {
+            targetPosition.y = panelHeight * pivotY;
+        }
+
+        // Górna granica
+        if (targetPosition.y + panelHeight * (1 - pivotY) > Screen.height)
+        {
+            targetPosition.y = Screen.height - panelHeight * (1 - pivotY);
+        }
+
+        infoPanelRect.position = targetPosition;
+
     }
 }

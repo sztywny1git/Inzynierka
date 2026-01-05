@@ -19,6 +19,7 @@ public class ShopKeeper : MonoBehaviour
     public GameObject StatsPanel;
 
     public GameObject hotbar;
+    public GameObject visibleStats;
 
     [SerializeField] private List<ShopItems> shopItems;
 
@@ -46,6 +47,7 @@ public class ShopKeeper : MonoBehaviour
                 EqPanel.SetActive(false);
                 StatsPanel.SetActive(false);
                 hotbar.SetActive(false);
+                visibleStats.SetActive(false);
 
                 UltimateEqCanvas.alpha = 1;
                 UltimateEqCanvas.blocksRaycasts = true;
@@ -77,6 +79,7 @@ public class ShopKeeper : MonoBehaviour
                 EqPanel.SetActive(true);
                 StatsPanel.SetActive(true);
                 hotbar.SetActive(true);
+                visibleStats.SetActive(true);
 
 
             }

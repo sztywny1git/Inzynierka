@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Tailcoat
   itemDescription: An elegant tailcoat worn by nobles, combining style with subtle
-    protection and enhancing charisma in social encounters.
+    protection in social encounters.
   icon: {fileID: 21300000, guid: e79124f698ddd1d40b0391e46e4fef1e, type: 3}
   isGold: 0
   stackSize: 1
@@ -26,3 +26,4 @@ MonoBehaviour:
   fireRate: 0
   duration: 0
   value: 33
+  rarity: 0

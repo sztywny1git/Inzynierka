@@ -36,7 +36,9 @@ public class PlayerStats : MonoBehaviour
         //CurrentHealth = Health.FinalValue;
         Health.BaseValue = 150f;    // testowe max hp na start
         CurrentHealth = 100f;
-        CurrentResource = Resource.FinalValue;
+        //CurrentResource = Resource.FinalValue;
+        Resource.BaseValue = 150f;  // testowe max many na start
+        CurrentResource = 100f;
 
         // Subscribe to stat changes
         Health.OnStatChanged += value => OnHealthChangedEvent?.Invoke(CurrentHealth, Health.FinalValue);

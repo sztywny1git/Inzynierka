@@ -176,6 +176,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             return;
 
         SwapOrMove(draggedSlot, this);
+        inventoryInfo.ShowItemInfo(itemSO);
     }
 
     public void OnEndDrag(PointerEventData eventData)

@@ -131,7 +131,7 @@ public class ShopInfo : MonoBehaviour
     public void FollowMouse()
     {
         Vector3 mousePosition = Input.mousePosition;
-        Vector3 offset = new Vector3(10, -10, 0);
+        Vector3 offset = new Vector3(80, 100, 0);
 
         infoPanelRect.position = mousePosition + offset;
     }

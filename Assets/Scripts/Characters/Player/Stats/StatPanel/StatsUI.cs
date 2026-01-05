@@ -25,20 +25,23 @@ public class StatsUI : MonoBehaviour
 
         if (playerStats != null)
         {
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(0, "Damage", value);
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(1, "Crit Chance", value);
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(2, "Crit Damage", value);
-            playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(3, "AttackSpeed", value);
-            playerStats.Armor.OnStatChanged += (value) => UpdateStat(4, "Armor", value);
-            playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(5, "MoveSpeed", value);
+            playerStats.Health.OnStatChanged += (value) => UpdateStat(0, "MaxHealth", value);
+            playerStats.Resource.OnStatChanged += (value) => UpdateStat(1, "Resource", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(2, "Damage", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(3, "Crit Chance", value);
+            playerStats.Damage.OnStatChanged += (value) => UpdateStat(4, "Crit Damage", value);
+            playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(5, "AttackSpeed", value);
+            playerStats.Armor.OnStatChanged += (value) => UpdateStat(6, "Armor", value);
+            playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(7, "MoveSpeed", value);
             
+
             //playerStats.Health.OnStatChanged += (value) => UpdateStat(2, "Health", value);
             /*playerStats.OnHealthChangedEvent += (current, max) =>
             {
                 UpdateStat(2, "Health", current);
             };*/
-            
-            
+
+
             // itd...
         }
     }
@@ -95,16 +98,20 @@ public class StatsUI : MonoBehaviour
     {
         if (playerStats == null) return;
 
-        UpdateStat(0, "Damage", playerStats.Damage.FinalValue);
-        UpdateStat(1, "Crit Chance", playerStats.CriticalChance.FinalValue);
-        UpdateStat(2, "Crit Damage", playerStats.CriticalDamage.FinalValue);
-        UpdateStat(3, "AttackSpeed", playerStats.AttackSpeed.FinalValue);
-        UpdateStat(4, "Armor", playerStats.Armor.FinalValue);//to mozna dac jako oddzielne pod hp na stale
-        UpdateStat(5, "MoveSpeed", playerStats.MoveSpeed.FinalValue);
+        UpdateStat(0, "MaxHealth", playerStats.Health.FinalValue);
+        UpdateStat(1, "Resource", playerStats.Resource.FinalValue);
+        UpdateStat(2, "Damage", playerStats.Damage.FinalValue);
+        UpdateStat(3, "CritChance", playerStats.CriticalChance.FinalValue);
+        UpdateStat(4, "CritDamage", playerStats.CriticalDamage.FinalValue);
+        UpdateStat(5, "AttackSpeed", playerStats.AttackSpeed.FinalValue);
+        UpdateStat(6, "Armor", playerStats.Armor.FinalValue);//to mozna dac jako oddzielne pod hp na stale
+        UpdateStat(7, "MoveSpeed", playerStats.MoveSpeed.FinalValue);
         
+        
+
         //UpdateStat(2, "Health", playerStats.Health.FinalValue);
-        
-        
+
+
         // itd...
     }
 }
