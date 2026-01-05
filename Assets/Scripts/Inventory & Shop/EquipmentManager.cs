@@ -173,6 +173,33 @@ public class EquipmentManager : MonoBehaviour
                     new StatModifier(itemSO.fireRate, true, source)
                 );
             }
+            if (itemSO.Resource != 0)
+            {
+                playerStats.Resource.AddModifier(
+                    new StatModifier(itemSO.Resource, true, source)
+                );
+            }
+            if (itemSO.armor != 0)
+            {
+                playerStats.Armor.AddModifier(
+                    new StatModifier(itemSO.armor, true, source)
+                );
+            }
+            if (itemSO.CriticalDamage != 0)
+            {
+                playerStats.CriticalDamage.AddModifier(
+                    new StatModifier(itemSO.CriticalDamage, true, source)
+                );
+            }
+            if (itemSO.CriticalChance != 0)
+            {
+                playerStats.CriticalChance.AddModifier(
+                    new StatModifier(itemSO.CriticalChance, true, source)
+                );
+            }
+
+
+
         }
         else
         {
@@ -181,6 +208,11 @@ public class EquipmentManager : MonoBehaviour
             playerStats.Health.RemoveModifierBySource(source);
             playerStats.Damage.RemoveModifierBySource(source);
             playerStats.AttackSpeed.RemoveModifierBySource(source);
+
+            playerStats.Armor.RemoveModifierBySource(source);
+            playerStats.Resource.RemoveModifierBySource(source);
+            playerStats.CriticalChance.RemoveModifierBySource(source);
+            playerStats.CriticalDamage.RemoveModifierBySource(source);
 
             // Upewnij się, że aktualne zdrowie nie przekracza nowego maksimum
             if (playerStats.CurrentHealth > playerStats.Health.FinalValue)

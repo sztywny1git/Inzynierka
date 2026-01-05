@@ -28,8 +28,8 @@ public class StatsUI : MonoBehaviour
             playerStats.Health.OnStatChanged += (value) => UpdateStat(0, "MaxHealth", value);
             playerStats.Resource.OnStatChanged += (value) => UpdateStat(1, "Resource", value);
             playerStats.Damage.OnStatChanged += (value) => UpdateStat(2, "Damage", value);
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(3, "Crit Chance", value);
-            playerStats.Damage.OnStatChanged += (value) => UpdateStat(4, "Crit Damage", value);
+            playerStats.CriticalChance.OnStatChanged += (value) => UpdateStat(3, "CritChance", value);
+            playerStats.CriticalDamage.OnStatChanged += (value) => UpdateStat(4, "CritDamage", value);
             playerStats.AttackSpeed.OnStatChanged += (value) => UpdateStat(5, "AttackSpeed", value);
             playerStats.Armor.OnStatChanged += (value) => UpdateStat(6, "Armor", value);
             playerStats.MoveSpeed.OnStatChanged += (value) => UpdateStat(7, "MoveSpeed", value);

@@ -245,7 +245,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                type == ItemType.Weapon ||
                type == ItemType.Helmet ||
                type == ItemType.Chestplate ||
-               type == ItemType.Boots;
+               type == ItemType.Boots ||
+               type == ItemType.Legs;
     }
 
     /*private Color ColorFromHex(string hex)

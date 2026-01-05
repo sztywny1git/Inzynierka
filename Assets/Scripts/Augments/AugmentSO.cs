@@ -23,8 +23,9 @@ public enum AugmentType
     DamageBoost,
     SpeedBoost,
     CriticalChance,
-    AttackSpeed,
-    HealthRegen,
-    Shield,
-    ExperienceBoost
+    AttackSpeedBoost,
+    //HealthRegen,
+    ArmorBoost,
+    ResourceBoost,
+    //ExperienceBoost
 }

@@ -26,9 +26,17 @@ public class ShopInfo : MonoBehaviour
 
     private RectTransform infoPanelRect;
 
+    private void Update()
+    {
+        if (infoPanel.alpha > 0)
+            FollowMouse();
+    }
+
     private void Awake()
     {
         infoPanelRect = GetComponent <RectTransform>();
+        infoPanel.blocksRaycasts = false;
+        infoPanel.interactable = false;
     }
 
     public Color ColorFromHex(string hex)
@@ -88,10 +96,32 @@ public class ShopInfo : MonoBehaviour
         itemDescriptionText.text = itemSO.itemDescription;
 
         List<string> stats = new List<string>();
-        if (itemSO.currentHearts > 0) stats.Add("Hearts: " + itemSO.currentHearts.ToString());
-        if (itemSO.speed > 0) stats.Add("Speed: " + itemSO.speed.ToString());
-        if (itemSO.damage > 0) stats.Add("Damage: " + itemSO.damage.ToString());
-        if (itemSO.duration > 0) stats.Add("Duration: " + itemSO.duration.ToString());
+        if (itemSO.currentHearts != 0)
+            stats.Add("Hearts: " + itemSO.currentHearts.ToString());
+
+        if (itemSO.speed != 0)
+            stats.Add("Speed: " + itemSO.speed.ToString());
+
+        if (itemSO.damage != 0)
+            stats.Add("Damage: " + itemSO.damage.ToString());
+
+        if (itemSO.Resource != 0)
+            stats.Add("Resource: " + itemSO.Resource.ToString());
+
+        if (itemSO.armor != 0)
+            stats.Add("Armor: " + itemSO.armor.ToString());
+
+        if (itemSO.fireRate != 0)
+            stats.Add("AttackSpeed: " + itemSO.fireRate.ToString());
+
+        if (itemSO.CriticalChance != 0)
+            stats.Add("CriticalChance: " + itemSO.CriticalChance.ToString());
+
+        if (itemSO.CriticalDamage != 0)
+            stats.Add("CriticalChance: " + itemSO.CriticalDamage.ToString());
+
+        if (itemSO.duration != 0)
+            stats.Add("Duration: " + itemSO.duration.ToString());
 
         if (stats.Count <= 0)
             return;

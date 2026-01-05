@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63e6e6cf3d1339b4d94bf1e785636f0f, type: 3}
+  m_Name: Harpoon
+  m_EditorClassIdentifier: 
+  itemName: Harpoon
+  itemDescription: A heavy steel harpoon built for close combat and pulling enemies
+    closer, commonly used by sailors.
+  icon: {fileID: 21300000, guid: dd17bd3bdc8e64544bb3818b880d66a5, type: 3}
+  isGold: 0
+  stackSize: 1
+  itemType: 2
+  currentHearts: 0
+  Resource: 0
+  armor: 0
+  speed: 1
+  damage: 5
+  fireRate: -0.2
+  CriticalChance: 0.1
+  CriticalDamage: 0
+  duration: 0
+  value: 35
+  rarity: 1

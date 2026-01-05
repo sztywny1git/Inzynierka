@@ -133,7 +133,7 @@ public class AugmentManager : MonoBehaviour
                 break;
             case AugmentType.DamageBoost:
                 playerStats.Damage.AddModifier(
-                        new StatModifier(10, true, "Augment Damage Boost")
+                        new StatModifier(3, true, "Augment Damage Boost")
                     );
 
                 // Zwiêksz damage
@@ -141,13 +141,33 @@ public class AugmentManager : MonoBehaviour
                 break;
             case AugmentType.SpeedBoost:
                 playerStats.MoveSpeed.AddModifier(
-                        new StatModifier(10, true, "Augment Speed Boost")
+                        new StatModifier(0.5f, true, "Augment Speed Boost")
                     );
-
                 // Zwiêksz prêdkoœæ
                 // PlayerStats.Instance.IncreaseSpeed(augment.value);
                 break;
-                // Dodaj pozosta³e case'y
+            // Dodaj pozosta³e case'y
+            case AugmentType.CriticalChance:
+                playerStats.CriticalChance.AddModifier(
+                    new StatModifier(0.1f, true, "Critical Chance Boost")
+                );
+                break;
+            case AugmentType.ArmorBoost:
+                playerStats.Armor.AddModifier(
+                    new StatModifier(5, true, "Armor Boost")
+                );
+                break;
+            case AugmentType.ResourceBoost:
+                playerStats.Resource.AddModifier(
+                    new StatModifier(15, true, "Resource Boost")
+                );
+                break;
+            case AugmentType.AttackSpeedBoost:
+                playerStats.AttackSpeed.AddModifier(
+                    new StatModifier(0.3f, true, "Attack Speed Boost")
+                );
+                break;
+
         }
     }
 
