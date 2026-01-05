@@ -31,6 +31,13 @@ public class ActiveAugmentsUI : MonoBehaviour
         {
             augmentIcons[i].gameObject.SetActive(false);
             augmentStackTexts[i].gameObject.SetActive(false);
+
+            // Wyczyœæ augmentSO
+            AugmentInfoSlot slot = augmentIcons[i].GetComponent<AugmentInfoSlot>();
+            if (slot != null)
+            {
+                slot.augmentSO = null;
+            }
         }
 
         // Wype³nij ikonki aktywnymi augmentami
@@ -46,10 +53,18 @@ public class ActiveAugmentsUI : MonoBehaviour
             augmentIcons[index].sprite = kvp.Key.icon;
             augmentIcons[index].gameObject.SetActive(true);
 
+            AugmentInfoSlot slot = augmentIcons[index].GetComponent<AugmentInfoSlot>();
+            if (slot != null)
+            {
+                slot.augmentSO = kvp.Key; 
+                Debug.Log($"Przypisano {kvp.Key.augmentName} do slotu {index}");
+            }
+
             int currentStacks = kvp.Value;
             int maxStacks = kvp.Key.maxStacks;
 
             int stacks = kvp.Value;
+
             if (stacks > 0)
             {
                 augmentStackTexts[index].text = $"{currentStacks}/{maxStacks}";
