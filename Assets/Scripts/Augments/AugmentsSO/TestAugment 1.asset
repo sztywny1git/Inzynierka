@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TestAugment 1
   m_EditorClassIdentifier: 
   augmentName: Damage+
-  description: + 10dmg
+  description: +10 dmg
   icon: {fileID: 21300000, guid: 17560ef3acb35b74cafd18f6396ae2f2, type: 3}
-  augmentType: 0
+  augmentType: 1
   value: 0
   isStackable: 1
   maxStacks: 2

@@ -1,18 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class ActiveAugmentsUI : MonoBehaviour
 {
     [Header("UI References")]
     public Image[] augmentIcons; // Wszystkie ikonki (np. 10 sztuk)
+    public TMP_Text[] augmentStackTexts;
 
     private void Start()
     {
         // Na starcie ukryj wszystkie ikonki
-        foreach (var icon in augmentIcons)
+        for (int i = 0; i < augmentIcons.Length; i++)
         {
-            icon.gameObject.SetActive(false);
+            augmentIcons[i].gameObject.SetActive(false);
+            augmentStackTexts[i].gameObject.SetActive(false);
         }
 
         RefreshUI();
@@ -24,9 +27,10 @@ public class ActiveAugmentsUI : MonoBehaviour
         Dictionary<AugmentSO, int> activeAugments = AugmentManager.Instance.GetActiveAugments();
 
         // Ukryj wszystkie ikonki najpierw
-        foreach (var icon in augmentIcons)
+        for (int i = 0; i < augmentIcons.Length; i++)
         {
-            icon.gameObject.SetActive(false);
+            augmentIcons[i].gameObject.SetActive(false);
+            augmentStackTexts[i].gameObject.SetActive(false);
         }
 
         // Wype³nij ikonki aktywnymi augmentami
@@ -41,6 +45,17 @@ public class ActiveAugmentsUI : MonoBehaviour
 
             augmentIcons[index].sprite = kvp.Key.icon;
             augmentIcons[index].gameObject.SetActive(true);
+
+            int currentStacks = kvp.Value;
+            int maxStacks = kvp.Key.maxStacks;
+
+            int stacks = kvp.Value;
+            if (stacks > 0)
+            {
+                augmentStackTexts[index].text = $"{currentStacks}/{maxStacks}";
+                augmentStackTexts[index].gameObject.SetActive(true);
+            }
+
             index++;
         }
     }

@@ -58,7 +58,7 @@ public class UltimateEq : MonoBehaviour
 
     private void Update()
     {
-        if (ShopKeeperIsOpen())
+        if (OtherWindowIsOpen())
             return;
 
         if (Input.GetButtonDown("ToggleUltimateEq"))
@@ -70,9 +70,9 @@ public class UltimateEq : MonoBehaviour
         }
     }
 
-    bool ShopKeeperIsOpen()
+    bool OtherWindowIsOpen()
     {
-        return ShopKeeper.isShopOpen;
+        return ShopKeeper.isShopOpen || AugmentManager.isAugmentSelectionOpen;
     }
 
 

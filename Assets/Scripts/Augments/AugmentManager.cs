@@ -14,6 +14,8 @@ public class AugmentManager : MonoBehaviour
     public AugmentSelectionUI selectionUI;
     public ActiveAugmentsUI activeAugmentsUI;
 
+    public static bool isAugmentSelectionOpen;
+
     [SerializeField] private PlayerStats playerStats;
 
     // S³ownik przechowuj¹cy aktywne augmenty gracza
@@ -50,6 +52,7 @@ public class AugmentManager : MonoBehaviour
         // Zatrzymaj czas i poka¿ okienko wyboru
         Time.timeScale = 0f;
 
+        isAugmentSelectionOpen = true;
         // Wybierz 3 losowe augmenty
         List<AugmentSO> offeredAugments = GetRandomAugments(3);
 
@@ -110,6 +113,8 @@ public class AugmentManager : MonoBehaviour
 
         // Wznów grê
         Time.timeScale = 1f;
+
+        isAugmentSelectionOpen = false;
     }
 
     private void ApplyAugmentEffect(AugmentSO augment)
@@ -127,10 +132,18 @@ public class AugmentManager : MonoBehaviour
                 // PlayerStats.Instance.IncreaseMaxHealth(augment.value);
                 break;
             case AugmentType.DamageBoost:
+                playerStats.Damage.AddModifier(
+                        new StatModifier(10, true, "Augment Damage Boost")
+                    );
+
                 // Zwiêksz damage
                 // PlayerStats.Instance.IncreaseDamage(augment.value);
                 break;
             case AugmentType.SpeedBoost:
+                playerStats.MoveSpeed.AddModifier(
+                        new StatModifier(10, true, "Augment Speed Boost")
+                    );
+
                 // Zwiêksz prêdkoœæ
                 // PlayerStats.Instance.IncreaseSpeed(augment.value);
                 break;
