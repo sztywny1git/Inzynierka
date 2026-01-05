@@ -1,6 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class AugmentManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class AugmentManager : MonoBehaviour
     [Header("UI Reference")]
     public AugmentSelectionUI selectionUI;
     public ActiveAugmentsUI activeAugmentsUI;
+
+    [SerializeField] private PlayerStats playerStats;
 
     // S³ownik przechowuj¹cy aktywne augmenty gracza
     private Dictionary<AugmentSO, int> activeAugments = new Dictionary<AugmentSO, int>();
@@ -95,7 +98,7 @@ public class AugmentManager : MonoBehaviour
         }
 
         // Zastosuj efekt augmentu
-        //ApplyAugmentEffect(augment);
+        ApplyAugmentEffect(augment);
 
         Debug.Log($"Wybrano augment: {augment.augmentName} (Stack: {activeAugments[augment]})");
 
@@ -116,6 +119,10 @@ public class AugmentManager : MonoBehaviour
         switch (augment.augmentType)
         {
             case AugmentType.HealthBoost:
+                    playerStats.Health.AddModifier(
+                        new StatModifier(10, true, "Augment Health Boost")
+                    );
+                
                 // Zwiêksz maksymalne HP
                 // PlayerStats.Instance.IncreaseMaxHealth(augment.value);
                 break;
