@@ -39,6 +39,18 @@ public class Spawner : MonoBehaviour
     [SerializeField] private RoomFirstDungeonGenerator dungeonGenerator; 
     public RoomFirstDungeonGenerator DungeonGenerator { get => dungeonGenerator; set => dungeonGenerator = value; }
 
+    [System.Serializable]
+    public struct WfcPropMapping
+    {
+        public PropWFC.PropType type;
+        public GameObject prefab;
+        public float offsetRange; // Np. 0.2f dla lekkiego losowego przesunięcia
+    }
+
+    [Header("WFC Props Configuration")]
+    [SerializeField] private List<WfcPropMapping> wfcPropMappings;
+    private Dictionary<PropWFC.PropType, WfcPropMapping> _propLookup;
+
     // Możesz również stworzyć publiczną metodę do inicjalizacji:
     public void Initialize(PuzzleManager manager)
     {
@@ -103,11 +115,58 @@ public class Spawner : MonoBehaviour
         }
         else
         {
-            // To może się zdarzyć, jeśli np. płytka i skrzynia są w tym samym miejscu (błąd, który naprawialiśmy)
+            // To może się zdarzyć, jeśli np. płytka i skrzynia są w tym samym miejscu 
             // Debug.LogWarning($"Duplikat na pozycji {gridPos}: {obj.name}");
         }
     }
 
+    private void InitializePropLookup()
+    {
+        _propLookup = new Dictionary<PropWFC.PropType, WfcPropMapping>();
+        foreach (var mapping in wfcPropMappings)
+        {
+            if (!_propLookup.ContainsKey(mapping.type))
+                _propLookup.Add(mapping.type, mapping);
+        }
+    }
+
+    public void SpawnWfcProp(Vector2Int position, PropWFC.PropType type)
+    {
+        // Debug.Log($"[Spawner] Otrzymano żądanie: {type} na pozycji {position}");
+
+        if (_propLookup == null) 
+        {
+            InitializePropLookup();
+            Debug.Log($"[Spawner] Inicjalizacja słownika. Liczba wpisów: {_propLookup.Count}");
+        }
+
+        if (type == PropWFC.PropType.Empty) return;
+
+        if (_propLookup.TryGetValue(type, out WfcPropMapping mapping))
+        {
+            if (mapping.prefab != null)
+            {
+                Vector3 worldPos = GetCellCenterWorld(position);
+                
+                float offX = Random.Range(-mapping.offsetRange, mapping.offsetRange);
+                float offY = Random.Range(-mapping.offsetRange, mapping.offsetRange);
+                
+                worldPos += new Vector3(offX, offY, 0);
+                worldPos.z = entityZPosition;
+
+                GameObject instance = Instantiate(mapping.prefab, worldPos, Quaternion.identity, transform);
+                // Debug.Log($"[SUKCES] Zespawnowano {instance.name} na {position}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Spawner BŁĄD] Typ {type} jest w słowniku, ale PREFAB jest NULL!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Spawner BŁĄD] Nie znaleziono mapowania dla typu: {type}. Dodaj go w liście 'Wfc Prop Mappings' w Inspektorze!");
+        }
+    }
     // Metoda pomocnicza - odwrotność GetCellCenterWorld
     private Vector2Int GetGridPositionFromWorld(Vector3 worldPos)
     {

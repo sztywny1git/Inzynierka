@@ -49,6 +49,21 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
     [Header("Managers")]
     [SerializeField] private PuzzleManager puzzleManager; 
 
+    [Header("Debug / Wizualizacja")]
+    [SerializeField] private bool showGizmos = true;
+    [SerializeField] private Color fullGraphColor = Color.yellow;
+    [SerializeField] private Color mstColor = Color.blue;
+    [SerializeField] private Color finalPathColor = Color.red;
+
+    [Header("Cellular Automata (Smoothing)")]
+    [SerializeField] private bool useSmoothing = true;
+    [SerializeField] [Range(1, 5)] private int smoothingIterations = 1;
+
+    // Listy do przechowywania krawędzi tylko w celu wyświetlenia ich w Scene View
+    private List<GraphAlgorithms.Edge> debugAllEdges = new List<GraphAlgorithms.Edge>();
+    private List<GraphAlgorithms.Edge> debugMSTEdges = new List<GraphAlgorithms.Edge>();
+    private List<GraphAlgorithms.Edge> debugFinalEdges = new List<GraphAlgorithms.Edge>();
+
 
     // Add fields to track rooms
     private BoundsInt bossRoom;
@@ -65,21 +80,44 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
 
     private void InitializePropDataMap()
     {
-        // Inicjalizuj tylko, jeśli słownik jest null
-        if (roomPropDataMap == null)
+        // ZAWSZE twórz nowy słownik, aby pobrać świeże dane z Inspektora
+        roomPropDataMap = new Dictionary<RoomType, RoomPropData>();
+
+        foreach (var entry in roomPropDataList)
         {
-            roomPropDataMap = new Dictionary<RoomType, RoomPropData>();
-            foreach (var entry in roomPropDataList)
+            if (entry.propData != null)
             {
-                // Dodatkowe zabezpieczenie przed nullami w Inspektorze
-                if (entry.propData != null && !roomPropDataMap.ContainsKey(entry.roomType))
+                if (roomPropDataMap.ContainsKey(entry.roomType))
+                {
+                    Debug.LogWarning($"DUPLIKAT w liście RoomPropData for type {entry.roomType}. Nadpisuję poprzednią wartość.");
+                    roomPropDataMap[entry.roomType] = entry.propData;
+                }
+                else
                 {
                     roomPropDataMap.Add(entry.roomType, entry.propData);
                 }
-                else if (entry.propData == null)
+            }
+            else
+            {
+                Debug.LogWarning($"W liście 'Room Prop Data List' element dla typu {entry.roomType} ma puste pole 'Prop Data'!");
+            }
+        }
+        
+        Debug.Log($"Zainicjalizowano mapę propów. Liczba wpisów: {roomPropDataMap.Count}");
+    }
+
+    private void FindWalls()
+    {
+        WallPositions.Clear();
+        foreach (var pos in floorPositions)
+        {
+            foreach (var dir in Direction2D.eightDirectionList)
+            {
+                Vector2Int neighbor = pos + dir;
+                // Jeśli sąsiad podłogi nie jest podłogą, to jest to ściana
+                if (!floorPositions.Contains(neighbor))
                 {
-                    // To pomoże Ci znaleźć, który slot w Inspektorze jest pusty
-                    Debug.LogWarning($"RoomPropData dla typu {entry.roomType} jest pusta w Inspektorze. Sprawdź przypisania!");
+                    WallPositions.Add(neighbor);
                 }
             }
         }
@@ -105,9 +143,7 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
         tilemapVisualizer.PaintFloorTiles(floorPositions);
         WallGenerator.CreateWalls(floorPositions, tilemapVisualizer);
         
-        // 4. Ustawienie typów pokoi i spawnowanie (przeniesione z CreateRooms)
-        // UWAGA: Musisz upewnić się, że to wszystko co było na końcu CreateRooms() zostało
-        // przeniesione, aby zachować logikę.
+        FindWalls();
         
         // Find and mark the boss room and player room
         FindSpecialRooms(allRooms, floorPositions); // Używamy floorPositions!
@@ -240,7 +276,6 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
             }
         }
 
-        // 2. ✅ WYWOŁANIE POZA PĘTLĄ (Tylko raz!)
         // PuzzleManager ma już listę 'activePuzzles', więc sam wie, gdzie co postawić w całym lochu.
         if (puzzleManager != null)
         {
@@ -251,38 +286,94 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
 
     private void SpawnPropsInRooms()
     {
-        // Upewnij się, że masz referencję do Spawnera/PropSpawnera
-        // Zakładam, że masz już pole Spawner spawner;
+        Debug.Log($"[DIAGNOSTYKA] Start SpawnPropsInRooms. Liczba ścian (WallPositions): {WallPositions.Count}");
+
+        if (WallPositions.Count == 0)
+        {
+            Debug.LogError("[BŁĄD KRYTYCZNY] WallPositions jest puste! WFC nie postawi żadnych pochodni/skrzyń, bo nie widzi ścian. Sprawdź czy FindWalls() jest wywoływane.");
+        }
+
+        PropWFC wfcSolver = new PropWFC();
         
-        // Zbiór wszystkich pozycji, na których NIC nie może się pojawić
-        HashSet<Vector2Int> allReservedPositions = new HashSet<Vector2Int>(WallPositions);
-        // Dodaj pozycje zarezerwowane przez zagadki
-        allReservedPositions.UnionWith(spawner.PuzzleManager.ReservedPuzzlePositions); // Zakładam, że Spawner ma referencję do PuzzleManager
-        
-        // Zbiór wszystkich pozycji podłogi (cała podłoga)
-        HashSet<Vector2Int> allFloorPositions = floorPositions; 
+        // Budowanie globalnych rezerwacji
+        HashSet<Vector2Int> globalReserved = new HashSet<Vector2Int>();
+        if (spawner.PuzzleManager != null)
+        {
+            globalReserved.UnionWith(spawner.PuzzleManager.ReservedPuzzlePositions);
+        }
+
+        int totalPropsSpawned = 0;
 
         foreach (var room in allRooms)
         {
+            if (room.size.x < 4 || room.size.y < 4) continue;
+
             if (roomTypes.TryGetValue(room, out RoomType type))
             {
-                if (roomPropDataMap.TryGetValue(type, out RoomPropData propData))
+                if (!roomPropDataMap.ContainsKey(type))
                 {
-                    // Sprawdź, czy pokój nie jest zbyt mały
-                    if (room.size.x < 3 || room.size.y < 3) continue;
+                    // Debug.LogWarning($"Pominięto pokój {type} - brak danych.");
+                    continue;
+                }
 
-                    // 1. Wylicz bezpieczne pozycje podłogi w tym pokoju
-                    List<Vector2Int> safeFloorPositions = GetSafeFloorPositionsInRoom(room, allReservedPositions, allFloorPositions);
+                // Lokalne rezerwacje
+                HashSet<Vector2Int> localReserved = new HashSet<Vector2Int>(globalReserved);
+                localReserved.UnionWith(corridorPositions);
+                
+                // Dodajemy margines korytarzy
+                foreach(var corrPos in corridorPositions)
+                    foreach(var dir in Direction2D.eightDirectionList)
+                        localReserved.Add(corrPos + dir);
 
-                    // 2. Wylicz bezpieczne pozycje przy ścianach w tym pokoju
-                    List<Vector2Int> safeWallPositions = GetSafeWallPositionsInRoom(room, allReservedPositions, WallPositions);
-                    
-                    // 3. Spawnowanie propów
-                    SpawnFloorProps(room, propData, safeFloorPositions);
-                    SpawnWallProps(room, propData, safeWallPositions);
+                // Rezerwacja środka pokoju
+                if (MainPathRooms != null && MainPathRooms.Contains(room))
+                {
+                    Vector2Int center = DungeonHelper.GetRoomCenter(room);
+                    int freeRadius = 2; // UWAGA: Dla małych pokoi (np. 4x4) to zablokuje CAŁY pokój!
+                    for (int x = center.x - freeRadius; x <= center.x + freeRadius; x++)
+                        for (int y = center.y - freeRadius; y <= center.y + freeRadius; y++)
+                            localReserved.Add(new Vector2Int(x, y));
+                }
+
+                // Uruchomienie WFC
+                var wfcResult = wfcSolver.Run(room, floorPositions, WallPositions, localReserved);
+
+                // Analiza wyników dla tego pokoju
+                int propsInThisRoom = 0;
+                Dictionary<PropWFC.PropType, int> counts = new Dictionary<PropWFC.PropType, int>();
+                
+                foreach (var kvp in wfcResult)
+                {
+                    // Zliczamy co WFC wygenerowało (statystyka)
+                    if (!counts.ContainsKey(kvp.Value)) counts[kvp.Value] = 0;
+                    counts[kvp.Value]++;
+
+                    if (!localReserved.Contains(kvp.Key) && kvp.Value != PropWFC.PropType.Empty)
+                    {
+                        spawner.SpawnWfcProp(kvp.Key, kvp.Value);
+                        propsInThisRoom++;
+                    }
+                }
+                
+                totalPropsSpawned += propsInThisRoom;
+
+                // Logujemy tylko jeśli pokój jest pusty mimo danych, żeby nie spamować
+                if (propsInThisRoom == 0)
+                {
+                    string stats = string.Join(", ", counts.Select(x => $"{x.Key}: {x.Value}"));
+                    Debug.Log($"[POKÓJ {type}] WFC Wynik: {stats}. Zespawnwano: 0. (Może wszystko jest Empty lub Zarezerwowane?)");
                 }
             }
         }
+        Debug.Log($"[KONIEC] Łącznie zespawnowano propsów: {totalPropsSpawned}");
+    }
+    private bool IsNearCorridor(Vector2Int pos)
+    {
+        foreach(var dir in Direction2D.eightDirectionList)
+        {
+            if (corridorPositions.Contains(pos + dir)) return true;
+        }
+        return false;
     }
 
     private void SpawnFloorProps(BoundsInt room, RoomPropData propData, List<Vector2Int> safePositions)
@@ -520,11 +611,28 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
     private HashSet<Vector2Int> CreateRoomsRandomly(List<BoundsInt> roomsList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
+        
         for (int i = 0; i < roomsList.Count; i++)
         {
             var roomBounds = roomsList[i];
             var roomCenter = DungeonHelper.GetRoomCenter(roomBounds);
+            
+            // 1. Generowanie kształtu (Random Walk)
             var roomFloor = RunRandomWalk(randomWalkParameters, roomCenter);
+
+            // 2. Wygładzanie (opcjonalne, jeśli używasz)
+            if (useSmoothing) // Zakładam, że dodałeś to pole w poprzednich krokach
+            {
+                roomFloor = ProceduralGenerationAlgorithms.CellularAutomataSmoothing(roomFloor, smoothingIterations);
+            }
+
+            // =========================================================
+            // 3. NOWOŚĆ: Usuwanie izolowanych fragmentów (FILTRACJA)
+            // =========================================================
+            roomFloor = ProceduralGenerationAlgorithms.RemoveDisconnectedIslands(roomFloor);
+            // =========================================================
+
+            // 4. Dodawanie przefiltrowanego pokoju do głównej mapy
             foreach (var position in roomFloor)
             {
                 if (position.x >= (roomBounds.xMin + offset) && position.x <= (roomBounds.xMax - offset) &&
@@ -540,17 +648,63 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
     private HashSet<Vector2Int> ConnectRooms(List<Vector2Int> roomCenters)
     {
         HashSet<Vector2Int> corridors = new HashSet<Vector2Int>();
-        var currentRoomCenter = roomCenters[Random.Range(0, roomCenters.Count)];
-        roomCenters.Remove(currentRoomCenter);
+        
+        // 1. Czyścimy listy debugowania (żeby nie rysować starych linii)
+        debugAllEdges.Clear();
+        debugMSTEdges.Clear();
+        debugFinalEdges.Clear(); // <--- Ważne: czyścimy też czerwoną listę
 
-        while (roomCenters.Count > 0)
+        // 2. Generowanie WSZYSTKICH krawędzi (Graf Pełny)
+        HashSet<GraphAlgorithms.Edge> allEdgesSet = new HashSet<GraphAlgorithms.Edge>();
+        for (int i = 0; i < roomCenters.Count; i++)
         {
-            Vector2Int closest = FindClosestPointTo(currentRoomCenter, roomCenters);
-            roomCenters.Remove(closest);
-            HashSet<Vector2Int> newCorridor = CreateCorridor(currentRoomCenter, closest);
-            currentRoomCenter = closest;
+            for (int j = i + 1; j < roomCenters.Count; j++)
+            {
+                var edge = new GraphAlgorithms.Edge(roomCenters[i], roomCenters[j]);
+                allEdgesSet.Add(edge);
+            }
+        }
+        List<GraphAlgorithms.Edge> allEdgesList = allEdgesSet.ToList();
+        
+        // ---> ZAPIS DO DEBUGOWANIA (ŻÓŁTE LINIE)
+        debugAllEdges = new List<GraphAlgorithms.Edge>(allEdgesList); 
+
+        // 3. Wyznaczanie MST (Minimalne Drzewo Rozpinające - NIEBIESKIE LINIE)
+        List<GraphAlgorithms.Edge> mstEdges = GraphAlgorithms.KruskalMST(roomCenters, allEdgesList);
+        
+        // ---> ZAPIS DO DEBUGOWANIA (NIEBIESKIE LINIE)
+        debugMSTEdges = new List<GraphAlgorithms.Edge>(mstEdges);
+
+        // 4. Braiding (Dodawanie pętli - CZERWONE LINIE)
+        // Tworzymy nową listę 'finalEdges', która zaczyna się jako kopia MST
+        List<GraphAlgorithms.Edge> finalEdges = new List<GraphAlgorithms.Edge>(mstEdges);
+        
+        // Używamy HashSet do szybkiego sprawdzania, co już jest w MST
+        HashSet<GraphAlgorithms.Edge> existingEdgesSet = new HashSet<GraphAlgorithms.Edge>(mstEdges);
+        
+        // Znajdź krawędzie, których nie ma w MST
+        var unusedEdges = allEdgesList.Where(e => !existingEdgesSet.Contains(e)).ToList();
+        
+        foreach (var edge in unusedEdges)
+        {
+            // Dodajemy pętlę tylko jeśli krawędź jest krótka (bliscy sąsiedzi) i los sprzyja (5%)
+            if (UnityEngine.Random.value < 0.50f && edge.Distance < 25f) 
+            {
+                finalEdges.Add(edge);
+            }
+        }
+
+        // ---> ZAPIS DO DEBUGOWANIA (CZERWONE LINIE - Ostateczna ścieżka)
+        // To tutaj był Twój błąd - teraz zmienna 'finalEdges' istnieje
+        debugFinalEdges = new List<GraphAlgorithms.Edge>(finalEdges);
+
+        // 5. Fizyczne tworzenie korytarzy na mapie
+        foreach (var edge in finalEdges)
+        {
+            HashSet<Vector2Int> newCorridor = CreateCorridor(edge.U, edge.V);
             corridors.UnionWith(newCorridor);
         }
+
         return corridors;
     }
 
@@ -1072,5 +1226,67 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
             }
         }
         return false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!showGizmos) return;
+
+        // DIAGNOSTYKA
+        if (debugMSTEdges == null || debugMSTEdges.Count == 0)
+        {
+            // Opcjonalnie: Rysuj tylko, gdy jesteśmy w Play Mode
+            if (Application.isPlaying) Debug.Log("Czekam na wygenerowanie lochu...");
+            return; 
+        }
+
+        // 1. Rysowanie wszystkich możliwych połączeń (Graf Pełny)
+        // Rysujemy cienkie, żółte linie - to są krawędzie, które algorytm ROZWAŻAŁ
+        if (debugAllEdges != null && debugAllEdges.Count > 0)
+        {
+            Gizmos.color = fullGraphColor; 
+            foreach (var edge in debugAllEdges)
+            {
+                // Dodajemy mały offset Z, żeby linie były nad podłogą
+                Vector3 start = new Vector3(edge.U.x + 0.5f, edge.U.y + 0.5f, -1);
+                Vector3 end = new Vector3(edge.V.x + 0.5f, edge.V.y + 0.5f, -1);
+                Gizmos.DrawLine(start, end);
+            }
+        }
+
+        // 2. Rysowanie MST (Minimalne Drzewo Rozpinające)
+        // Rysujemy grubsze, niebieskie linie - to krawędzie WYBRANE przez algorytm Kruskala
+        if (debugMSTEdges != null && debugMSTEdges.Count > 0)
+        {
+            Gizmos.color = mstColor;
+            foreach (var edge in debugMSTEdges)
+            {
+                Vector3 start = new Vector3(edge.U.x + 0.5f, edge.U.y + 0.5f, -2); // Wyżej niż żółte
+                Vector3 end = new Vector3(edge.V.x + 0.5f, edge.V.y + 0.5f, -2);
+                
+                // Unity Gizmos nie ma grubości linii, więc rysujemy 3 linie obok siebie dla efektu
+                Gizmos.DrawLine(start, end);
+                Gizmos.DrawLine(start + Vector3.right * 0.1f, end + Vector3.right * 0.1f);
+                Gizmos.DrawLine(start + Vector3.up * 0.1f, end + Vector3.up * 0.1f);
+            }
+        }
+
+        if (debugFinalEdges != null && debugFinalEdges.Count > 0)
+        {
+            Gizmos.color = finalPathColor; // Upewnij się, że w Inspektorze to np. Czerwony
+            foreach (var edge in debugFinalEdges)
+            {
+                // Rysujemy jeszcze wyżej (Z = -3), żeby przykryć niebieskie linie
+                Vector3 start = new Vector3(edge.U.x + 0.5f, edge.U.y + 0.5f, -3); 
+                Vector3 end = new Vector3(edge.V.x + 0.5f, edge.V.y + 0.5f, -3);
+                
+                // Rysujemy linię
+                Gizmos.DrawLine(start, end);
+                
+                // Opcjonalnie: Rysujemy krzyżyk na środku krawędzi, żeby widzieć gdzie są pętle
+                Vector3 center = (start + end) / 2;
+                Gizmos.DrawWireSphere(center, 0.2f);
+            }
+        }
     }
 }
