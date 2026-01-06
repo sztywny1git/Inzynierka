@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: b6d6129234d5b31448fe609ef75efe84, type: 3}
   isGold: 0
   stackSize: 1
-  itemType: 2
+  itemType: 3
   currentHearts: 0
   Resource: -30
   armor: 0

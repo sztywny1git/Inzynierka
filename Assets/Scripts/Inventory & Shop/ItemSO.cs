@@ -50,6 +50,7 @@ public enum Rarity
 public enum ItemType
 {
     Consumable,
+    Collectible,
     Ring,
     Weapon,   
     Helmet,

@@ -700,6 +700,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 380671557538866843, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
+      propertyPath: hotKey
+      value: 51
+      objectReference: {fileID: 0}
     - target: {fileID: 496711084577927872, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -728,6 +732,10 @@ PrefabInstance:
       propertyPath: playerStats
       value: 
       objectReference: {fileID: 1162912863}
+    - target: {fileID: 1641712654456665080, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
+      propertyPath: hotKey
+      value: 49
+      objectReference: {fileID: 0}
     - target: {fileID: 2370480937967914067, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
       propertyPath: player
       value: 
@@ -1048,6 +1056,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8528774301111681993, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
+      propertyPath: hotKey
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 9100069717417542381, guid: e25fbd90695aaa94ba6f1f9763d5d037, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -385
@@ -1259,7 +1271,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 80855045}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -13956,6 +13968,7 @@ GameObject:
   m_Component:
   - component: {fileID: 590663504}
   - component: {fileID: 590663503}
+  - component: {fileID: 590663505}
   m_Layer: 0
   m_Name: AugmentManager
   m_TagString: Untagged
@@ -13986,6 +13999,8 @@ MonoBehaviour:
   selectionUI: {fileID: 1370176630}
   activeAugmentsUI: {fileID: 1711063185}
   playerStats: {fileID: 1162912863}
+  audioSource: {fileID: 590663505}
+  augmentGetOpenSound: {fileID: 8300000, guid: 92ebca184c974d7469d0f13cfdc9e20b, type: 3}
 --- !u!4 &590663504
 Transform:
   m_ObjectHideFlags: 0
@@ -14001,6 +14016,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &590663505
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590663502}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &600068182 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1312016013447702737, guid: 021114ed0bb43084e8bac324ca1070ef, type: 3}
@@ -14498,7 +14610,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2219547960966619833, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Name
-      value: Band of Vitality
+      value: Band of Vital
       objectReference: {fileID: 0}
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Size.x
@@ -17601,7 +17713,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 2394, y: 413}
-  m_SizeDelta: {x: 400, y: 500}
+  m_SizeDelta: {x: 400, y: 340}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1064010528
 MonoBehaviour:
@@ -17817,12 +17929,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2219547960966619833, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Name
-      value: Jungers
+      value: Holly Grail
       objectReference: {fileID: 0}
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0706c4922462490419fa5cbce0bd2aad, type: 3}
+      objectReference: {fileID: 21300000, guid: 00f2d169228d1ec4d9cf13984b8275c5, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6374221
@@ -17866,7 +17978,7 @@ PrefabInstance:
     - target: {fileID: 5879804375760086074, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: itemSO
       value: 
-      objectReference: {fileID: 11400000, guid: c10a6ebd8757f4a4f9968be206175259, type: 2}
+      objectReference: {fileID: 11400000, guid: f03e917515eaead4fada0213634e49cd, type: 2}
     - target: {fileID: 5879804375760086074, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: quantity
       value: 1
@@ -27826,12 +27938,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2219547960966619833, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Name
-      value: Health bottle
+      value: Holly Grail
       objectReference: {fileID: 0}
     - target: {fileID: 3193064252951685169, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b77e12cbddd8130478f109cb9217800c, type: 3}
+      objectReference: {fileID: 21300000, guid: 00f2d169228d1ec4d9cf13984b8275c5, type: 3}
     - target: {fileID: 5466715735889668754, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.2436113
@@ -27875,7 +27987,11 @@ PrefabInstance:
     - target: {fileID: 5879804375760086074, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
       propertyPath: itemSO
       value: 
-      objectReference: {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
+      objectReference: {fileID: 11400000, guid: f03e917515eaead4fada0213634e49cd, type: 2}
+    - target: {fileID: 5879804375760086074, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}
+      propertyPath: quantity
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30915,12 +31031,24 @@ PrefabInstance:
       value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 2060516459498186310, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2060516459498186310, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2060516459498186310, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 340
+      objectReference: {fileID: 0}
+    - target: {fileID: 2060516459498186310, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
       propertyPath: m_SizeDelta.y
       value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 2060516459498186310, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -356
+      value: -320
       objectReference: {fileID: 0}
     - target: {fileID: 2229060613007086446, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
       propertyPath: m_AnchorMax.y
@@ -31629,6 +31757,10 @@ PrefabInstance:
     - target: {fileID: 8545741222744988796, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8803389267075114737, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 340
       objectReference: {fileID: 0}
     - target: {fileID: 8803389267075114737, guid: c4800b7a5dc7fe544823a6e83b9b7be3, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -33674,10 +33806,10 @@ RectTransform:
   - {fileID: 94272555}
   m_Father: {fileID: 1064010527}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -356}
-  m_SizeDelta: {x: -60, y: 125}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -320}
+  m_SizeDelta: {x: 340, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2139696718
 MonoBehaviour:

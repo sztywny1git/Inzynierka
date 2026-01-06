@@ -35,12 +35,12 @@ public class UseItem : MonoBehaviour
 
         string source = $"Consumable_{itemSO.name}_{Time.time}";
 
-        if (itemSO.speed > 0)
+        if (itemSO.speed != 0)
             playerStats.MoveSpeed.AddModifier(
                     new StatModifier(itemSO.speed, true, source, itemSO.duration)
                 );
 
-        if (itemSO.currentHearts > 0)
+        if (itemSO.currentHearts != 0)
         {
             /*playerStats.Health.AddModifier(
                     new StatModifier(itemSO.currentHearts, true, source, itemSO.duration)
@@ -49,6 +49,23 @@ public class UseItem : MonoBehaviour
             playerStats.SetCurrentHealth(newHealth);//leczenie
 
         }
+        if (itemSO.Resource != 0)
+        {
+            float newResource = playerStats.CurrentResource + itemSO.Resource;
+            playerStats.SetCurrentResource(newResource);
+        }
+        if (itemSO.armor != 0)
+            playerStats.Armor.AddModifier(
+                    new StatModifier(itemSO.armor, true, source, itemSO.duration)
+                );
+        if (itemSO.fireRate != 0)
+            playerStats.AttackSpeed.AddModifier(
+                    new StatModifier(itemSO.fireRate, true, source, itemSO.duration)
+                );
+        if (itemSO.damage != 0)
+            playerStats.Damage.AddModifier(
+                    new StatModifier(itemSO.damage, true, source, itemSO.duration)
+                );
 
 
         /*if (itemSO.currentHearts > 0)

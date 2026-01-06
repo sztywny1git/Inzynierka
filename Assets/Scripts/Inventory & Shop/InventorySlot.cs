@@ -28,7 +28,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     private static bool isHoldingItem;
 
-
+    [Header("Hotkey")]
+    public KeyCode hotKey;
 
 
     private void Start()
@@ -48,6 +49,11 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         if (itemSO != null && inventoryInfo != null && inventoryInfo.infoPanel.alpha > 0)
         {
             inventoryInfo.FollowMouse();
+        }
+
+        if (hotKey != KeyCode.None && Input.GetKeyDown(hotKey))
+        {
+            UseFromHotkey();
         }
     }
 
@@ -86,6 +92,36 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         }
     }
 
+    private void UseFromHotkey()
+    {
+        if (itemSO == null || quantity <= 0)
+            return;
+
+        // Nie u¿ywamy collectible
+        if (itemSO.itemType == ItemType.Collectible)
+            return;
+
+        // Equipment
+        if (IsEquipment(itemSO.itemType))
+        {
+            if (EquipmentManager.Instance != null &&
+                EquipmentManager.Instance.EquipItem(itemSO))
+            {
+                quantity--;
+                if (quantity <= 0)
+                    itemSO = null;
+
+                UpdateUI();
+                inventoryManager.SyncSlotsPublic(this);
+            }
+        }
+        else
+        {
+            inventoryManager.UseItem(this);
+        }
+    }
+
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (quantity > 0)
@@ -121,9 +157,12 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
                         }
                     }
                     else
-                    {
-                        // U¿yj jako consumable
-                        inventoryManager.UseItem(this);
+                    {   
+                        if(itemSO.itemType == ItemType.Collectible)
+                            return;
+
+                        else
+                            inventoryManager.UseItem(this);
                     }
                 }
             }
@@ -297,7 +336,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
 
             // Nie pokazuj liczby dla equipment
-            if (IsEquipment(itemSO.itemType))
+            if (IsEquipment(itemSO.itemType) || itemSO.itemType == ItemType.Collectible)
             {
                 quantityText.text = "";
             }

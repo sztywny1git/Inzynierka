@@ -93,6 +93,36 @@ public class InventoryManager : MonoBehaviour
            return;
         }
 
+
+        if (itemSO.itemType == ItemType.Collectible)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                bool added = false;
+
+                foreach (var slot in itemSlots)
+                {
+                    if (slot.itemSO == null)
+                    {
+                        slot.itemSO = itemSO;
+                        slot.quantity = 1;
+
+                        SyncSlots(slot);
+                        slot.UpdateUI();
+
+                        added = true;
+                        break;
+                    }
+                }
+
+                if (!added)
+                {
+                    DropLoot(itemSO, 1);
+                }
+            }
+            return;
+        }
+
         foreach (var slot in itemSlots) // it is the same item and there is space left
         {
             if (slot.itemSO == itemSO && slot.quantity < itemSO.stackSize)

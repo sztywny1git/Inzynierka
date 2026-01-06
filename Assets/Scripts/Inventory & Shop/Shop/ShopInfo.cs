@@ -126,7 +126,7 @@ public class ShopInfo : MonoBehaviour
         if (stats.Count <= 0)
             return;
 
-        for (int i = 0; i < statTexts.Length; i++)
+        /*for (int i = 0; i < statTexts.Length; i++)
         {
             if(i < stats.Count)
             {
@@ -138,7 +138,38 @@ public class ShopInfo : MonoBehaviour
                 statTexts[i].gameObject.SetActive(false);
             }
 
+        }*/
+
+        int totalSlots = statTexts.Length;
+        int statCount = Mathf.Min(stats.Count, totalSlots);
+
+        // wy³¹czamy wszystkie sloty
+        for (int i = 0; i < totalSlots; i++)
+            statTexts[i].gameObject.SetActive(false);
+
+        // jeœli brak statów
+        if (statCount == 0)
+        {
+            Vector2 panelSize = infoPanelRect.sizeDelta;
+            panelSize.y = 340f; // minimalna wysokoœæ panelu
+            infoPanelRect.sizeDelta = panelSize;
+            return;
         }
+
+        // wype³niamy sloty od do³u
+        for (int i = 0; i < statCount; i++)
+        {
+            int slotIndex = totalSlots - statCount + i;
+            statTexts[slotIndex].text = stats[i];
+            statTexts[slotIndex].gameObject.SetActive(true);
+        }
+
+        // dopasowanie wysokoœci panelu
+        TMP_Text exampleStat = statTexts[0];
+        float statHeight = exampleStat.preferredHeight;
+        Vector2 panelSizeFinal = infoPanelRect.sizeDelta;
+        panelSizeFinal.y = 360f + statCount * statHeight;
+        infoPanelRect.sizeDelta = panelSizeFinal;
 
     }
 

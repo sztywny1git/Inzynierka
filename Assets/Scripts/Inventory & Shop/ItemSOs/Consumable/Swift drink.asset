@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 63e6e6cf3d1339b4d94bf1e785636f0f, type: 3}
-  m_Name: Stinkrod
+  m_Name: Swift drink
   m_EditorClassIdentifier: 
-  itemName: Stinkrod
-  itemDescription: A foul aura lingers, spreading chaos with every motion.
-  icon: {fileID: 21300000, guid: 7ff159323d454f442af350ee39389f38, type: 3}
+  itemName: Swift drink
+  itemDescription: A quick sip, and the body dances with unnatural speed.
+  icon: {fileID: 21300000, guid: 067d99564ed54cc44803f2434d141cb2, type: 3}
   isGold: 0
-  stackSize: 1
-  itemType: 3
-  currentHearts: 0
-  Resource: 0
-  armor: -1
+  stackSize: 3
+  itemType: 0
+  currentHearts: 20
+  Resource: 20
+  armor: 0
   speed: 0
-  damage: 3
-  fireRate: 0.25
+  damage: 0
+  fireRate: 0
   CriticalChance: 0
   CriticalDamage: 0
   duration: 0
-  value: 20
-  rarity: 0
+  value: 35
+  rarity: 1

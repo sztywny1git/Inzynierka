@@ -25,6 +25,9 @@ public class AugmentManager : MonoBehaviour
     public delegate void AugmentChanged(AugmentSO augment, int stacks);
     public static event AugmentChanged OnAugmentAdded;
 
+    public AudioSource audioSource;
+    public AudioClip augmentGetOpenSound;
+
     private void Awake()
     {
         if (Instance == null)
@@ -55,6 +58,8 @@ public class AugmentManager : MonoBehaviour
         isAugmentSelectionOpen = true;
         // Wybierz 3 losowe augmenty
         List<AugmentSO> offeredAugments = GetRandomAugments(3);
+
+        audioSource.PlayOneShot(augmentGetOpenSound);
 
         // Poka¿ UI
         selectionUI.ShowAugmentSelection(offeredAugments);
