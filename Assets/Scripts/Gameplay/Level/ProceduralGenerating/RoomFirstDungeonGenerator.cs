@@ -40,7 +40,6 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
     [Header("Room Size Modifiers")]
     [SerializeField] private int bossRoomExpand = 4;
     [SerializeField] private int puzzleRoomExpand = 2;
-    [SerializeField] private int treasureRoomExpand = 1;
 
     [Header("Prop Spawning Settings")]
     [SerializeField]
@@ -316,6 +315,11 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
                     continue;
                 }
 
+                RoomPropData data = roomPropDataMap[type];
+
+                Dictionary<PropWFC.PropType, int> currentRoomWeights = data.GetWfcWeights();
+
+
                 // Lokalne rezerwacje
                 HashSet<Vector2Int> localReserved = new HashSet<Vector2Int>(globalReserved);
                 localReserved.UnionWith(corridorPositions);
@@ -336,7 +340,7 @@ public class RoomFirstDungeonGenerator : SimpleRandomWalkDungeonGenerator
                 }
 
                 // Uruchomienie WFC
-                var wfcResult = wfcSolver.Run(room, floorPositions, WallPositions, localReserved);
+                var wfcResult = wfcSolver.Run(room, floorPositions, WallPositions, localReserved, currentRoomWeights);
 
                 // Analiza wyników dla tego pokoju
                 int propsInThisRoom = 0;

@@ -47,32 +47,27 @@ public class PropWFC
     // 2 = rozmiar 5x5 (środek + 2 pola)
     private const int MaxRugRadius = 1; 
 
-    private Dictionary<PropType, int> weights = new Dictionary<PropType, int>
-    {
-        { PropType.Empty, 60 }, 
-        { PropType.Pillar, 5 },
-        { PropType.Torch, 10 },
-        { PropType.Crate, 15 },
-        { PropType.Barrel, 15 },
-        { PropType.Stone, 8 },
-        { PropType.Vase, 8 },
-        { PropType.Rug, 1 },  
-        { PropType.Fireplace, 1 }   
-    };
-
-    public Dictionary<Vector2Int, PropType> Run(BoundsInt room, HashSet<Vector2Int> floor, HashSet<Vector2Int> walls, HashSet<Vector2Int> reservedPositions)
+    public Dictionary<Vector2Int, PropType> Run(
+        BoundsInt room, 
+        HashSet<Vector2Int> floor, 
+        HashSet<Vector2Int> walls, 
+        HashSet<Vector2Int> reservedPositions,
+        Dictionary<PropType, int> roomWeights 
+    )
     {
         List<Cell> grid = new List<Cell>();
         Dictionary<Vector2Int, Cell> gridLookup = new Dictionary<Vector2Int, Cell>();
 
         foreach (var pos in floor)
         {
-            // Poprawione sprawdzanie granic (ignoruje Z)
+            // Sprawdzanie granic 2D
             if (pos.x >= room.xMin && pos.x < room.xMax && 
                 pos.y >= room.yMin && pos.y < room.yMax)
             {
                 bool nextToWall = CheckIfNextToWall(pos, walls);
-                var cell = new Cell(pos, nextToWall, weights);
+                
+                // PRZEKAZUJEMY dynamiczne wagi do komórki
+                var cell = new Cell(pos, nextToWall, roomWeights);
                 
                 if (reservedPositions.Contains(pos))
                 {
@@ -91,37 +86,35 @@ public class PropWFC
         }
 
         // --- FAZA STARTOWA DLA KLASTRÓW ---
-        // Losujemy 1-2 miejsca startowe dla dywanów, aby mieć pewność, że powstaną
-        // (W przeciwnym razie przy wadze 1 mogą się w ogóle nie pojawić)
         var possibleStarts = grid.Where(c => !c.Collapsed && !c.IsNextToWall && c.PossibleOptions.Contains(PropType.Rug)).ToList();
-        if (possibleStarts.Count > 0)
+        
+        // UWAGA: Sprawdzamy czy w ogóle Rug ma wagę > 0 w tym pokoju, zanim spróbujemy go zespawnować
+        if (roomWeights.ContainsKey(PropType.Rug) && roomWeights[PropType.Rug] > 0 && possibleStarts.Count > 0)
         {
-            // Szansa na zespawnowanie dywanu w pokoju (np. 70%)
             if (Random.value < 0.7f)
             {
                 Cell seed = possibleStarts[Random.Range(0, possibleStarts.Count)];
-                seed.LocalWeights[PropType.Rug] += 1000; // Wymuszamy wybór w następnym kroku
+                seed.LocalWeights[PropType.Rug] += 1000;
             }
         }
 
         // --- GŁÓWNA PĘTLA ---
         int iterations = grid.Count(c => !c.Collapsed); 
-        
         while (iterations > 0)
         {
-            List<Cell> candidates = grid.Where(c => !c.Collapsed).ToList();
-            if (candidates.Count == 0) break;
+             List<Cell> candidates = grid.Where(c => !c.Collapsed).ToList();
+             if (candidates.Count == 0) break;
 
-            candidates.Sort((a, b) => a.PossibleOptions.Count.CompareTo(b.PossibleOptions.Count));
-            int minEntropy = candidates[0].PossibleOptions.Count;
+             candidates.Sort((a, b) => a.PossibleOptions.Count.CompareTo(b.PossibleOptions.Count));
+             int minEntropy = candidates[0].PossibleOptions.Count;
             
-            var minEntropyCells = candidates.Where(c => c.PossibleOptions.Count == minEntropy).ToList();
-            Cell cellToCollapse = minEntropyCells[Random.Range(0, minEntropyCells.Count)];
+             var minEntropyCells = candidates.Where(c => c.PossibleOptions.Count == minEntropy).ToList();
+             Cell cellToCollapse = minEntropyCells[Random.Range(0, minEntropyCells.Count)];
 
-            CollapseCell(cellToCollapse, gridLookup); // Przekazujemy lookup, by obliczyć dystans
-            PropagateConstraints(cellToCollapse, gridLookup);
+             CollapseCell(cellToCollapse, gridLookup); 
+             PropagateConstraints(cellToCollapse, gridLookup);
 
-            iterations--;
+             iterations--;
         }
 
         return grid.ToDictionary(c => c.Position, c => c.PossibleOptions[0]);
