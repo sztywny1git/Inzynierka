@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(IStatsProvider))]
@@ -29,20 +28,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_stats == null || moveSpeedStat == null) return;
+        
         float finalMoveSpeed = _stats.GetFinalStatValue(moveSpeedStat);
         _rb.linearVelocity = _moveInput * finalMoveSpeed;
     }
 
-    public void Move(InputAction.CallbackContext context)
+    public void SetMoveInput(Vector2 input)
     {
-        if (context.performed)
-        {
-            _moveInput = context.ReadValue<Vector2>();
-        }
-        else if (context.canceled)
-        {
-            _moveInput = Vector2.zero;
-        }
+        _moveInput = input;
     }
 
     public void StopMovement()
@@ -59,8 +53,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_animator == null) return;
 
-        bool isWalking = _moveInput.sqrMagnitude > 0.01f;
-        _animator.SetBool("isWalking", isWalking);
+        bool IsWalking = _moveInput.sqrMagnitude > 0.01f;
+        _animator.SetBool("IsWalking", IsWalking);
     }
 
     private void FlipSprite()

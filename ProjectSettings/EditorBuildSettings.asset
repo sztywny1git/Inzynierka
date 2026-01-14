@@ -17,7 +17,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hub.unity
     guid: 9282ae80892d8b44daa3a632948584f7
+  - enabled: 1
+    path: Assets/Scenes/ProceduralLevel.unity
+    guid: 62c2d13147dc88d4ebdb96dcbe3875f2
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 0c7e7fb7e153b5d4e9ff5265769ec596, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 43f428d354d2a3b41a9476d29bf94a39, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

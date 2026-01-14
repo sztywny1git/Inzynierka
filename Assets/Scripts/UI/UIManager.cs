@@ -1,41 +1,36 @@
 using UnityEngine;
 using VContainer;
 using System;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour, IDisposable
 {
+    [Header("UI Panels")]
     [SerializeField] private GameObject loadingScreenPanel;
-    [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject hudPanel;
 
-    private UIEventBus _uiEvents;
-
-    private void Awake()
-    {
-        if (loadingScreenPanel == null) Debug.LogError("Loading Screen Panel is not assigned in UIManager!", this);
-        if (gameOverPanel == null) Debug.LogError("Game Over Panel is not assigned in UIManager!", this);
-        if (hudPanel == null) Debug.LogError("HUD Panel is not assigned in UIManager!", this);
-    }
+    private UIEventBus _uiEventBus;
 
     [Inject]
-    public void Construct(UIEventBus uiEvents)
+    public void Construct(UIEventBus uiEventBus)
     {
-        _uiEvents = uiEvents;
-        _uiEvents.OnShowGameOver += ShowGameOver;
-        _uiEvents.OnShowLoadingScreen += ShowLoading;
-        _uiEvents.OnHideLoadingScreen += HideLoading;
+        _uiEventBus = uiEventBus;
+        _uiEventBus.ShowLoadingScreenRequested += ShowLoading;
+        _uiEventBus.HideLoadingScreenRequested += HideLoading;
     }
 
     public void Dispose()
     {
-        _uiEvents.OnShowGameOver -= ShowGameOver;
-        _uiEvents.OnShowLoadingScreen -= ShowLoading;
-        _uiEvents.OnHideLoadingScreen -= HideLoading;
+        if (_uiEventBus != null)
+        {
+            _uiEventBus.ShowLoadingScreenRequested -= ShowLoading;
+            _uiEventBus.HideLoadingScreenRequested -= HideLoading;
+        }
     }
 
-    private void ShowGameOver()
+    private void Start()
     {
-        gameOverPanel.SetActive(true);
+        loadingScreenPanel.SetActive(false);
         hudPanel.SetActive(false);
     }
 
@@ -47,7 +42,6 @@ public class UIManager : MonoBehaviour, IDisposable
     private void HideLoading()
     {
         loadingScreenPanel.SetActive(false);
-        gameOverPanel.SetActive(false);
         hudPanel.SetActive(true);
     }
 }

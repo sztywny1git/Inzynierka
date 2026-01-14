@@ -11,10 +11,10 @@ TagManager:
   - Player
   - Water
   - UI
-  - Projectile
-  - 
-  - 
-  - 
+  - Enemy
+  - PlayerIneractionTrigger
+  - PlayerAttack
+  - EnemyAttack
   - 
   - 
   - 

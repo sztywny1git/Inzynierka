@@ -3,15 +3,34 @@ using UnityEngine;
 
 public class GameplayEventBus
 {
-    public event Action<Character> OnPlayerSpawned;
-    public void PublishPlayerSpawned(Character player) => OnPlayerSpawned?.Invoke(player);
+    public event Action<Character> PlayerSpawned;
+    public void InvokePlayerSpawned(Character player) => PlayerSpawned?.Invoke(player);
 
-    public event Action<Transform> OnLevelReady;
-    public void PublishLevelReady(Transform spawnPoint) => OnLevelReady?.Invoke(spawnPoint);
+    public event Action PlayerDied;
+    public void InvokePlayerDied() => PlayerDied?.Invoke();
 
-    public event Action<CharacterDefinition> OnClassSelected;
-    public void PublishClassSelected(CharacterDefinition classDef) => OnClassSelected?.Invoke(classDef);
+    public event Action RunWon;  
+    public void InvokeRunWon() => RunWon?.Invoke();
 
-    public event Action<Character> OnCharacterDied;
-    public void PublishCharacterDied(Character character) => OnCharacterDied?.Invoke(character);
+    public event Action EndRunRequested;
+    public void RequestEndRun() => EndRunRequested?.Invoke();
+
+    public event Action GoToHubRequested;
+    public void RequestGoToHub() => GoToHubRequested?.Invoke();
+
+    public event Action<CharacterDefinition> ClassSelected;
+    public void InvokeClassSelected(CharacterDefinition classDef) => ClassSelected?.Invoke(classDef);
+
+    public event Action BeginRunRequested;
+    public void RequestBeginRun() => BeginRunRequested?.Invoke();
+
+    public event Action AdvanceToNextLevelRequested;
+    public void RequestAdvanceToNextLevel() => AdvanceToNextLevelRequested?.Invoke();
+
+    public event Action<LevelDefinition> LevelLoadRequested;
+    public void RequestLoadLevel(LevelDefinition levelDef) => LevelLoadRequested?.Invoke(levelDef);
+
+    public event Action<Transform> LevelReady;
+    public void InvokeLevelReady(Transform spawnPoint) => LevelReady?.Invoke(spawnPoint);
+
 }

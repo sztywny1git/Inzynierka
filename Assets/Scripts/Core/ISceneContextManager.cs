@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 public interface ISceneContextManager
 {
-    Task LoadSceneAsync(string sceneName);
+    UniTask LoadSceneAsync(string sceneName);
 }

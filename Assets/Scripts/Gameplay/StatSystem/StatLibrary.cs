@@ -1,0 +1,14 @@
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "Config/Stat System Config")]
+public class StatSystemConfig : ScriptableObject
+{
+    [Header("Combat")]
+    public StatDefinition DamageStat;
+    public StatDefinition CritChanceStat;
+    public StatDefinition CritMultiplierStat;
+    
+    [Header("Projectile Modifiers")]
+    public StatDefinition ProjectileCountStat;
+    public StatDefinition PierceCountStat;
+}

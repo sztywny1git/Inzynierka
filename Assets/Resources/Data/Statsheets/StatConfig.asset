@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 733af6b4bcc1d454b92f403b40388bf2, type: 3}
+  m_Name: StatConfig
+  m_EditorClassIdentifier: 
+  DamageStat: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
+  CritChanceStat: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
+  CritMultiplierStat: {fileID: 11400000, guid: 4375364806f10a04597ec73926842676, type: 2}

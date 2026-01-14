@@ -1,14 +1,8 @@
 using UnityEngine;
 
+
 public class ResourceLoader : IResourceLoader
 {
-    public GameObject LoadPrefab(string path)
-    {
-        var prefab = Resources.Load<GameObject>(path);
-        if (prefab == null)
-        {
-            throw new System.Exception($"Failed to load prefab at path: {path}");
-        }
-        return prefab;
-    }
+    public GameObject LoadPrefab(string path) => Resources.Load<GameObject>(path);
+    public T Load<T>(string path) where T : Object => Resources.Load<T>(path);
 }

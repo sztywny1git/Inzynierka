@@ -1,96 +1,63 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using VContainer;
 using VContainer.Unity;
-using UnityEngine;
 
 public class GameFlowManager : IInitializable, IDisposable
 {
-    private readonly ISceneContextManager _sceneManager;
-    private readonly GameScopeService _scopeService;
+    private readonly IObjectResolver _container;
     private readonly GameplayEventBus _gameplayEvents;
-    private readonly UIEventBus _uiEvents;
+
+    private Dictionary<GameStateId, IGameState> _states;
+    private IGameState _currentState;
 
     public GameFlowManager(
-        ISceneContextManager sceneManager, 
-        GameScopeService scopeService,
-        GameplayEventBus gameplayEvents,
+        IObjectResolver container, 
+        GameplayEventBus gameplayEvents, 
         UIEventBus uiEvents)
     {
-        _sceneManager = sceneManager;
-        _scopeService = scopeService;
+        _container = container;
         _gameplayEvents = gameplayEvents;
-        _uiEvents = uiEvents;
-        _gameplayEvents.OnCharacterDied += HandleCharacterDied;
-        _uiEvents.OnRequestStartGame += HandleStartGameRequested;
+        
+        _gameplayEvents.GoToHubRequested += () => ChangeState(GameStateId.Hub);
+        _gameplayEvents.BeginRunRequested += () => ChangeState(GameStateId.Run);
+        _gameplayEvents.EndRunRequested += () => ChangeState(GameStateId.RunSummary);
     }
 
-    public void Initialize() { }
+    public void Initialize()
+    {
+        InitializeStates();
+        ChangeState(GameStateId.MainMenu);
+    }
 
     public void Dispose()
     {
-        _gameplayEvents.OnCharacterDied -= HandleCharacterDied;
-        _uiEvents.OnRequestStartGame -= HandleStartGameRequested;
+        _gameplayEvents.GoToHubRequested -= () => ChangeState(GameStateId.Hub);
+        _gameplayEvents.BeginRunRequested -= () => ChangeState(GameStateId.Run);
+        _gameplayEvents.EndRunRequested -= () => ChangeState(GameStateId.RunSummary);
     }
 
-    private void HandleStartGameRequested()
+    private void InitializeStates()
     {
-        _ = EnterHub();
-    }
-
-    private void HandleCharacterDied(Character deadCharacter)
-    {
-        if (deadCharacter.CompareTag("Player"))
+        _states = new Dictionary<GameStateId, IGameState>
         {
-            _uiEvents.RequestGameOverScreen();
-            _ = EndCurrentRunAndReturnToHub();
-        }
+            { GameStateId.MainMenu, _container.Resolve<MainMenuState>() },
+            { GameStateId.Hub, _container.Resolve<HubState>() },
+            { GameStateId.Run, _container.Resolve<RunState>() },
+            { GameStateId.RunSummary, _container.Resolve<RunSummaryState>() },
+        };
     }
 
-    private async Task EndCurrentRunAndReturnToHub()
+    public async void ChangeState(GameStateId newStateId)
     {
-        await Task.Delay(3000); 
-        await EnterHub();
-    }
-
-    public async Task EnterHub()
-    {
-        _uiEvents.RequestLoadingScreen();
-        _scopeService.DestroyActiveScope();
-
-        var gameplayScope = _scopeService.CreateGameplayScope();
-        
-        using (LifetimeScope.EnqueueParent(gameplayScope))
+        if (_currentState != null)
         {
-            await _sceneManager.LoadSceneAsync("Hub");
+            await _currentState.OnExit();
         }
 
-        _uiEvents.RequestHideLoadingScreen();
+        _currentState = _states[newStateId];
+        await _currentState.OnEnter();
     }
+    
 
-    public async Task StartNewRun()
-    {
-        _uiEvents.RequestLoadingScreen();
-        _scopeService.DestroyActiveScope();
-        var gameplayScope = _scopeService.CreateGameplayScope();
-        
-        using (LifetimeScope.EnqueueParent(gameplayScope))
-        {
-            await _sceneManager.LoadSceneAsync("ProceduralLevel");
-        }
-
-        _uiEvents.RequestHideLoadingScreen();
-    }
-
-    public async Task GoToNextLevel(string nextSceneName)
-    {
-        _uiEvents.RequestLoadingScreen();
-        
-        var activeScope = _scopeService.GetActiveScope();
-        using (LifetimeScope.EnqueueParent(activeScope))
-        {
-            await _sceneManager.LoadSceneAsync(nextSceneName);
-        }
-
-        _uiEvents.RequestHideLoadingScreen();
-    }
 }

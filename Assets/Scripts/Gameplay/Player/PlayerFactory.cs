@@ -37,7 +37,7 @@ public class PlayerFactory : IPlayerFactory
 
         if (playerCharacter != null)
         {
-            _eventBus.PublishPlayerSpawned(playerCharacter);
+            _eventBus.InvokePlayerSpawned(playerCharacter);
         }
 
         if (playerInstance != null)

@@ -7,5 +7,6 @@ public interface IStatsProvider
     void AddModifier(StatDefinition definition, StatModifier modifier);
     void RemoveModifier(StatDefinition definition, StatModifier modifier);
     void RemoveAllModifiersFromSource(StatDefinition definition, string source);
+    event Action OnStatsReinitialized;
     
 }

@@ -1,52 +1,44 @@
 using UnityEngine;
 using System;
-using VContainer;
 
-public class Health : MonoBehaviour, IDamageable
+[RequireComponent(typeof(IStatsProvider))]
+public class Health : MonoBehaviour, IDamageable, ILiving, IHealable, IHealthProvider
 {
     [SerializeField] private StatDefinition healthStatDef;
-    
     private IStatsProvider _statsProvider;
-    private Character _character; 
-    private GameplayEventBus _eventBus;
 
+    public bool isAlive => CurrentHealth > 0;
     public float CurrentHealth { get; private set; }
     public float MaxHealth { get; private set; }
 
     public event Action<float, float> OnHealthChanged;
-    public event Action OnDeath;
-    
-    [Inject]
-    public void Construct(GameplayEventBus eventBus)
-    {
-        _eventBus = eventBus;
-    }
-    
+    public event Action Death;
+
     private void Awake()
     {
         _statsProvider = GetComponent<IStatsProvider>();
-
-        _character = GetComponent<Character>();
-        
-        if (_statsProvider is CharacterStats characterStats)
-        {
-            characterStats.OnStatsReinitialized += ReinitializeHealth;
-        }
-        
-        ReinitializeHealth();
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        if (_statsProvider is CharacterStats characterStats)
+        if (_statsProvider != null)
         {
-            characterStats.OnStatsReinitialized -= ReinitializeHealth;
+            _statsProvider.OnStatsReinitialized += ReinitializeHealth;
+            ReinitializeHealth();
         }
+    }
 
-        var healthStat = _statsProvider?.GetStat(healthStatDef);
-        if (healthStat != null)
+    private void OnDisable()
+    {
+        if (_statsProvider != null)
         {
-            healthStat.OnStatChanged -= OnMaxHealthChanged;
+            _statsProvider.OnStatsReinitialized -= ReinitializeHealth;
+
+            var healthStat = _statsProvider.GetStat(healthStatDef);
+            if (healthStat != null)
+            {
+                healthStat.OnStatChanged -= OnMaxHealthChanged;
+            }
         }
     }
 
@@ -65,27 +57,41 @@ public class Health : MonoBehaviour, IDamageable
 
     private void OnMaxHealthChanged(float newMaxValue)
     {
-        float healthPercent = (MaxHealth > 0) ? CurrentHealth / MaxHealth : 1f;
+        float oldMaxHealth = MaxHealth;
+        float diff = newMaxValue - oldMaxHealth;
+
         MaxHealth = newMaxValue;
-        CurrentHealth = MaxHealth * healthPercent;
+
+        if (diff > 0)
+        {
+            CurrentHealth += diff;
+        }
+        else
+        {
+            CurrentHealth = Mathf.Min(CurrentHealth, MaxHealth);
+        }
+
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
-    public void TakeDamage(float baseDamage)
+    public void TakeDamage(DamageData damageData)
     {
-        if (CurrentHealth <= 0) return;
+        if (!isAlive) return;
 
-        CurrentHealth = Mathf.Max(CurrentHealth - baseDamage, 0);
+        CurrentHealth = Mathf.Max(CurrentHealth - damageData.Amount, 0);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
 
-        if (CurrentHealth <= 0)
+        if (!isAlive)
         {
-            OnDeath?.Invoke();
-            
-            if (_eventBus != null && _character != null)
-            {
-                _eventBus.PublishCharacterDied(_character);
-            }
+            Death?.Invoke();
         }
+    }
+
+    public void Heal(float amount)
+    {
+        if (!isAlive || amount <= 0) return;
+
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 }

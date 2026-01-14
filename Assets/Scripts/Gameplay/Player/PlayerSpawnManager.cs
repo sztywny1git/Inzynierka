@@ -1,48 +1,43 @@
 using UnityEngine;
-using System;
 using VContainer;
+using VContainer.Unity;
 
-public class PlayerSpawnManager : IDisposable
+public class PlayerSpawnManager
 {
     private readonly IPlayerFactory _playerFactory;
-    private readonly GameSessionState _sessionState;
-    private readonly GameplayEventBus _eventBus;
+    private readonly SessionData _sessionData;
+    private readonly LifetimeScope _currentScope;
+    
     private Character _activePlayerInstance;
 
     public PlayerSpawnManager(
         IPlayerFactory playerFactory, 
-        GameSessionState sessionState, 
-        GameplayEventBus eventBus)
+        SessionData sessionData, 
+        LifetimeScope currentScope)
     {
         _playerFactory = playerFactory;
-        _sessionState = sessionState;
-        _eventBus = eventBus;
-
-        _eventBus.OnLevelReady += HandleLevelReady;
+        _sessionData = sessionData;
+        _currentScope = currentScope;
     }
 
-    public void Dispose()
-    {
-        _eventBus.OnLevelReady -= HandleLevelReady;
-    }
-
-    private void HandleLevelReady(Transform spawnPoint)
+    public void SpawnPlayer(Transform spawnPoint)
     {
         if (_activePlayerInstance != null)
         {
             _activePlayerInstance.transform.position = spawnPoint.position;
-            
-            var movement = _activePlayerInstance.GetComponent<PlayerMovement>();
-            if(movement != null) movement.StopMovement();
+            _activePlayerInstance.GetComponent<PlayerMovement>()?.StopMovement();
         }
         else
         {
-            var playerClass = _sessionState.CurrentPlayerClass;
+            var playerClass = _sessionData.CurrentPlayerClass;
             if (playerClass != null)
             {
                 var playerObj = _playerFactory.CreatePlayer(playerClass, spawnPoint.position);
-                _activePlayerInstance = playerObj.GetComponent<Character>();
-                
+                if (playerObj != null)
+                {
+                    playerObj.transform.SetParent(_currentScope.transform, worldPositionStays: true);
+                    _activePlayerInstance = playerObj.GetComponent<Character>();
+                }
             }
         }
     }

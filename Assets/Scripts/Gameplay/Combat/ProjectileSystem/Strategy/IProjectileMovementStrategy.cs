@@ -1,10 +1,8 @@
 using UnityEngine;
 
-public interface IProjectileMovementStrategy
+public interface IMovementStrategy
 {
-    void Initialize(ProjectileBase projectile);
-    
-    void Move();
-
-    bool IsMovementDone { get; }
+    void Initialize(Transform projectileTransform);
+    void Update(float deltaTime);
+    bool IsDone { get; }
 }

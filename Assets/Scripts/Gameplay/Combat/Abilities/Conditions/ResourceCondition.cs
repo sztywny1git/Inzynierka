@@ -1,17 +1,21 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ResourceCostCondition", menuName = "Abilities/Conditions/Resource Cost")]
+[CreateAssetMenu(menuName = "Abilities/Conditions/Resource Cost")]
 public class ResourceCostCondition : UsageCondition
 {
-    [SerializeField] private float cost;
+    [SerializeField] private float _cost;
 
     public override bool CanBeUsed(AbilityContext context)
     {
-        return context.ResourceSystem != null && context.ResourceSystem.CanAfford(cost);
+        if (context.ResourceProvider == null) return true;
+        return context.ResourceProvider.HasEnough(_cost);
     }
 
     public override void OnUse(AbilityContext context)
     {
-        context.ResourceSystem?.Consume(cost);
+        if (context.ResourceProvider != null)
+        {
+            context.ResourceProvider.Consume(_cost);
+        }
     }
 }

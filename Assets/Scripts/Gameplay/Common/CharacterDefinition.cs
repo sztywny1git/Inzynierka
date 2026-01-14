@@ -1,16 +1,18 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum CharacterType { Player, Enemy, Boss }
+
 [CreateAssetMenu(fileName = "New Character Definition", menuName = "Gameplay/Character Definition")]
 public class CharacterDefinition : ScriptableObject
 {
+    [Header("Identity")]
     public string characterName;
     public Sprite characterSprite;
+    public CharacterType Type;
     
-    [Header("Base Stats")]
+    [Header("Stats")]
     public StatSheet statSheet;
-
-    [Header("Permanent Bonuses")]
     public List<StatModifierConfig> statBonuses;
 
     [Header("Abilities")]

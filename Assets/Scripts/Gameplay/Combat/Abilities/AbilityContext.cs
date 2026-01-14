@@ -1,31 +1,39 @@
 using UnityEngine;
-using VContainer;
 
-public readonly struct AbilityContext
+public class AbilityContext
 {
-    public readonly GameObject Owner;
-    public readonly Transform Origin;
-    public readonly Vector2 Direction;
-    public readonly IStatsProvider Stats;
-    public readonly IObjectResolver DIContainer;
-    public readonly Ability Ability;
-    public readonly IResourceSystem ResourceSystem;
+    public GameObject GameObject { get; }
+    public IAbilitySpawner Spawner { get; }
+    public IResourceProvider ResourceProvider { get; }
+    public ICooldownProvider CooldownProvider { get; }
+    public IStatsProvider StatsProvider { get; }
+    public StatSystemConfig StatConfig { get; }
+    
+    public Transform Origin { get; }
+    public Vector3 AimLocation { get; }
+    public GameObject Instigator { get; }
+    public ActionIdentifier ActionId { get; }
 
     public AbilityContext(
-        GameObject owner,
+        GameObject gameObject,
+        IAbilitySpawner spawner,
+        IResourceProvider resourceProvider,
+        ICooldownProvider cooldownProvider,
+        IStatsProvider statsProvider,
+        StatSystemConfig statConfig,
         Transform origin,
-        Vector2 direction,
-        IStatsProvider stats,
-        IObjectResolver diContainer,
-        Ability ability,
-        IResourceSystem resourceSystem)
+        Vector3 aimLocation,
+        ActionIdentifier actionId)
     {
-        Owner = owner;
+        GameObject = gameObject;
+        Spawner = spawner;
+        ResourceProvider = resourceProvider;
+        CooldownProvider = cooldownProvider;
+        StatsProvider = statsProvider;
+        StatConfig = statConfig;
         Origin = origin;
-        Direction = direction;
-        Stats = stats;
-        DIContainer = diContainer;
-        Ability = ability;
-        ResourceSystem = resourceSystem;
+        AimLocation = aimLocation;
+        Instigator = gameObject;
+        ActionId = actionId;
     }
 }
