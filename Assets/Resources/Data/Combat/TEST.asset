@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08438b38b84fea649aecd3f4908e1267, type: 3}
   m_Name: TEST
   m_EditorClassIdentifier: 
+  _name: TEST
+  _actionId: {fileID: 0}
   _animationTriggerName: BasicAttack
-  _executeImmediately: 0
+  _isPriority: 0
+  _isInstant: 0
+  _maxCastDuration: 2
   _conditions: []
+  _damageMultiplier: 1
   _movementConfig: {fileID: 11400000, guid: 61fd26662aa03e54680f437b4030ecc9, type: 2}
   _projectilePrefab: {fileID: 6284455725840046436, guid: 4d4b25dea8210ed4b8ed54f96e7b2829, type: 3}
   _baseSpeed: 20

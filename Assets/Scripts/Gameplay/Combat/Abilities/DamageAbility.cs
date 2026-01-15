@@ -4,9 +4,9 @@ public abstract class DamageAbility : Ability
 {
     [SerializeField] protected float _damageMultiplier = 1.0f;
 
-    protected AbilityStatsSnapshot GetBaseCombatStats(IStatsProvider stats, StatSystemConfig config)
+    protected CombatStats GetBaseCombatStats(IStatsProvider stats, StatSystemConfig config)
     {
-        return new AbilityStatsSnapshot
+        return new CombatStats
         {
             BaseDamage = stats.GetFinalStatValue(config.DamageStat) * _damageMultiplier,
             CritChance = stats.GetFinalStatValue(config.CritChanceStat),
@@ -14,7 +14,7 @@ public abstract class DamageAbility : Ability
         };
     }
 
-    protected DamageData CalculateDamage(AbilityContext context, AbilityStatsSnapshot stats)
+    protected DamageData CalculateDamage(AbilityContext context, CombatStats stats)
     {
         bool isCrit = UnityEngine.Random.value <= stats.CritChance;
         float finalDamage = isCrit ? stats.BaseDamage * stats.CritMultiplier : stats.BaseDamage;

@@ -1,27 +1,45 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
+public enum CasterState
+{
+    Idle,
+    PreCast,
+    PostCast
+}
+
+[RequireComponent(typeof(ActionConstraintSystem))]
 public class AbilityCaster : MonoBehaviour
 {
     [SerializeField] private StatSystemConfig _statConfig;
+    [SerializeField] private float _inputBufferTime = 0.4f;
 
     public event Action<string> OnCastAnimationRequired;
     public event Action OnCastInterrupted;
 
-    private IObjectResolver _container; 
+    private IObjectResolver _container;
     private IAbilitySpawner _spawner;
     private IStatsProvider _statsProvider;
     private ILiving _livingEntity;
     private IResourceProvider _resourceProvider;
     private ICooldownProvider _cooldownProvider;
+    private ActionConstraintSystem _constraintSystem;
     
     private AbilitySpawnPoint _cachedSpawnPoint;
-    private IAbility _pendingAbility;
-    private IAbilityData _pendingData; 
-    private Vector3 _pendingAimLocation;
     
+    private CasterState _currentState = CasterState.Idle;
+    private IAbility _currentAbility;
+    private IAbilityData _currentSnapshot;
+    private Vector3 _currentAimLocation;
+    private Coroutine _safetyCoroutine;
+
+    private IAbility _bufferedAbility;
+    private Vector3 _bufferedAimLocation;
+    private float _bufferExpireTimestamp;
+
     private List<IAbility> _abilities = new List<IAbility>();
 
     [Inject]
@@ -37,6 +55,7 @@ public class AbilityCaster : MonoBehaviour
         _livingEntity = GetComponent<ILiving>();
         _resourceProvider = GetComponent<IResourceProvider>();
         _cooldownProvider = GetComponent<ICooldownProvider>();
+        _constraintSystem = GetComponent<ActionConstraintSystem>();
         _cachedSpawnPoint = GetComponentInChildren<AbilitySpawnPoint>();
     }
 
@@ -61,97 +80,200 @@ public class AbilityCaster : MonoBehaviour
         if (index < 0 || index >= _abilities.Count) return;
         if (_livingEntity != null && !_livingEntity.isAlive) return;
         
-        worldPosition.z = 0; 
-        UseAbility(_abilities[index], worldPosition);
+        worldPosition.z = 0;
+        HandleCastRequest(_abilities[index], worldPosition);
     }
 
-    private void UseAbility(IAbility ability, Vector3 aimLocation)
+    private void HandleCastRequest(IAbility ability, Vector3 aimLocation)
     {
-        if (_pendingAbility != null) return;
-
-        var context = new AbilityContext(
-            gameObject, _spawner, _resourceProvider, _cooldownProvider, _statsProvider, _statConfig,
-            transform, aimLocation, ability.ActionId
-        );
-
-        foreach (var condition in ability.Conditions)
+        if (ability.IsInstant)
         {
-            if (!condition.CanBeUsed(context)) return;
+            ExecuteInstant(ability, aimLocation);
+            return;
         }
 
+        if (ability.IsPriority)
+        {
+            if (_currentState != CasterState.Idle)
+            {
+                InterruptCast();
+            }
+            StartCastSequence(ability, aimLocation);
+            return;
+        }
+
+        if (_currentState != CasterState.Idle || !_constraintSystem.CanAbility)
+        {
+            _bufferedAbility = ability;
+            _bufferedAimLocation = aimLocation;
+            _bufferExpireTimestamp = Time.time + _inputBufferTime;
+            return;
+        }
+
+        StartCastSequence(ability, aimLocation);
+    }
+
+    private void ExecuteInstant(IAbility ability, Vector3 aimLocation)
+    {
+        if (!CheckConditions(ability, aimLocation)) return;
+
+        var context = CreateContext(ability.ActionId, aimLocation);
+        ConsumeResources(ability, context);
+        
+        var snapshot = ability.CreateData(_statsProvider, _statConfig);
+        ability.Execute(context, snapshot);
+    }
+
+    private void StartCastSequence(IAbility ability, Vector3 aimLocation)
+    {
+        if (!CheckConditions(ability, aimLocation))
+        {
+            ClearBuffer();
+            return;
+        }
+
+        ClearBuffer();
+
+        _currentAbility = ability;
+        _currentAimLocation = aimLocation;
+        _currentSnapshot = ability.CreateData(_statsProvider, _statConfig);
+
+        _currentState = CasterState.PreCast;
+        
+        _constraintSystem.AddMovementLock();
+        _constraintSystem.AddAbilityLock();
+
+        if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+        _safetyCoroutine = StartCoroutine(SafetyNetRoutine(ability.MaxCastDuration));
+
+        if (!string.IsNullOrEmpty(ability.AnimationTriggerName))
+        {
+            OnCastAnimationRequired?.Invoke(ability.AnimationTriggerName);
+        }
+        else
+        {
+            OnAnimAttackPoint(); 
+        }
+    }
+
+    public void OnAnimAttackPoint()
+    {
+        if (_currentState != CasterState.PreCast || _currentAbility == null) return;
+
+        var context = CreateContext(_currentAbility.ActionId, _currentAimLocation);
+        
+        ConsumeResources(_currentAbility, context);
+        _currentAbility.Execute(context, _currentSnapshot);
+
+        _currentState = CasterState.PostCast;
+        _constraintSystem.RemoveMovementLock();
+    }
+
+    public void OnAnimFinish()
+    {
+        if (_currentState == CasterState.Idle) return;
+        ResetState();
+    }
+
+    public void InterruptCast()
+    {
+        if (_currentState == CasterState.Idle) return;
+
+        if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+        
+        ResetLocksBasedOnState();
+        ClearBuffer();
+        
+        _currentState = CasterState.Idle;
+        _currentAbility = null;
+        _currentSnapshot = null;
+        
+        OnCastInterrupted?.Invoke();
+    }
+
+    private void ResetState()
+    {
+        if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+        
+        ResetLocksBasedOnState();
+        
+        _currentState = CasterState.Idle;
+        _currentAbility = null;
+        _currentSnapshot = null;
+
+        ProcessBufferedInput();
+    }
+
+    private void ProcessBufferedInput()
+    {
+        if (_bufferedAbility != null && Time.time < _bufferExpireTimestamp)
+        {
+            if (_constraintSystem.CanAbility)
+            {
+                StartCastSequence(_bufferedAbility, _bufferedAimLocation);
+            }
+        }
+        else
+        {
+            ClearBuffer();
+        }
+    }
+
+    private void ClearBuffer()
+    {
+        _bufferedAbility = null;
+        _bufferExpireTimestamp = 0f;
+    }
+
+    private void ResetLocksBasedOnState()
+    {
+        if (_currentState == CasterState.PreCast)
+        {
+            _constraintSystem.RemoveMovementLock();
+            _constraintSystem.RemoveAbilityLock();
+        }
+        else if (_currentState == CasterState.PostCast)
+        {
+            _constraintSystem.RemoveAbilityLock();
+        }
+    }
+
+    private IEnumerator SafetyNetRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ResetState();
+    }
+
+    private bool CheckConditions(IAbility ability, Vector3 aimLocation)
+    {
+        var context = CreateContext(ability.ActionId, aimLocation);
+        foreach (var condition in ability.Conditions)
+        {
+            if (!condition.CanBeUsed(context)) return false;
+        }
+        return true;
+    }
+
+    private void ConsumeResources(IAbility ability, AbilityContext context)
+    {
         foreach (var condition in ability.Conditions)
         {
             condition.OnUse(context);
         }
-
-        _pendingAbility = ability;
-        _pendingAimLocation = aimLocation;
-        
-        if (_statsProvider != null && _statConfig != null)
-        {
-            _pendingData = ability.CreateData(_statsProvider, _statConfig);
-        }
-        else
-        {
-            _pendingData = null;
-        }
-        
-        if (ability.ExecuteImmediately)
-        {
-            ReleaseSpell();
-            
-            if (!string.IsNullOrEmpty(ability.AnimationTriggerName))
-            {
-                OnCastAnimationRequired?.Invoke(ability.AnimationTriggerName);
-            }
-        }
-        else
-        {
-            if (string.IsNullOrEmpty(ability.AnimationTriggerName))
-            {
-                ReleaseSpell();
-            }
-            else
-            {
-                OnCastAnimationRequired?.Invoke(ability.AnimationTriggerName);
-            }
-        }
     }
 
-    public void ReleaseSpell()
+    private AbilityContext CreateContext(ActionIdentifier actionId, Vector3 aimLocation)
     {
-        if (_livingEntity != null && !_livingEntity.isAlive)
-        {
-            HandleDeath();
-            return;
-        }
-
-        if (_pendingAbility == null) return;
-
         Transform currentOrigin = _cachedSpawnPoint ? _cachedSpawnPoint.transform : transform;
-
-        var finalContext = new AbilityContext(
+        return new AbilityContext(
             gameObject, _spawner, _resourceProvider, _cooldownProvider, _statsProvider, _statConfig,
-            currentOrigin, _pendingAimLocation, _pendingAbility.ActionId
+            currentOrigin, aimLocation, actionId
         );
-
-        _pendingAbility.Execute(finalContext, _pendingData);
-        
-        _pendingAbility = null;
-        _pendingData = null;
-    }
-
-    public void CancelCast()
-    {
-        _pendingAbility = null;
-        _pendingData = null;
-        OnCastInterrupted?.Invoke();
     }
 
     private void HandleDeath()
     {
-        _pendingAbility = null;
-        _pendingData = null;
-        OnCastInterrupted?.Invoke();
+        InterruptCast();
+        ClearBuffer();
     }
 }

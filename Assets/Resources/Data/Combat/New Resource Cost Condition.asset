@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658f6884e8d580948b939dc518ba1e8e, type: 3}
-  m_Name: Mana
+  m_Script: {fileID: 11500000, guid: e58f638c28419bb42a94ede1e18cb0bc, type: 3}
+  m_Name: New Resource Cost Condition
   m_EditorClassIdentifier: 
-  IsInteger: 0
-  HasMaximum: 0
-  MaxValue: 3.4028235e+38
+  _cost: 0

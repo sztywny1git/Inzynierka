@@ -1,18 +1,33 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class CasterVisuals : MonoBehaviour
 {
     [SerializeField] private AbilityCaster _caster;
-    [SerializeField] private Animator _animator;
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+        if (_caster == null) _caster = GetComponentInParent<AbilityCaster>();
+    }
 
     private void OnEnable()
     {
-        _caster.OnCastAnimationRequired += PlayAnimation;
+        if (_caster != null)
+        {
+            _caster.OnCastAnimationRequired += PlayAnimation;
+            _caster.OnCastInterrupted += OnInterrupted;
+        }
     }
 
     private void OnDisable()
     {
-        _caster.OnCastAnimationRequired -= PlayAnimation;
+        if (_caster != null)
+        {
+            _caster.OnCastAnimationRequired -= PlayAnimation;
+            _caster.OnCastInterrupted -= OnInterrupted;
+        }
     }
 
     private void PlayAnimation(string triggerName)
@@ -23,8 +38,18 @@ public class CasterVisuals : MonoBehaviour
         }
     }
 
+    private void OnInterrupted()
+    {
+        _animator.SetTrigger("Interrupted");
+    }
+
     public void OnAnimAttackPoint()
     {
-        _caster.ReleaseSpell();
+        if (_caster != null) _caster.OnAnimAttackPoint();
+    }
+
+    public void OnAnimFinish()
+    {
+        if (_caster != null) _caster.OnAnimFinish();
     }
 }

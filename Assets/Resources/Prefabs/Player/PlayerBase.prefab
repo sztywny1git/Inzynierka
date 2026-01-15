@@ -168,7 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _caster: {fileID: 4067101089647593856}
-  _animator: {fileID: 9176118881724668084}
 --- !u!1 &3046662765766804656
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,6 +254,9 @@ GameObject:
   - component: {fileID: 1392003927724506961}
   - component: {fileID: 1885780693829704511}
   - component: {fileID: -717085084919558350}
+  - component: {fileID: 6830318854930482620}
+  - component: {fileID: 958430489556997633}
+  - component: {fileID: 7328723182935940664}
   m_Layer: 3
   m_Name: PlayerBase
   m_TagString: Player
@@ -359,6 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _statConfig: {fileID: 11400000, guid: 7ad6fd91b1643e648a3abe671474c37e, type: 2}
+  _inputBufferTime: 0.4
 --- !u!114 &8738326322539329668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,3 +436,42 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!114 &6830318854930482620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5212117608679351381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68c739da5b48d3d4fb2ae3900a1d315c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &958430489556997633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5212117608679351381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d361d65e250e07f42b1213257f69324c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cooldownReductionStatDef: {fileID: 11400000, guid: 9237775d94441ab4eae41dfdb29cb8e2, type: 2}
+--- !u!114 &7328723182935940664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5212117608679351381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e27e9c9e94e593740aba5a1ce99ae6a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxResourceStatDef: {fileID: 11400000, guid: 47eec887c3ae67741afa1df5187394a4, type: 2}
+  _regenStatDef: {fileID: 0}

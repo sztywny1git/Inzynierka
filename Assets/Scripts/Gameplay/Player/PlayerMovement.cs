@@ -1,16 +1,16 @@
 using UnityEngine;
 
+[RequireComponent(typeof(ActionConstraintSystem))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(IStatsProvider))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Data Dependencies")]
     [SerializeField] private StatDefinition moveSpeedStat;
 
     private IStatsProvider _stats;
     private Rigidbody2D _rb;
     private Animator _animator;
-
+    private ActionConstraintSystem _constraintSystem;
     private Vector2 _moveInput;
 
     private void Awake()
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponentInChildren<Animator>();
         _stats = GetComponent<IStatsProvider>();
+        _constraintSystem = GetComponent<ActionConstraintSystem>();
     }
 
     private void Update()
@@ -30,6 +31,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_stats == null || moveSpeedStat == null) return;
         
+        if (!_constraintSystem.CanMove)
+        {
+            _rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         float finalMoveSpeed = _stats.GetFinalStatValue(moveSpeedStat);
         _rb.linearVelocity = _moveInput * finalMoveSpeed;
     }
@@ -52,13 +59,14 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateAnimation()
     {
         if (_animator == null) return;
-
-        bool IsWalking = _moveInput.sqrMagnitude > 0.01f;
+        bool IsWalking = _moveInput.sqrMagnitude > 0.01f && _constraintSystem.CanMove;
         _animator.SetBool("IsWalking", IsWalking);
     }
 
     private void FlipSprite()
     {
+        if (!_constraintSystem.CanMove) return;
+
         if (Mathf.Abs(_moveInput.x) > 0.01f)
         {
             float direction = Mathf.Sign(_moveInput.x);

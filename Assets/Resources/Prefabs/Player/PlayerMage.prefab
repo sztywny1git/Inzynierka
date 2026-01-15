@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 4067101089647593856, guid: f8f68b2692ed97840b7810e411eec48a, type: 3}
+      propertyPath: _inputBufferTime
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 4905073107286882106, guid: f8f68b2692ed97840b7810e411eec48a, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -168,6 +172,10 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: PlayerController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 7328723182935940664, guid: f8f68b2692ed97840b7810e411eec48a, type: 3}
+      propertyPath: _regenStatDef
+      value: 
+      objectReference: {fileID: 11400000, guid: e1d62bc4d9c09384b9f64e5f6c1bb426, type: 2}
     - target: {fileID: 7739895600734391609, guid: f8f68b2692ed97840b7810e411eec48a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.215

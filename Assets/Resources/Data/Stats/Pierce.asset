@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 658f6884e8d580948b939dc518ba1e8e, type: 3}
-  m_Name: Defense
+  m_Name: Pierce
   m_EditorClassIdentifier: 
-  IsInteger: 0
-  HasMaximum: 0
-  MaxValue: 3.402823e+38
+  IsInteger: 1
+  HasMaximum: 1
+  MaxValue: 10
