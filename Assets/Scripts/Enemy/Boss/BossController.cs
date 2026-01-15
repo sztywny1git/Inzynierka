@@ -6,7 +6,7 @@ using UnityEngine;
 /// Manages the hierarchical state machine and phase transitions.
 /// </summary>
 [RequireComponent(typeof(Health))]
-public abstract class BossController : MonoBehaviour
+public abstract class BossController : MonoBehaviour, IDamageable
 {
     [Header("Boss Settings")]
     [SerializeField] protected float phase2HealthThreshold = 0.5f;
@@ -33,6 +33,7 @@ public abstract class BossController : MonoBehaviour
     private bool _isTransitioning;
     private bool _isDead;
     private bool _hasTransitionedToPhase2;
+    private bool _isInvulnerable;
     
     public event Action<int> OnPhaseChanged;
     public event Action OnBossDeath;
@@ -40,6 +41,14 @@ public abstract class BossController : MonoBehaviour
     public bool IsTransitioning => _isTransitioning;
     public bool IsDead => _isDead;
     public int CurrentPhase => Context?.CurrentPhase ?? 1;
+    
+    public void TakeDamage(DamageData damageData)
+    {
+        if (_isDead) return;
+        if (_isInvulnerable) return;
+        
+        Health?.TakeDamage(damageData);
+    }
     
     protected virtual void Awake()
     {
@@ -170,9 +179,9 @@ public abstract class BossController : MonoBehaviour
             PhaseTransitionState.SetTargetPhase(targetPhase, phaseTransitionDuration);
         }
         
-        if (isInvulnerableDuringTransition && Health != null)
+        if (isInvulnerableDuringTransition)
         {
-            Health.SetInvulnerable(true);
+            _isInvulnerable = true;
         }
         
         BossAnimator?.PlayPhaseTransition();
@@ -186,9 +195,9 @@ public abstract class BossController : MonoBehaviour
         Context.SetPhase(targetPhase);
         BossAnimator?.SetPhase(targetPhase);
         
-        if (isInvulnerableDuringTransition && Health != null)
+        if (isInvulnerableDuringTransition)
         {
-            Health.SetInvulnerable(false);
+            _isInvulnerable = false;
         }
         
         // Transition to the appropriate phase state
