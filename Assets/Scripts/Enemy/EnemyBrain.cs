@@ -281,21 +281,21 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         rangedPreferredMinDistance = Mathf.Max(0f, rangedPreferredMinDistance);
     }
 
-    // private IPatrolPointProvider ResolvePatrolProvider()
-    // {
-    //     if (patrolPointProviderBehaviour is IPatrolPointProvider explicitProvider)
-    //     {
-    //         return explicitProvider;
-    //     }
+    private IPatrolPointProvider ResolvePatrolProvider()
+    {
+        if (patrolPointProviderBehaviour is IPatrolPointProvider explicitProvider)
+        {
+            return explicitProvider;
+        }
 
-    //     var fromComponents = GetComponent<IPatrolPointProvider>();
-    //     if (fromComponents != null)
-    //     {
-    //         return fromComponents;
-    //     }
+        var fromComponents = GetComponent<IPatrolPointProvider>();
+        if (fromComponents != null)
+        {
+            return fromComponents;
+        }
 
-    //     return gameObject.AddComponent<DungeonFloorPatrolPointProvider>();
-    // }
+        return gameObject.AddComponent<DungeonFloorPatrolPointProvider>();
+    }
 
     private void BuildStates()
     {
