@@ -9,7 +9,7 @@ public class StatsUI : MonoBehaviour
     public PlayerStats playerStats;
 
     public GameObject[] statsSlots;
-    public CanvasGroup statsCanvas;
+    //public CanvasGroup statsCanvas;
     private bool statsOpen = true;
 
     private void Start()
@@ -58,7 +58,7 @@ public class StatsUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("ToggleStats"))
+        /*if (Input.GetButtonDown("ToggleStats"))
         {
             if (statsOpen)
             {
@@ -74,7 +74,7 @@ public class StatsUI : MonoBehaviour
                 statsCanvas.blocksRaycasts = true;
                 statsOpen = true;
             }
-        }
+        }*/
     }
 
     private void OnStatsChanged(SkillSlot slot)

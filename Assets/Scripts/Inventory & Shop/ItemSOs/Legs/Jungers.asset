@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Jungers
   itemDescription: Worn and supple, allowing ease of movement in any terrain.
-  icon: {fileID: 21300000, guid: 0706c4922462490419fa5cbce0bd2aad, type: 3}
+  icon: {fileID: 21300000, guid: 7f3da961f59525145bb00f9468068855, type: 3}
   isGold: 0
   stackSize: 1
   itemType: 6
