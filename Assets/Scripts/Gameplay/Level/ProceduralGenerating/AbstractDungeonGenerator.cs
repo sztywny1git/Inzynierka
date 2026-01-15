@@ -3,11 +3,11 @@ using UnityEngine;
 public abstract class AbstractDungeonGenerator : MonoBehaviour
 {
     [SerializeField]
-    protected TilemapVisualizer tilemapVisualizer = null;
+    public TilemapVisualizer tilemapVisualizer = null;
     [SerializeField]
     protected Vector2Int startPosition = Vector2Int.zero;
     [SerializeField]
-    protected Spawner spawner;
+    public Spawner spawner;
 
     public void GenerateDungeon()
     {

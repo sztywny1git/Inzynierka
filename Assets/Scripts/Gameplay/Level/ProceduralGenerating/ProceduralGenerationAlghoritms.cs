@@ -95,6 +95,149 @@ public static class ProceduralGenerationAlgorithms
         roomsQueue.Enqueue(room1);
         roomsQueue.Enqueue(room2);
     }
+
+    public static HashSet<Vector2Int> CellularAutomataSmoothing(HashSet<Vector2Int> currentFloor, int iterations)
+    {
+        HashSet<Vector2Int> newFloor = new HashSet<Vector2Int>(currentFloor);
+
+        // Obliczamy granice obszaru, żeby nie iterować w nieskończoność
+        int minX = int.MaxValue, maxX = int.MinValue;
+        int minY = int.MaxValue, maxY = int.MinValue;
+
+        foreach (var pos in currentFloor)
+        {
+            if (pos.x < minX) minX = pos.x;
+            if (pos.x > maxX) maxX = pos.x;
+            if (pos.y < minY) minY = pos.y;
+            if (pos.y > maxY) maxY = pos.y;
+        }
+
+        // Dodajemy margines (padding), żeby algorytm mógł "domknąć" ściany na krawędziach
+        int padding = 1;
+
+        for (int i = 0; i < iterations; i++)
+        {
+            // Tworzymy tymczasowy zbiór dla tej iteracji (zmiany nakładamy po pełnym przebiegu)
+            HashSet<Vector2Int> nextIterationFloor = new HashSet<Vector2Int>();
+
+            for (int x = minX - padding; x <= maxX + padding; x++)
+            {
+                for (int y = minY - padding; y <= maxY + padding; y++)
+                {
+                    Vector2Int pos = new Vector2Int(x, y);
+                    int neighborCount = CountNeighbors(pos, newFloor);
+
+                    // --- REGUŁY AUTOMATU KOMÓRKOWEGO ---
+                    // Te wartości (4) to standard dla generowania jaskiń.
+                    // Możesz eksperymentować: > 4 bardziej "zjada" mapę, < 4 bardziej ją "puchnie".
+                    
+                    if (neighborCount > 4)
+                    {
+                        nextIterationFloor.Add(pos); // Staje się podłogą
+                    }
+                    else if (neighborCount == 4) 
+                    {
+                        // Stan bez zmian (jeśli był podłogą, zostaje nią)
+                        if (newFloor.Contains(pos))
+                        {
+                            nextIterationFloor.Add(pos);
+                        }
+                    }
+                    // W przeciwnym razie staje się ścianą (nie dodajemy do floor)
+                }
+            }
+            newFloor = nextIterationFloor;
+        }
+
+        return newFloor;
+    }
+
+    private static int CountNeighbors(Vector2Int position, HashSet<Vector2Int> floor)
+    {
+        int count = 0;
+        // Sprawdzamy 8 sąsiadów (Sąsiedztwo Moore'a)
+        foreach (var dir in Direction2D.eightDirectionList)
+        {
+            if (floor.Contains(position + dir))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static HashSet<Vector2Int> RemoveDisconnectedIslands(HashSet<Vector2Int> floorPositions)
+    {
+        List<HashSet<Vector2Int>> islands = new List<HashSet<Vector2Int>>();
+        HashSet<Vector2Int> processedTiles = new HashSet<Vector2Int>();
+
+        foreach (var position in floorPositions)
+        {
+            if (!processedTiles.Contains(position))
+            {
+                // Znaleziono nową grupę (wyspę) - pobierz wszystkie należące do niej kafelki
+                var island = RunBFS(position, floorPositions);
+                islands.Add(island);
+
+                // Oznacz te kafelki jako przetworzone, by nie sprawdzać ich ponownie
+                foreach (var tile in island)
+                {
+                    processedTiles.Add(tile);
+                }
+            }
+        }
+
+        // Jeśli pokój jest pusty, zwróć pusty zbiór
+        if (islands.Count == 0)
+            return new HashSet<Vector2Int>();
+
+        // Znajdź największą wyspę
+        HashSet<Vector2Int> largestIsland = islands[0];
+        foreach (var island in islands)
+        {
+            if (island.Count > largestIsland.Count)
+            {
+                largestIsland = island;
+            }
+        }
+
+        // Zwracamy tylko największą część, reszta (małe śmieci) przepada
+        return largestIsland;
+    }
+
+    /// <summary>
+    /// Algorytm BFS (Breadth-First Search) znajdujący wszystkie połączone kafelki.
+    /// </summary>
+    private static HashSet<Vector2Int> RunBFS(Vector2Int startPos, HashSet<Vector2Int> floorPositions)
+    {
+        HashSet<Vector2Int> island = new HashSet<Vector2Int>();
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        
+        queue.Enqueue(startPos);
+        island.Add(startPos);
+
+        while (queue.Count > 0)
+        {
+            var currentPos = queue.Dequeue();
+            
+            // Sprawdzamy 4 kierunki (Góra, Dół, Lewo, Prawo)
+            // WAŻNE: Używamy cardinalDirectionList, a nie diagonalnych.
+            // Jeśli połączymy wyspy na skos, gracz może nie móc tam przejść (szczelina),
+            // więc traktujemy skosy jako brak połączenia.
+            foreach (var direction in Direction2D.cardinalDirectionList)
+            {
+                var neighbor = currentPos + direction;
+                
+                if (floorPositions.Contains(neighbor) && !island.Contains(neighbor))
+                {
+                    island.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+        return island;
+    }
+    
 }
 
 public static class Direction2D
@@ -126,10 +269,6 @@ public static class Direction2D
          new Vector2Int(-1,0), // LEFT
          new Vector2Int(-1,1) // LEFT-UP
     };
-
-
-
-
     public static Vector2Int GetRandomCardinalDirection()
     {
         return cardinalDirectionList[Random.Range(0,cardinalDirectionList.Count)];

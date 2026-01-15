@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed126c2ebbcbf7f45943e477959243d2, type: 3}
+  m_Name: StandardRoomPropData
+  m_EditorClassIdentifier: 
+  floorProps:
+  - propPrefab: {fileID: 5921658942396936792, guid: 4410940a7419e0448a582f83f6bd5a95, type: 3}
+    randomOffsetRange: 0
+  - propPrefab: {fileID: 2688365773602894705, guid: b61f02ea47da46d42b1f19121aec23c4, type: 3}
+    randomOffsetRange: 0
+  - propPrefab: {fileID: 3086755894671930659, guid: 01f176b25575f594faf84983a2d05a0d, type: 3}
+    randomOffsetRange: 0
+  - propPrefab: {fileID: 1155300678901696219, guid: 14f8d7de481c7d44eb9de9c7c6aad177, type: 3}
+    randomOffsetRange: 0
+  - propPrefab: {fileID: 4099440313387024154, guid: 916c06bde1c1e974fb6ec39c37a88ad0, type: 3}
+    randomOffsetRange: 0
+  floorPropDensity: 5
+  wallProps: []
+  wallPropDensity: 3
