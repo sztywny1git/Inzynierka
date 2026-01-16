@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63e6e6cf3d1339b4d94bf1e785636f0f, type: 3}
+  m_Name: Nightstring
+  m_EditorClassIdentifier: 
+  itemName: Nightstring
+  itemDescription: Whispers in the dark guide each strike, unseen and inevitable.
+  icon: {fileID: 21300000, guid: 97a24004277743b4ca7ddc1380ace123, type: 3}
+  isGold: 0
+  stackSize: 1
+  itemType: 3
+  currentHearts: 0
+  Resource: 0
+  armor: 0
+  speed: 0
+  damage: 6
+  fireRate: 0.15
+  CriticalChance: 0.08
+  CriticalDamage: 0
+  duration: 0
+  value: 70
+  rarity: 2

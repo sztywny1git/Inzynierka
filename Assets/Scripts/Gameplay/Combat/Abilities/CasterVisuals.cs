@@ -4,6 +4,7 @@ using UnityEngine;
 public class CasterVisuals : MonoBehaviour
 {
     [SerializeField] private AbilityCaster _caster;
+    [SerializeField] private string _speedParameterName = "AttackSpeed";
     private Animator _animator;
 
     private void Awake()
@@ -30,10 +31,11 @@ public class CasterVisuals : MonoBehaviour
         }
     }
 
-    private void PlayAnimation(string triggerName)
+    private void PlayAnimation(string triggerName, float speedMultiplier)
     {
         if (!string.IsNullOrEmpty(triggerName))
         {
+            _animator.SetFloat(_speedParameterName, speedMultiplier);
             _animator.SetTrigger(triggerName);
         }
     }

@@ -76,6 +76,18 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
 
     public void RemoveAllModifiersFromSource(StatDefinition definition, string source)
     {
-        GetStat(definition)?.RemoveAllModifiersFromSource(source);
+        if (definition != null)
+        {
+            var stat = GetStat(definition);
+            stat?.RemoveAllModifiersFromSource(source);
+        }
+        else 
+        {
+            foreach (var stat in _stats.Values)
+            {
+                stat.RemoveAllModifiersFromSource(source);
+            }
+        }
     }
+
 }

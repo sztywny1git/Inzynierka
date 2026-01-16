@@ -35,7 +35,6 @@ public class PlayerSpawnManager
                 var playerObj = _playerFactory.CreatePlayer(playerClass, spawnPoint.position);
                 if (playerObj != null)
                 {
-                    playerObj.transform.SetParent(_currentScope.transform, worldPositionStays: true);
                     _activePlayerInstance = playerObj.GetComponent<Character>();
                 }
             }

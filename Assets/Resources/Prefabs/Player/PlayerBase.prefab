@@ -119,8 +119,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1384830679
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _caster: {fileID: 4067101089647593856}
+  _speedParameterName: AttackSpeed
 --- !u!1 &3046662765766804656
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,6 +258,7 @@ GameObject:
   - component: {fileID: 6830318854930482620}
   - component: {fileID: 958430489556997633}
   - component: {fileID: 7328723182935940664}
+  - component: {fileID: -7308238074794833947}
   m_Layer: 3
   m_Name: PlayerBase
   m_TagString: Player
@@ -474,4 +476,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxResourceStatDef: {fileID: 11400000, guid: 47eec887c3ae67741afa1df5187394a4, type: 2}
-  _regenStatDef: {fileID: 0}
+  _regenStatDef: {fileID: 11400000, guid: e1d62bc4d9c09384b9f64e5f6c1bb426, type: 2}
+--- !u!114 &-7308238074794833947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5212117608679351381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86395f013f5e95a4da9d86416f0ca327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 4927721200284703169}
+  DamageDef: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
+  ArmorDef: {fileID: 11400000, guid: af31f7e720094ed4382dc3ca2ce5600a, type: 2}
+  MoveSpeedDef: {fileID: 11400000, guid: f642d78613687db459aed5e219e2ad2b, type: 2}
+  MaxHealthDef: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
+  MaxResourceDef: {fileID: 11400000, guid: 47eec887c3ae67741afa1df5187394a4, type: 2}
+  AttackSpeedDef: {fileID: 11400000, guid: 4beb9b1dc9ececa4a96c1d90a06e60e5, type: 2}
+  CritChanceDef: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
+  CritDamageDef: {fileID: 11400000, guid: 4375364806f10a04597ec73926842676, type: 2}

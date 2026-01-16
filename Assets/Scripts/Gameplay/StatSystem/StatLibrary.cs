@@ -7,8 +7,5 @@ public class StatSystemConfig : ScriptableObject
     public StatDefinition DamageStat;
     public StatDefinition CritChanceStat;
     public StatDefinition CritMultiplierStat;
-    
-    [Header("Projectile Modifiers")]
-    public StatDefinition ProjectileCountStat;
-    public StatDefinition PierceCountStat;
+    public StatDefinition AttackSpeedStat;
 }

@@ -20,8 +20,10 @@ MonoBehaviour:
   _maxCastDuration: 2
   _conditions: []
   _damageMultiplier: 1
-  _movementConfig: {fileID: 11400000, guid: 61fd26662aa03e54680f437b4030ecc9, type: 2}
+  _attackCount: 3
+  _movementConfig: {fileID: 11400000, guid: 2864684b243179a459c38c841def023d, type: 2}
   _projectilePrefab: {fileID: 6284455725840046436, guid: 4d4b25dea8210ed4b8ed54f96e7b2829, type: 3}
   _baseSpeed: 20
   _lifetime: 5
   _spreadAngle: 15
+  _pierceCount: 0

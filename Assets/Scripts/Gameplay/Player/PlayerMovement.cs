@@ -12,10 +12,12 @@ public class PlayerMovement : MonoBehaviour
     private Animator _animator;
     private ActionConstraintSystem _constraintSystem;
     private Vector2 _moveInput;
+    private float _stopDelayTimer;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         _animator = GetComponentInChildren<Animator>();
         _stats = GetComponent<IStatsProvider>();
         _constraintSystem = GetComponent<ActionConstraintSystem>();
@@ -59,8 +61,23 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateAnimation()
     {
         if (_animator == null) return;
-        bool IsWalking = _moveInput.sqrMagnitude > 0.01f && _constraintSystem.CanMove;
-        _animator.SetBool("IsWalking", IsWalking);
+
+        bool hasInput = _moveInput.sqrMagnitude > 0.01f;
+
+        if (hasInput)
+        {
+            _stopDelayTimer = 0f;
+            _animator.SetBool("IsWalking", true);
+        }
+        else
+        {
+            _stopDelayTimer += Time.deltaTime;
+
+            if (_stopDelayTimer > 0.1f)
+            {
+                _animator.SetBool("IsWalking", false);
+            }
+        }
     }
 
     private void FlipSprite()
@@ -70,7 +87,9 @@ public class PlayerMovement : MonoBehaviour
         if (Mathf.Abs(_moveInput.x) > 0.01f)
         {
             float direction = Mathf.Sign(_moveInput.x);
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * direction, transform.localScale.y, transform.localScale.z);
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * direction;
+            transform.localScale = scale;
         }
     }
 }

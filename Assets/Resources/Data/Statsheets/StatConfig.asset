@@ -15,5 +15,4 @@ MonoBehaviour:
   DamageStat: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
   CritChanceStat: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
   CritMultiplierStat: {fileID: 11400000, guid: 4375364806f10a04597ec73926842676, type: 2}
-  ProjectileCountStat: {fileID: 11400000, guid: 50df91de07a7a714f82d51846fe84f2e, type: 2}
-  PierceCountStat: {fileID: 0}
+  AttackSpeedStat: {fileID: 11400000, guid: 4beb9b1dc9ececa4a96c1d90a06e60e5, type: 2}

@@ -23,6 +23,5 @@ public abstract class Ability : ScriptableObject, IAbility
     public float MaxCastDuration => _maxCastDuration;
     public IEnumerable<UsageCondition> Conditions => _conditions;
 
-    public abstract IAbilityData CreateData(IStatsProvider statsProvider, StatSystemConfig config);
-    public abstract void Execute(AbilityContext context, IAbilityData data);
+    public abstract void Execute(AbilityContext context, AbilitySnapshot snapshot);
 }

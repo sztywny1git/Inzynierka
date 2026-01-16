@@ -1,113 +1,89 @@
-using UnityEngine;
-using System; // Potrzebne do Action
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    private Action<GameObject> _despawnCallback;
+    private GameObject _instigator;
     private IMovementStrategy _movementStrategy;
-    private Action<GameObject> _returnToPoolAction;
-    private GameObject _owner;
-    
     private DamageData _damageData;
+    private int _remainingPierce;
+    private float _expireTime;
+    private bool _isActive;
     
-    private int _pierceCount;
-    private float _lifetime;
-    private int _hitCount;
-    
-    private readonly List<int> _hitTargets = new List<int>();
-    private TrailRenderer _trailRenderer;
-    private Rigidbody2D _rb2d;
+    private HashSet<GameObject> _hitHistory = new HashSet<GameObject>();
 
-    private void Awake()
+    public void Initialize(Action<GameObject> despawnCallback, GameObject instigator, IMovementStrategy strategy, DamageData damageData, int pierceCount, float lifetime)
     {
-        _trailRenderer = GetComponent<TrailRenderer>();
-        _rb2d = GetComponent<Rigidbody2D>();
-    }
-
-    public void Initialize(
-        Action<GameObject> returnToPoolAction,
-        GameObject owner,
-        IMovementStrategy strategy,
-        DamageData damageData,
-        int pierceCount,
-        float lifetime)
-    {
-        _returnToPoolAction = returnToPoolAction;
-        _owner = owner;
+        _despawnCallback = despawnCallback;
+        _instigator = instigator;
         _movementStrategy = strategy;
         _damageData = damageData;
-        _pierceCount = pierceCount;
-        _lifetime = lifetime;
-        
-        _hitCount = 0;
-        _hitTargets.Clear();
+        _remainingPierce = pierceCount;
+        _expireTime = Time.time + lifetime;
+        _isActive = true;
+        _hitHistory.Clear();
 
-        if (_rb2d != null)
+        if (_movementStrategy != null)
         {
-            _rb2d.linearVelocity = Vector2.zero;
-            _rb2d.angularVelocity = 0f;
+            _movementStrategy.Initialize(transform);
         }
-
-        if (_trailRenderer != null)
-        {
-            _trailRenderer.Clear();
-        }
-
-        _movementStrategy.Initialize(transform);
     }
 
     private void Update()
     {
-        float dt = Time.deltaTime;
-        
+        if (!_isActive) return;
+
+        if (Time.time >= _expireTime)
+        {
+            Despawn();
+            return;
+        }
+
         if (_movementStrategy != null)
         {
-            _movementStrategy.Update(dt);
+            _movementStrategy.Update(Time.deltaTime);
             
             if (_movementStrategy.IsDone)
             {
-                DespawnSelf();
-                return;
+                Despawn();
             }
-        }
-
-        _lifetime -= dt;
-        if (_lifetime <= 0)
-        {
-            DespawnSelf();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject == _owner) return;
+        if (!_isActive) return;
+        if (other.gameObject == _instigator) return;
+        if (_hitHistory.Contains(other.gameObject)) return;
 
-        int targetId = other.GetInstanceID();
-        if (_hitTargets.Contains(targetId)) return;
-
-        if (other.TryGetComponent<IDamageable>(out var damageable))
+        if (other.TryGetComponent(out IDamageable target))
         {
-            DamageData finalPayload = _damageData;
-            finalPayload.SourcePosition = transform.position;
+            target.TakeDamage(_damageData);
+            _hitHistory.Add(other.gameObject);
 
-            damageable.TakeDamage(finalPayload);
-            
-            _hitTargets.Add(targetId);
-            _hitCount++;
-
-            if (_hitCount > _pierceCount)
+            if (_remainingPierce != -1)
             {
-                DespawnSelf();
+                if (_remainingPierce > 0)
+                {
+                    _remainingPierce--;
+                }
+                else
+                {
+                    Despawn();
+                }
             }
         }
-        else if (!other.isTrigger) 
+        else
         {
-            DespawnSelf();
+            Despawn();
         }
     }
 
-    private void DespawnSelf()
+    private void Despawn()
     {
-        _returnToPoolAction?.Invoke(gameObject);
+        _isActive = false;
+        _despawnCallback?.Invoke(gameObject);
     }
 }

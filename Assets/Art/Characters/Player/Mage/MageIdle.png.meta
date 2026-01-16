@@ -1,34 +1,7 @@
 fileFormatVersion: 2
 guid: 5d0b2fa37dc03a8489d7574da19c0931
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: -2698654473982429323
-    second: MageIdle2_0
-  - first:
-      213: -4704903875435776956
-    second: MageIdle2_1
-  - first:
-      213: 5633988721286219996
-    second: MageIdle2_2
-  - first:
-      213: 1826985707617254875
-    second: MageIdle2_3
-  - first:
-      213: -3183650102153343924
-    second: MageIdle2_4
-  - first:
-      213: -1283946539836663767
-    second: MageIdle2_5
-  - first:
-      213: 4379950631602437336
-    second: MageIdle2_6
-  - first:
-      213: 1678311249306877480
-    second: MageIdle2_7
-  - first:
-      213: -1735324938430485180
-    second: MageIdle2_8
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -124,199 +97,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MageIdle2_0
+      name: MageIdle_0
       rect:
         serializedVersion: 2
-        x: 60
-        y: 49
-        width: 30
-        height: 50
+        x: 62
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 57732c2dd047c8ad0800000000000000
-      internalID: -2698654473982429323
+      spriteID: a8d6d23e666972c4f9c20df9ff52c4c9
+      internalID: -2051176848
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_1
+      name: MageIdle_1
       rect:
         serializedVersion: 2
-        x: 210
-        y: 48
-        width: 30
-        height: 50
+        x: 222
+        y: 0
+        width: 41
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 444ba4a5ad2d4beb0800000000000000
-      internalID: -4704903875435776956
+      spriteID: 0f9b35ef6a073da4aa36f6e2a26ec196
+      internalID: 2115055758
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_2
+      name: MageIdle_2
       rect:
         serializedVersion: 2
-        x: 359
-        y: 47
-        width: 31
-        height: 50
+        x: 382
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: cd882d054e2ff2e40800000000000000
-      internalID: 5633988721286219996
+      spriteID: 8a31229e99a6905478a55ac76369ad04
+      internalID: 1315671332
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_3
+      name: MageIdle_3
       rect:
         serializedVersion: 2
-        x: 509
-        y: 47
-        width: 31
-        height: 50
+        x: 542
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: bddfd3042d1ca5910800000000000000
-      internalID: 1826985707617254875
+      spriteID: 9588ae88bde3e2047af93a478cd36779
+      internalID: -1173506523
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_4
+      name: MageIdle_4
       rect:
         serializedVersion: 2
-        x: 659
-        y: 47
-        width: 31
-        height: 50
+        x: 702
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c4c830c891761d3d0800000000000000
-      internalID: -3183650102153343924
+      spriteID: 8f8bd51bd0cfd1b43a40fac0b618a5ab
+      internalID: -845101471
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_5
+      name: MageIdle_5
       rect:
         serializedVersion: 2
-        x: 809
-        y: 48
-        width: 31
-        height: 50
+        x: 862
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9289176bc618e2ee0800000000000000
-      internalID: -1283946539836663767
+      spriteID: 881ad610353ae5741ae72c85b81e9edb
+      internalID: -2125379251
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_6
+      name: MageIdle_6
       rect:
         serializedVersion: 2
-        x: 959
-        y: 48
-        width: 31
-        height: 51
+        x: 1022
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8dc396ab4e5b8cc30800000000000000
-      internalID: 4379950631602437336
+      spriteID: 4cef3a60e99013e468116d6229442268
+      internalID: 729917958
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MageIdle2_7
+      name: MageIdle_7
       rect:
         serializedVersion: 2
-        x: 1109
-        y: 48
-        width: 31
-        height: 51
+        x: 1182
+        y: 0
+        width: 42
+        height: 71
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 82e7a7d603f8a4710800000000000000
-      internalID: 1678311249306877480
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MageIdle2_8
-      rect:
-        serializedVersion: 2
-        x: 1260
-        y: 48
-        width: 30
-        height: 51
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 44d69f2a923eae7e0800000000000000
-      internalID: -1735324938430485180
+      spriteID: 4f196079d678dec4780c4f6b4e856050
+      internalID: -589975250
       vertices: []
       indices: 
       edges: []
@@ -325,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: c39ffb61db7cef14eada42a020a1320e
     internalID: 0
     vertices: []
     indices: 
@@ -335,15 +286,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MageIdle2_0: -2698654473982429323
-      MageIdle2_1: -4704903875435776956
-      MageIdle2_2: 5633988721286219996
-      MageIdle2_3: 1826985707617254875
-      MageIdle2_4: -3183650102153343924
-      MageIdle2_5: -1283946539836663767
-      MageIdle2_6: 4379950631602437336
-      MageIdle2_7: 1678311249306877480
-      MageIdle2_8: -1735324938430485180
+      MageIdle_0: -2051176848
+      MageIdle_1: 2115055758
+      MageIdle_2: 1315671332
+      MageIdle_3: -1173506523
+      MageIdle_4: -845101471
+      MageIdle_5: -2125379251
+      MageIdle_6: 729917958
+      MageIdle_7: -589975250
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

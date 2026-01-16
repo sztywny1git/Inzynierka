@@ -3,21 +3,14 @@ using UnityEngine;
 public abstract class DamageAbility : Ability
 {
     [SerializeField] protected float _damageMultiplier = 1.0f;
+    [SerializeField] protected int _attackCount = 1;
 
-    protected CombatStats GetBaseCombatStats(IStatsProvider stats, StatSystemConfig config)
+    protected DamageData CalculateDamage(AbilityContext context, AbilitySnapshot snapshot)
     {
-        return new CombatStats
-        {
-            BaseDamage = stats.GetFinalStatValue(config.DamageStat) * _damageMultiplier,
-            CritChance = stats.GetFinalStatValue(config.CritChanceStat),
-            CritMultiplier = stats.GetFinalStatValue(config.CritMultiplierStat)
-        };
-    }
-
-    protected DamageData CalculateDamage(AbilityContext context, CombatStats stats)
-    {
-        bool isCrit = UnityEngine.Random.value <= stats.CritChance;
-        float finalDamage = isCrit ? stats.BaseDamage * stats.CritMultiplier : stats.BaseDamage;
+        float baseDmg = snapshot.BaseDamage * _damageMultiplier;
+        
+        bool isCrit = UnityEngine.Random.value <= snapshot.CritChance;
+        float finalDamage = isCrit ? baseDmg * snapshot.CritMultiplier : baseDmg;
 
         return new DamageData(finalDamage, isCrit, context.Instigator, context.Origin.position);
     }

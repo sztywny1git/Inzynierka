@@ -17,10 +17,9 @@ public class AbilityCaster : MonoBehaviour
     [SerializeField] private StatSystemConfig _statConfig;
     [SerializeField] private float _inputBufferTime = 0.4f;
 
-    public event Action<string> OnCastAnimationRequired;
+    public event Action<string, float> OnCastAnimationRequired;
     public event Action OnCastInterrupted;
 
-    private IObjectResolver _container;
     private IAbilitySpawner _spawner;
     private IStatsProvider _statsProvider;
     private ILiving _livingEntity;
@@ -31,21 +30,20 @@ public class AbilityCaster : MonoBehaviour
     private AbilitySpawnPoint _cachedSpawnPoint;
     
     private CasterState _currentState = CasterState.Idle;
-    private IAbility _currentAbility;
-    private IAbilityData _currentSnapshot;
+    private Ability _currentAbility;
+    private AbilitySnapshot _currentSnapshot;
     private Vector3 _currentAimLocation;
     private Coroutine _safetyCoroutine;
 
-    private IAbility _bufferedAbility;
+    private Ability _bufferedAbility;
     private Vector3 _bufferedAimLocation;
     private float _bufferExpireTimestamp;
 
-    private List<IAbility> _abilities = new List<IAbility>();
+    private List<Ability> _abilities = new List<Ability>();
 
     [Inject]
-    public void Construct(IObjectResolver container, IAbilitySpawner spawner)
+    public void Construct(IAbilitySpawner spawner)
     {
-        _container = container;
         _spawner = spawner;
     }
 
@@ -69,7 +67,7 @@ public class AbilityCaster : MonoBehaviour
         if (_livingEntity != null) _livingEntity.Death -= HandleDeath;
     }
 
-    public void Initialize(IEnumerable<IAbility> abilities)
+    public void Initialize(IEnumerable<Ability> abilities)
     {
         _abilities.Clear();
         if (abilities != null) _abilities.AddRange(abilities);
@@ -84,7 +82,7 @@ public class AbilityCaster : MonoBehaviour
         HandleCastRequest(_abilities[index], worldPosition);
     }
 
-    private void HandleCastRequest(IAbility ability, Vector3 aimLocation)
+    private void HandleCastRequest(Ability ability, Vector3 aimLocation)
     {
         if (ability.IsInstant)
         {
@@ -113,18 +111,27 @@ public class AbilityCaster : MonoBehaviour
         StartCastSequence(ability, aimLocation);
     }
 
-    private void ExecuteInstant(IAbility ability, Vector3 aimLocation)
+    private AbilitySnapshot CreateSnapshot()
+    {
+        float damage = _statsProvider.GetFinalStatValue(_statConfig.DamageStat);
+        float crit = _statsProvider.GetFinalStatValue(_statConfig.CritChanceStat);
+        float critMult = _statsProvider.GetFinalStatValue(_statConfig.CritMultiplierStat);
+
+        return new AbilitySnapshot(damage, crit, critMult);
+    }
+
+    private void ExecuteInstant(Ability ability, Vector3 aimLocation)
     {
         if (!CheckConditions(ability, aimLocation)) return;
 
         var context = CreateContext(ability.ActionId, aimLocation);
         ConsumeResources(ability, context);
         
-        var snapshot = ability.CreateData(_statsProvider, _statConfig);
+        var snapshot = CreateSnapshot();
         ability.Execute(context, snapshot);
     }
 
-    private void StartCastSequence(IAbility ability, Vector3 aimLocation)
+    private void StartCastSequence(Ability ability, Vector3 aimLocation)
     {
         if (!CheckConditions(ability, aimLocation))
         {
@@ -136,19 +143,24 @@ public class AbilityCaster : MonoBehaviour
 
         _currentAbility = ability;
         _currentAimLocation = aimLocation;
-        _currentSnapshot = ability.CreateData(_statsProvider, _statConfig);
+        _currentSnapshot = CreateSnapshot();
 
         _currentState = CasterState.PreCast;
         
         _constraintSystem.AddMovementLock();
         _constraintSystem.AddAbilityLock();
 
+        float attackSpeed = _statsProvider.GetFinalStatValue(_statConfig.AttackSpeedStat);
+        if (attackSpeed <= 0) attackSpeed = 1f;
+
+        float duration = ability.MaxCastDuration / attackSpeed;
+
         if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
-        _safetyCoroutine = StartCoroutine(SafetyNetRoutine(ability.MaxCastDuration));
+        _safetyCoroutine = StartCoroutine(SafetyNetRoutine(duration));
 
         if (!string.IsNullOrEmpty(ability.AnimationTriggerName))
         {
-            OnCastAnimationRequired?.Invoke(ability.AnimationTriggerName);
+            OnCastAnimationRequired?.Invoke(ability.AnimationTriggerName, attackSpeed);
         }
         else
         {
@@ -244,7 +256,7 @@ public class AbilityCaster : MonoBehaviour
         ResetState();
     }
 
-    private bool CheckConditions(IAbility ability, Vector3 aimLocation)
+    private bool CheckConditions(Ability ability, Vector3 aimLocation)
     {
         var context = CreateContext(ability.ActionId, aimLocation);
         foreach (var condition in ability.Conditions)
@@ -254,7 +266,7 @@ public class AbilityCaster : MonoBehaviour
         return true;
     }
 
-    private void ConsumeResources(IAbility ability, AbilityContext context)
+    private void ConsumeResources(Ability ability, AbilityContext context)
     {
         foreach (var condition in ability.Conditions)
         {

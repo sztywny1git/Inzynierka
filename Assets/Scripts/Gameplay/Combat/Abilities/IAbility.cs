@@ -12,7 +12,5 @@ public interface IAbility
 
     IEnumerable<UsageCondition> Conditions { get; }
 
-    IAbilityData CreateData(IStatsProvider statsProvider, StatSystemConfig config);
-
-    void Execute(AbilityContext context, IAbilityData data);
+    void Execute(AbilityContext context, AbilitySnapshot snapshot);
 }
