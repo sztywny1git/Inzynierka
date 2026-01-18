@@ -72,7 +72,7 @@ public class UltimateEq : MonoBehaviour
 
     bool OtherWindowIsOpen()
     {
-        return false;//ShopKeeper.isShopOpen || AugmentManager.isAugmentSelectionOpen;
+        return ShopKeeper.isShopOpen || AugmentManager.isAugmentSelectionOpen;
     }
 
 
