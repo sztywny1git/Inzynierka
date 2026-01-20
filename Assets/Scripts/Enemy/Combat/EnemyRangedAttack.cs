@@ -8,45 +8,27 @@ public class EnemyRangedAttack : MonoBehaviour
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
 
-    [Header("Stat Definitions (optional - uses CharacterStats if assigned)")]
-    [SerializeField] private StatDefinition damageStat;
-    [SerializeField] private StatDefinition attackRangeStat;
-    [SerializeField] private StatDefinition attackCooldownStat;
-    [SerializeField] private StatDefinition projectileSpeedStat;
-
-    [Header("Fallback Values (used if stat not found)")]
-    [SerializeField] private float fallbackDamage = 8f;
-    [SerializeField] private float fallbackAttackRange = 7f;
-    [SerializeField] private float fallbackAttackCooldownSeconds = 1.25f;
-    [SerializeField] private float fallbackProjectileSpeed = 10f;
+    [Header("Attack Settings")]
+    [SerializeField] private float damage = 8f;
+    [SerializeField] private float attackRange = 7f;
+    [SerializeField] private float attackCooldownSeconds = 1.25f;
+    [SerializeField] private float projectileSpeed = 10f;
     [SerializeField] private float projectileLifetimeSeconds = 3f;
 
     [Header("Origin")]
     [SerializeField] private Transform shootOrigin;
 
-    private IStatsProvider _stats;
     private float _nextAttackTime;
 
-    public float AttackRange => GetStatValue(attackRangeStat, fallbackAttackRange);
-    
-    private float Damage => GetStatValue(damageStat, fallbackDamage);
-    private float AttackCooldownSeconds => GetStatValue(attackCooldownStat, fallbackAttackCooldownSeconds);
-    private float ProjectileSpeed => GetStatValue(projectileSpeedStat, fallbackProjectileSpeed);
+    public float AttackRange => attackRange;
+    public float Damage => damage;
+    public float AttackCooldownSeconds => attackCooldownSeconds;
+    public float ProjectileSpeed => projectileSpeed;
 
     private void Awake()
     {
         if (shootOrigin == null) shootOrigin = transform;
-        _stats = GetComponent<IStatsProvider>();
         _nextAttackTime = 0f;
-    }
-
-    private float GetStatValue(StatDefinition statDef, float fallback)
-    {
-        if (statDef == null || _stats == null) return fallback;
-        var stat = _stats.GetStat(statDef);
-        if (stat == null) return fallback;
-        float value = stat.FinalValue;
-        return value > 0f ? value : fallback;
     }
 
     public bool CanAttackNow()

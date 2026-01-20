@@ -19,8 +19,9 @@ GameObject:
   - component: {fileID: 8239446532665203754}
   - component: {fileID: -7428215343394855609}
   - component: {fileID: -5669213459820263116}
+  - component: {fileID: 7017029192841013805}
   m_Layer: 0
-  m_Name: Skeleton 1
+  m_Name: Skeleton Ranged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b545123d4bed648a1641e764547932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialStatSheet: {fileID: 11400000, guid: b8545bf289b03eb49a0bd8be03ac4bac, type: 2}
+  initialStatSheet: {fileID: 0}
 --- !u!114 &-5669213459820263116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,3 +304,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthStatDef: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
+--- !u!114 &7017029192841013805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5039565374181764588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8010ea637372f974b9f608af319364a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogging: 1
+  projectilePrefab: {fileID: 815752666138578937, guid: 5787b0ee7b4820847a16799eaf95e539, type: 3}
+  damage: 8
+  attackRange: 7
+  attackCooldownSeconds: 1.25
+  projectileSpeed: 10
+  projectileLifetimeSeconds: 3
+  shootOrigin: {fileID: 0}

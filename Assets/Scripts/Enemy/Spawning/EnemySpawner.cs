@@ -45,6 +45,16 @@ public class EnemySpawner : MonoBehaviour
     [Header("Housekeeping")]
     [SerializeField] private bool clearPreviousSpawns = true;
 
+    [Header("Enemy Scaling")]
+    [Tooltip("Enable level-based enemy scaling")]
+    [SerializeField] private bool enableScaling = true;
+    
+    [Tooltip("Current level for scaling (higher = stronger enemies)")]
+    [SerializeField] private int currentLevel = 1;
+    
+    [Tooltip("If assigned, level will be read from ExpManager instead of currentLevel field")]
+    [SerializeField] private ExpManager expManager;
+
     private RoomFirstDungeonGenerator _generator;
     private Tilemap _floorTilemap;
     private HashSet<Vector2Int> _floorPositions;
@@ -128,6 +138,9 @@ public class EnemySpawner : MonoBehaviour
             playerTransform = character != null ? character.transform : null;
         }
 
+        // Determine the level for scaling
+        int levelForScaling = GetCurrentLevel();
+
         foreach (var entry in enemiesToSpawn)
         {
             if (entry.prefab == null || entry.count <= 0) continue;
@@ -138,8 +151,46 @@ public class EnemySpawner : MonoBehaviour
                 {
                     var instance = Instantiate(entry.prefab, spawnPos, Quaternion.identity);
                     _spawned.Add(instance);
+                    
+                    // Apply level scaling to the spawned enemy
+                    if (enableScaling)
+                    {
+                        ApplyScalingToEnemy(instance, levelForScaling);
+                    }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Gets the current level for enemy scaling.
+    /// </summary>
+    private int GetCurrentLevel()
+    {
+        if (expManager != null)
+        {
+            return Mathf.Max(1, expManager.level);
+        }
+        return Mathf.Max(1, currentLevel);
+    }
+
+    /// <summary>
+    /// Sets the current level for enemy scaling (useful for dungeon progression).
+    /// </summary>
+    public void SetLevel(int level)
+    {
+        currentLevel = Mathf.Max(1, level);
+    }
+
+    /// <summary>
+    /// Applies scaling to a spawned enemy based on the current level.
+    /// </summary>
+    private void ApplyScalingToEnemy(GameObject enemy, int level)
+    {
+        var scaler = enemy.GetComponent<EnemyScaler>();
+        if (scaler != null)
+        {
+            scaler.ApplyLevelScaling(level);
         }
     }
     

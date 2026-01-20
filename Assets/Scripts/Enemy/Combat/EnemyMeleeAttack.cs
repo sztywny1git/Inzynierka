@@ -12,8 +12,8 @@ public class EnemyMeleeAttack : MonoBehaviour
 
     [Header("Fallback Values (used if stat not found)")]
     [SerializeField] private float fallbackDamage = 10f;
-    [SerializeField] private float fallbackAttackRange = 0.8f;
-    [SerializeField] private float fallbackAttackCooldownSeconds = 1.0f;
+    [SerializeField] private float fallbackAttackRange = 1f;        // Melee range
+    [SerializeField] private float fallbackAttackCooldownSeconds = 1.2f; // Attack every ~1.2s
 
     [Header("Origin")]
     [SerializeField] private Transform attackOrigin;
@@ -127,6 +127,17 @@ public class EnemyMeleeAttack : MonoBehaviour
             if (debugLogging)
             {
                 Debug.Log($"[EnemyMeleeAttack] '{name}' TryAttack miss: target '{target.name}' out of range. dist={dist:0.###} range={range:0.###}", this);
+            }
+            return false;
+        }
+
+        // Don't attack other enemies (friendly fire disabled)
+        var otherEnemy = target.GetComponentInParent<EnemyBrain>();
+        if (otherEnemy != null)
+        {
+            if (debugLogging)
+            {
+                Debug.Log($"[EnemyMeleeAttack] '{name}' skipping attack on friendly '{target.name}'.", this);
             }
             return false;
         }

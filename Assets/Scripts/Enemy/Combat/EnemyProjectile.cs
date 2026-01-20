@@ -106,6 +106,18 @@ public class EnemyProjectile : MonoBehaviour
         // Ignore hits on the owner (the enemy that spawned this projectile).
         if (_owner != null && (other.gameObject == _owner || other.transform.IsChildOf(_owner.transform))) return;
 
+        // Ignore hits on other enemies (disable friendly fire)
+        var hitEnemy = other.GetComponentInParent<EnemyBrain>();
+        if (hitEnemy != null)
+        {
+            // If the hit enemy is the owner (already handled above) it's ignored; here we ignore other enemies too.
+            if (debugLogging)
+            {
+                Debug.Log($"[EnemyProjectile] '{name}' ignored hit on enemy '{other.name}'.", this);
+            }
+            return;
+        }
+
         if (debugLogging)
         {
             Debug.Log($"[EnemyProjectile] '{name}' hit '{other.name}' (trigger={isTrigger}). damage={_damage:0.###} layer={LayerMask.LayerToName(other.gameObject.layer)}", this);

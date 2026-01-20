@@ -9,11 +9,11 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     [SerializeField] private bool debugLogging = false;
 
     [Header("State Distances")]
-    [SerializeField] private float chaseDistance = 6f;
-    [SerializeField] private float attackDistance = 1.0f;
-    [SerializeField] private float rangedAttackDistance = 7.0f;
-    [SerializeField] private float rangedPreferredMinDistance = 3.0f;
-    [SerializeField] private float giveUpDistance = 10f;
+    [SerializeField] private float chaseDistance = 5f;              // Start chasing player
+    [SerializeField] private float attackDistance = 1.2f;           // Enter attack state
+    [SerializeField] private float rangedAttackDistance = 6f;       // Ranged attack range
+    [SerializeField] private float rangedPreferredMinDistance = 2.5f; // Ranged min distance
+    [SerializeField] private float giveUpDistance = 8f;             // Stop chasing
 
     [Header("Idle/Patrol")]
     [SerializeField] private float idleSeconds = 0.5f;
@@ -21,6 +21,9 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     [SerializeField] private float patrolRepathSeconds = 1.0f;
     [SerializeField] private bool useEnhancedPatrol = true;
     [SerializeField] private EnemyPatrolBehaviorConfig patrolBehaviorConfig;
+
+    [Header("Smart Combat")]
+    [SerializeField] private bool useSmartCombat = true;
 
     [Header("Death")]
     [SerializeField] private bool destroyOnDeath = true;
@@ -43,6 +46,7 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
 
     private IPatrolPointProvider _patrolProvider;
     private Health _health;
+    private ThreatDetector _threatDetector;
 
     // Cached states
     private EnemyIdleState _idle;
@@ -50,6 +54,7 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     private EnemyChaseState _chase;
     private EnemyAttackState _attack;
     private EnemyRangedAttackState _rangedAttack;
+    private EnemySmartCombatState _smartCombat;
 
     private bool _initialized;
     private bool _isDead;
@@ -95,6 +100,16 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         {
             // Keep the old behavior (auto-add) but keep it explicit and predictable.
             _anim = gameObject.AddComponent<EnemyAnimator>();
+        }
+
+        // Auto-setup smart combat
+        if (useSmartCombat)
+        {
+            _threatDetector = GetComponent<ThreatDetector>();
+            if (_threatDetector == null)
+            {
+                _threatDetector = gameObject.AddComponent<ThreatDetector>();
+            }
         }
 
         // Sanity check required dependencies.
@@ -315,6 +330,18 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _chase = new EnemyChaseState(_ctx, _fsm, giveUpDistance, _patrol);
         _attack = new EnemyAttackState(_ctx, _fsm, attackDistance, _chase);
 
+        // Create smart combat state (auto-enabled)
+        if (useSmartCombat)
+        {
+            _smartCombat = new EnemySmartCombatState(
+                _ctx,
+                _fsm,
+                _threatDetector,
+                _chase,
+                _patrol,
+                _melee != null ? _melee.AttackRange : attackDistance);
+        }
+
         if (_ranged != null)
         {
             _rangedAttack = new EnemyRangedAttackState(
@@ -347,14 +374,20 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
             ? _melee.GetDistanceToTarget(target)
             : Vector2.Distance(transform.position, target.position);
 
-        // Prefer melee when close.
+        // Smart combat handles everything when in range
+        if (useSmartCombat && _smartCombat != null && dist <= chaseDistance)
+        {
+            desired = _smartCombat;
+            return !ReferenceEquals(desired, current);
+        }
+
+        // Fallback: original behavior when smart combat disabled
         if (dist <= attackDistance)
         {
             desired = _attack;
             return !ReferenceEquals(desired, current);
         }
 
-        // Prefer ranged only when not in melee range.
         if (_rangedAttack != null && dist <= rangedAttackDistance)
         {
             desired = _rangedAttack;
