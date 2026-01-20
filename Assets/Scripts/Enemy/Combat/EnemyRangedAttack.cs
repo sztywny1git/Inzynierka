@@ -21,9 +21,6 @@ public class EnemyRangedAttack : MonoBehaviour
     private float _nextAttackTime;
 
     public float AttackRange => attackRange;
-    public float Damage => damage;
-    public float AttackCooldownSeconds => attackCooldownSeconds;
-    public float ProjectileSpeed => projectileSpeed;
 
     private void Awake()
     {
@@ -77,7 +74,6 @@ public class EnemyRangedAttack : MonoBehaviour
 
         var instance = Instantiate(projectilePrefab, shootOrigin.position, Quaternion.identity);
 
-        // Try initialize EnemyProjectile (allow it to be on a child).
         var enemyProjectile = instance.GetComponent<EnemyProjectile>() ?? instance.GetComponentInChildren<EnemyProjectile>();
         if (enemyProjectile != null)
         {
@@ -85,14 +81,12 @@ public class EnemyRangedAttack : MonoBehaviour
         }
         else
         {
-            // Fallback: attempt to set Rigidbody2D velocity if present.
             var rb = instance.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
                 rb.linearVelocity = dir * speed;
             }
 
-            // Ensure non-scripted projectile prefabs don't pile up forever.
             Destroy(instance, projectileLifetimeSeconds);
 
             if (debugLogging)

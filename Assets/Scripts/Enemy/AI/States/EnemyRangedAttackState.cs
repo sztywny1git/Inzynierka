@@ -49,21 +49,18 @@ public sealed class EnemyRangedAttackState : IState
 
         float dist = Vector2.Distance(_ctx.Transform.position, target.position);
 
-        // If too close, switch to melee.
         if (_melee != null && dist <= _ctx.MeleeAttack.AttackRange)
         {
             _fsm.ChangeState(_melee);
             return;
         }
 
-        // If too far, chase.
         if (dist > _rangedDistance)
         {
             _fsm.ChangeState(_chase);
             return;
         }
 
-        // Maintain a bit of distance.
         if (_preferredMinDistance > 0f && dist < _preferredMinDistance)
         {
             Vector2 away = (Vector2)(_ctx.Transform.position - target.position);

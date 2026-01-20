@@ -9,11 +9,11 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     [SerializeField] private bool debugLogging = false;
 
     [Header("State Distances")]
-    [SerializeField] private float chaseDistance = 5f;              // Start chasing player
-    [SerializeField] private float attackDistance = 1.2f;           // Enter attack state
-    [SerializeField] private float rangedAttackDistance = 6f;       // Ranged attack range
-    [SerializeField] private float rangedPreferredMinDistance = 2.5f; // Ranged min distance
-    [SerializeField] private float giveUpDistance = 8f;             // Stop chasing
+    [SerializeField] private float chaseDistance = 5f;
+    [SerializeField] private float attackDistance = 1.2f;
+    [SerializeField] private float rangedAttackDistance = 6f;
+    [SerializeField] private float rangedPreferredMinDistance = 2.5f;
+    [SerializeField] private float giveUpDistance = 8f;
 
     [Header("Idle/Patrol")]
     [SerializeField] private float idleSeconds = 0.5f;
@@ -65,7 +65,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     private float _lastMaxHealth;
     private float _nextAllowedHitAnimTime;
 
-    // Relay damage to Health so projectiles/colliders can always find an IDamageable on the enemy root.
     public bool DebugLogging => debugLogging;
 
     public void TakeDamage(DamageData damageData)
@@ -98,11 +97,9 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _anim = GetComponent<EnemyAnimator>();
         if (_anim == null)
         {
-            // Keep the old behavior (auto-add) but keep it explicit and predictable.
             _anim = gameObject.AddComponent<EnemyAnimator>();
         }
 
-        // Auto-setup smart combat
         if (useSmartCombat)
         {
             _threatDetector = GetComponent<ThreatDetector>();
@@ -112,7 +109,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
             }
         }
 
-        // Sanity check required dependencies.
         if (_movement == null || _targetProvider == null || _melee == null)
         {
             Debug.LogError(
@@ -126,7 +122,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         ClampConfiguredDistancesToCombatComponents();
 
         _ctx = new EnemyContext(this, _movement, _targetProvider, _melee);
-      //  _patrolProvider = ResolvePatrolProvider();
 
         BuildStates();
 
@@ -151,7 +146,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         EnsureHealthCached();
         SubscribeHealthEvents();
 
-        // Ensure we always have a state after enable.
         if (_fsm.Current == null && _idle != null)
         {
             _fsm.ChangeState(_idle);
@@ -210,13 +204,10 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _health.OnHealthChanged -= HandleHealthChanged;
     }
 
-    // Called when HP changes. If it decreased, treat it as taking damage (and play hit anim).
     private void HandleHealthChanged(float current, float max)
     {
         if (_isDead) return;
 
-        // Treat HP decrease as damage only if MaxHealth didn't change.
-        // MaxHealth changes can also lower CurrentHealth due to % preservation.
         bool maxUnchanged = Mathf.Abs(max - _lastMaxHealth) < 0.001f;
         if (maxUnchanged && current < _lastHealth)
         {
@@ -257,7 +248,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
             col.enabled = false;
         }
 
-        // Stop ticking AI immediately.
         enabled = false;
 
         if (destroyOnDeath)
@@ -273,7 +263,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
 
         if (_melee != null)
         {
-            // Prevent the "attack state dead-zone": entering attack farther than we can actually hit.
             if (attackDistance <= 0f || attackDistance > _melee.AttackRange)
             {
                 attackDistance = _melee.AttackRange;
@@ -289,32 +278,14 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         }
         else
         {
-            // No ranged component => ensure we never prefer ranged.
             rangedAttackDistance = 0f;
         }
 
         rangedPreferredMinDistance = Mathf.Max(0f, rangedPreferredMinDistance);
     }
 
-    private IPatrolPointProvider ResolvePatrolProvider()
-    {
-        if (patrolPointProviderBehaviour is IPatrolPointProvider explicitProvider)
-        {
-            return explicitProvider;
-        }
-
-        var fromComponents = GetComponent<IPatrolPointProvider>();
-        if (fromComponents != null)
-        {
-            return fromComponents;
-        }
-
-        return gameObject.AddComponent<DungeonFloorPatrolPointProvider>();
-    }
-
     private void BuildStates()
     {
-        // Create patrol state - use enhanced version if enabled
         if (useEnhancedPatrol)
         {
             var config = patrolBehaviorConfig ?? new EnemyPatrolBehaviorConfig();
@@ -330,7 +301,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _chase = new EnemyChaseState(_ctx, _fsm, giveUpDistance, _patrol);
         _attack = new EnemyAttackState(_ctx, _fsm, attackDistance, _chase);
 
-        // Create smart combat state (auto-enabled)
         if (useSmartCombat)
         {
             _smartCombat = new EnemySmartCombatState(
@@ -374,14 +344,12 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
             ? _melee.GetDistanceToTarget(target)
             : Vector2.Distance(transform.position, target.position);
 
-        // Smart combat handles everything when in range
         if (useSmartCombat && _smartCombat != null && dist <= chaseDistance)
         {
             desired = _smartCombat;
             return !ReferenceEquals(desired, current);
         }
 
-        // Fallback: original behavior when smart combat disabled
         if (dist <= attackDistance)
         {
             desired = _attack;

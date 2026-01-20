@@ -1,20 +1,15 @@
 using UnityEngine;
 
-/// <summary>
-/// Intelligent combat state with dodging, strafing, and attack commitment.
-/// Works automatically without configuration.
-/// </summary>
 public sealed class EnemySmartCombatState : IState
 {
     private enum Phase { Positioning, Strafing, Attacking, Dodging, Recovery }
 
-    // Auto configuration - no ScriptableObject needed
-    private const float DODGE_DURATION = 0.3f;           // How long dodge lasts
-    private const float DODGE_COOLDOWN = 1.5f;           // Time between dodges
-    private const float STRAFE_CHANGE_TIME = 2f;         // Time between strafe direction changes
-    private const float ATTACK_RECOVERY = 0.2f;          // Brief pause after attacking
-    private const float MIN_ALLY_DISTANCE = 1f;          // Don't crowd other enemies
-    private const float ATTACK_CHANCE_PER_SECOND = 2.5f; // Attack frequency when in range
+    private const float DODGE_DURATION = 0.3f;
+    private const float DODGE_COOLDOWN = 1.5f;
+    private const float STRAFE_CHANGE_TIME = 2f;
+    private const float ATTACK_RECOVERY = 0.2f;
+    private const float MIN_ALLY_DISTANCE = 1f;
+    private const float ATTACK_CHANCE_PER_SECOND = 2.5f;
 
     private readonly EnemyContext _ctx;
     private readonly StateMachine _fsm;
@@ -46,7 +41,6 @@ public sealed class EnemySmartCombatState : IState
         _chaseState = chaseState;
         _patrolState = patrolState;
         _attackRange = attackRange;
-        // Preferred distance is slightly less than attack range so enemy stays in range
         _preferredDistance = Mathf.Max(0.5f, attackRange * 0.7f);
     }
 
@@ -75,14 +69,12 @@ public sealed class EnemySmartCombatState : IState
 
         float dist = GetDistanceToTarget(target);
 
-        // Priority: Dodge incoming projectiles
         if (_phase != Phase.Dodging && _phase != Phase.Attacking && ShouldDodge())
         {
             StartDodge();
             return;
         }
 
-        // Too far - chase
         if (dist > _attackRange * 2f && _phase != Phase.Dodging)
         {
             _fsm.ChangeState(_chaseState);
@@ -113,7 +105,6 @@ public sealed class EnemySmartCombatState : IState
     {
         Vector2 toTarget = ((Vector2)target.position - (Vector2)_ctx.Transform.position).normalized;
         
-        // Priority: Attack if in range and can attack
         if (CanAttack() && dist <= _attackRange)
         {
             _phase = Phase.Attacking;
@@ -124,32 +115,26 @@ public sealed class EnemySmartCombatState : IState
 
         if (dist > _attackRange)
         {
-            // Too far - move closer
             moveDir = toTarget;
         }
         else if (dist < _preferredDistance * 0.5f)
         {
-            // Too close - back off slightly (but only if very close)
             moveDir = -toTarget * 0.5f;
         }
         else
         {
-            // Good position - strafe while waiting for attack cooldown
             _phase = Phase.Strafing;
             return;
         }
 
-        // Avoid crowding other enemies
         moveDir += GetCrowdAvoidance() * 0.4f;
         _ctx.Movement.SetMoveInput(moveDir.normalized);
     }
 
     private void TickStrafing(Transform target, float dist, float deltaTime)
     {
-        // Priority: Attack if ready
         if (CanAttack() && dist <= _attackRange)
         {
-            // Attack with high probability when ready
             if (Random.value < deltaTime * ATTACK_CHANCE_PER_SECOND)
             {
                 _phase = Phase.Attacking;
@@ -157,7 +142,6 @@ public sealed class EnemySmartCombatState : IState
             }
         }
 
-        // Change strafe direction periodically
         if (Time.time >= _nextStrafeChange)
         {
             _strafeDir *= -1f;
@@ -167,16 +151,13 @@ public sealed class EnemySmartCombatState : IState
         Vector2 toTarget = ((Vector2)target.position - (Vector2)_ctx.Transform.position).normalized;
         Vector2 strafeDir = Vector2.Perpendicular(toTarget) * _strafeDir;
 
-        // Maintain distance - stay in attack range
         float distError = dist - _preferredDistance;
         Vector2 distCorrection = toTarget * Mathf.Clamp(distError, -0.3f, 0.6f);
 
-        // Combine strafe + distance correction + crowd avoidance, then normalize
         Vector2 moveDir = strafeDir * 0.7f + distCorrection + GetCrowdAvoidance() * 0.2f;
         
         _ctx.Movement.SetMoveInput(moveDir.normalized);
 
-        // If too far, go back to positioning
         if (dist > _attackRange * 1.5f)
         {
             _phase = Phase.Positioning;
@@ -189,10 +170,8 @@ public sealed class EnemySmartCombatState : IState
 
         if (_ctx.MeleeAttack.TryAttack(target))
         {
-            // Trigger attack animation
             _anim?.TriggerAttack();
             
-            // Attack success - go to recovery
             _phase = Phase.Recovery;
             _phaseTimer = ATTACK_RECOVERY;
 
@@ -203,7 +182,6 @@ public sealed class EnemySmartCombatState : IState
         }
         else
         {
-            // Can't attack (cooldown) - go back to strafing
             _phase = Phase.Strafing;
         }
     }
@@ -212,7 +190,6 @@ public sealed class EnemySmartCombatState : IState
     {
         _phaseTimer -= deltaTime;
         
-        // Dodge at full speed in dodge direction
         _ctx.Movement.SetMoveInput(_dodgeDirection.normalized);
 
         if (_phaseTimer <= 0f)
@@ -225,7 +202,6 @@ public sealed class EnemySmartCombatState : IState
     {
         _phaseTimer -= deltaTime;
 
-        // Back away slightly during recovery
         var target = _ctx.TargetProvider.Target;
         if (target != null)
         {
