@@ -68,9 +68,9 @@ public class EnemyRangedAttack : MonoBehaviour
         if (dir.sqrMagnitude < 0.0001f) dir = Vector2.right;
         dir.Normalize();
 
-        float dmg = Damage;
-        float speed = ProjectileSpeed;
-        float cooldown = AttackCooldownSeconds;
+        float dmg = damage;
+        float speed = projectileSpeed;
+        float cooldown = attackCooldownSeconds;
 
         var instance = Instantiate(projectilePrefab, shootOrigin.position, Quaternion.identity);
 

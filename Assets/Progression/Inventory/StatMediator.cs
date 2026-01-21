@@ -44,34 +44,6 @@ public class StatMediator : MonoBehaviour
         {
             InventoryManager.Instance.useItem.RegisterPlayer(this);
         }
-
-        if (ResourceUI.Instance != null && character != null)
-        {
-            var resource = character.GetComponent<Resource>();
-            if (resource != null)
-            {
-                ResourceUI.Instance.RegisterPlayerResource(resource);
-                Debug.Log("[StatMediator] ResourceUI registered!");
-            }
-            else
-            {
-                Debug.LogWarning("[StatMediator] Character has no Resource component!");
-            }
-        }
-        if (HealthUI.Instance != null && character != null)
-        {
-            var health = character.GetComponent<Health>();
-            if (health != null)
-            {
-                HealthUI.Instance.RegisterPlayerHealth(health);
-                Debug.Log("[StatMediator] HealthUI registered!");
-            }
-            else
-            {
-                Debug.LogWarning("[StatMediator] Character has no Health component!");
-            }
-        }
-
     }
 
     private void OnDestroy()
