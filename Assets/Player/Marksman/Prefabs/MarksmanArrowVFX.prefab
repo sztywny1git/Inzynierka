@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7682843543251198238
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_Size.x
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_Size.y
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1034955996, guid: 69d5db5a7ed100d48ab39e45f6ffc3f2, type: 3}
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -254876081
+      objectReference: {fileID: 0}
+    - target: {fileID: -5650911512736328770, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3244200547654871872, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3264398770652611094, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_Name
+      value: MarksmanArrowVFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 4040657098364932619, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 37ba34de5506033408994040e9b6d498, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}

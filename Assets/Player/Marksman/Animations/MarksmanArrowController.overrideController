@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MarksmanArrowController
+  m_Controller: {fileID: 9100000, guid: a4681e2e96db1fa4abef933f1b8916bb, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: ea27186a658550e49be658746f9bf176, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: dfad0baacb71d104ea1c98e43247b71e, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a98cd1f6f8114494aaff5b9c53be5a07, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 522189ccc3d8c9d4d9772b7ddb9b6dd6, type: 2}
