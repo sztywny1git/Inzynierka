@@ -16,6 +16,6 @@ MonoBehaviour:
   description: +0.1 Crit Chance
   icon: {fileID: 21300000, guid: 0264d877b914b134ba562c053ec2d20c, type: 3}
   augmentType: 3
-  value: 0
+  value: 0.1
   isStackable: 1
   maxStacks: 2

@@ -8,7 +8,7 @@ public class UltimateEq : MonoBehaviour
     public CanvasGroup UltimateEqCanvas;
 
     //public GameObject UltimateShop;
-    public GameObject EqPanel;
+    public GameObject EqAndAugmentsPanel;
     public GameObject StatsPanel;
     private bool UltimateEqPanel = false;
 
@@ -72,7 +72,7 @@ public class UltimateEq : MonoBehaviour
 
     bool OtherWindowIsOpen()
     {
-        return false;//ShopKeeper.isShopOpen || AugmentManager.isAugmentSelectionOpen;
+        return ShopKeeper.isShopOpen || AugmentManager.isAugmentSelectionOpen;
     }
 
 
@@ -100,7 +100,7 @@ public class UltimateEq : MonoBehaviour
         UltimateEqCanvas.blocksRaycasts = false;
         UltimateEqPanel = false;
 
-        EqPanel.SetActive(true);
+        EqAndAugmentsPanel.SetActive(true);
         StatsPanel.SetActive(true);
         hotbar.SetActive(true);
         visibleStats.SetActive(true);
