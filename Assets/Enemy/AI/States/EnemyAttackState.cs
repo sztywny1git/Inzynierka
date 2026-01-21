@@ -29,7 +29,6 @@ public sealed class EnemyAttackState : IState
 
     public void Tick(float deltaTime)
     {
-        // If the brain wants to switch to a different combat state (rare here), allow it.
         if (_ctx.Brain.TryGetDesiredCombatState(_fsm.Current, out var desired))
         {
             _fsm.ChangeState(desired);
@@ -47,8 +46,6 @@ public sealed class EnemyAttackState : IState
             ? _ctx.MeleeAttack.GetDistanceToTarget(target)
             : Vector2.Distance(_ctx.Transform.position, target.position);
 
-        // Avoid getting stuck: the state entry distance can be larger than the real hit range.
-        // If the target isn't actually within melee hit range, go back to chase to close the gap.
         float effectiveAttackDistance = _attackDistance;
         if (_ctx.MeleeAttack != null)
         {
@@ -74,7 +71,6 @@ public sealed class EnemyAttackState : IState
             return;
         }
 
-        // If we're in attack state but can't attack, it's usually cooldown.
         if (_ctx.Brain != null && _ctx.Brain.DebugLogging && Time.time >= _nextBlockedLogTime)
         {
             bool canAttack = _ctx.MeleeAttack.CanAttackNow();

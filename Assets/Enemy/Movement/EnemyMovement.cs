@@ -7,7 +7,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private StatDefinition moveSpeedStat;
 
     [Header("Fallbacks")]
-    [SerializeField] private float defaultMoveSpeedIfStatMissingOrZero = 3.5f;
+    [SerializeField] private float defaultMoveSpeedIfStatMissingOrZero = 2.5f;
 
     private IStatsProvider _stats;
     private Rigidbody2D _rb;

@@ -45,6 +45,13 @@ public class EnemySpawner : MonoBehaviour
     [Header("Housekeeping")]
     [SerializeField] private bool clearPreviousSpawns = true;
 
+    [Header("Enemy Scaling")]
+    [SerializeField] private bool enableScaling = true;
+    
+    [SerializeField] private int currentLevel = 1;
+    
+    [SerializeField] private ExpManager expManager;
+
     private RoomFirstDungeonGenerator _generator;
     private Tilemap _floorTilemap;
     private HashSet<Vector2Int> _floorPositions;
@@ -90,7 +97,6 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(startDelaySeconds);
         }
 
-        // Initialize floor positions based on spawn mode
         bool initialized = false;
         
         switch (spawnMode)
@@ -128,6 +134,8 @@ public class EnemySpawner : MonoBehaviour
             playerTransform = character != null ? character.transform : null;
         }
 
+        int levelForScaling = GetCurrentLevel();
+
         foreach (var entry in enemiesToSpawn)
         {
             if (entry.prefab == null || entry.count <= 0) continue;
@@ -138,8 +146,36 @@ public class EnemySpawner : MonoBehaviour
                 {
                     var instance = Instantiate(entry.prefab, spawnPos, Quaternion.identity);
                     _spawned.Add(instance);
+                    
+                    if (enableScaling)
+                    {
+                        ApplyScalingToEnemy(instance, levelForScaling);
+                    }
                 }
             }
+        }
+    }
+
+    private int GetCurrentLevel()
+    {
+        if (expManager != null)
+        {
+            return Mathf.Max(1, expManager.level);
+        }
+        return Mathf.Max(1, currentLevel);
+    }
+
+    public void SetLevel(int level)
+    {
+        currentLevel = Mathf.Max(1, level);
+    }
+
+    private void ApplyScalingToEnemy(GameObject enemy, int level)
+    {
+        var scaler = enemy.GetComponent<EnemyScaler>();
+        if (scaler != null)
+        {
+            scaler.ApplyLevelScaling(level);
         }
     }
     
@@ -150,7 +186,6 @@ public class EnemySpawner : MonoBehaviour
             _generator = FindFirstObjectByType<RoomFirstDungeonGenerator>();
         }
 
-        // Wait until dungeon is generated.
         float timeoutAt = Time.time + 5f;
         while ((_generator == null || _generator.floorPositions == null || _generator.floorPositions.Count == 0) && Time.time < timeoutAt)
         {
@@ -201,7 +236,6 @@ public class EnemySpawner : MonoBehaviour
             return false;
         }
         
-        // For manual points, we'll handle spawning differently
         _floorPositions = new HashSet<Vector2Int>();
         foreach (var point in manualSpawnPoints)
         {
@@ -255,7 +289,6 @@ public class EnemySpawner : MonoBehaviour
             }
             if (tooCloseToOtherEnemy) continue;
 
-            // Check for blocked position.
             if (spawnCheckRadius > 0f)
             {
                 var hit = Physics2D.OverlapCircle(candidate, spawnCheckRadius, spawnBlockMask);
@@ -279,7 +312,6 @@ public class EnemySpawner : MonoBehaviour
             idx++;
         }
 
-        // Fallback (shouldn't happen).
         foreach (var cell in _floorPositions)
         {
             return cell;
@@ -297,7 +329,6 @@ public class EnemySpawner : MonoBehaviour
             return cellWorld + new Vector3(size.x / 2f, size.y / 2f, 0f);
         }
 
-        // Fallback: interpret cell coords as world coords.
         return new Vector3(cell.x + 0.5f, cell.y + 0.5f, 0f);
     }
 

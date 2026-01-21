@@ -2,10 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-/// <summary>
-/// Picks random patrol points from the dungeon generator floor tiles.
-/// Works with the current procedural generation (RoomFirstDungeonGenerator).
-/// </summary>
 public class DungeonFloorPatrolPointProvider : MonoBehaviour, IPatrolPointProvider
 {
     [SerializeField] private float maxSampleDistanceFromEnemy = 8f;
@@ -35,8 +31,6 @@ public class DungeonFloorPatrolPointProvider : MonoBehaviour, IPatrolPointProvid
 
         if (_floorTilemap == null)
         {
-            // Fallback: interpret floorPositions as world-ish grid coords.
-            // (Spawner does this too when tilemap is missing.)
             foreach (var pos in _generator.floorPositions)
             {
                 _scratch.Add(pos);
@@ -56,7 +50,6 @@ public class DungeonFloorPatrolPointProvider : MonoBehaviour, IPatrolPointProvid
             return false;
         }
 
-        // If tilemap exists, snap to cell center.
         var cell = _floorTilemap.WorldToCell(pickedGridWorld);
         Vector3 cellWorld = _floorTilemap.CellToWorld(cell);
         Vector3 cellSize = _floorTilemap.cellSize;
@@ -84,7 +77,6 @@ public class DungeonFloorPatrolPointProvider : MonoBehaviour, IPatrolPointProvid
             }
         }
 
-        // Give up: return any.
         var any = floorCells[Random.Range(0, floorCells.Count)];
         worldPoint = new Vector3(any.x, any.y, fromWorld.z);
         return true;

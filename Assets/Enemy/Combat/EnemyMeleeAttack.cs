@@ -12,8 +12,8 @@ public class EnemyMeleeAttack : MonoBehaviour
 
     [Header("Fallback Values (used if stat not found)")]
     [SerializeField] private float fallbackDamage = 10f;
-    [SerializeField] private float fallbackAttackRange = 0.8f;
-    [SerializeField] private float fallbackAttackCooldownSeconds = 1.0f;
+    [SerializeField] private float fallbackAttackRange = 1f;
+    [SerializeField] private float fallbackAttackCooldownSeconds = 1.2f;
 
     [Header("Origin")]
     [SerializeField] private Transform attackOrigin;
@@ -27,14 +27,7 @@ public class EnemyMeleeAttack : MonoBehaviour
     private float Damage => GetStatValue(damageStat, fallbackDamage);
     private float AttackCooldownSeconds => GetStatValue(attackCooldownStat, fallbackAttackCooldownSeconds);
 
-    public Vector2 AttackOriginPosition
-    {
-        get
-        {
-            if (attackOrigin != null) return attackOrigin.position;
-            return transform.position;
-        }
-    }
+    private Vector2 AttackOriginPosition => attackOrigin != null ? (Vector2)attackOrigin.position : (Vector2)transform.position;
 
     private void Awake()
     {
@@ -64,8 +57,6 @@ public class EnemyMeleeAttack : MonoBehaviour
 
         Vector2 origin = AttackOriginPosition;
 
-        // Prefer distance to the target's collider surface (not pivot), so melee AI doesn't
-        // get stuck failing range checks due to Rigidbody2D/collider separation.
         var ownCollider = target.GetComponent<Collider2D>();
         if (ownCollider != null)
         {
@@ -73,7 +64,6 @@ public class EnemyMeleeAttack : MonoBehaviour
             return Vector2.Distance(origin, closest);
         }
 
-        // Fallback: try children colliders (common when collider is on a child object).
         var childColliders = target.GetComponentsInChildren<Collider2D>();
         if (childColliders != null && childColliders.Length > 0)
         {
@@ -89,13 +79,7 @@ public class EnemyMeleeAttack : MonoBehaviour
             return best;
         }
 
-        // Last resort: pivot distance.
         return Vector2.Distance(origin, target.position);
-    }
-
-    public bool IsTargetInRange(Transform target)
-    {
-        return GetDistanceToTarget(target) <= AttackRange;
     }
 
     public bool TryAttack(Transform target)
@@ -119,7 +103,6 @@ public class EnemyMeleeAttack : MonoBehaviour
             return false;
         }
 
-        // Execute attack if target is in range.
         float dist = GetDistanceToTarget(target);
         float range = AttackRange;
         if (dist > range)
@@ -131,7 +114,16 @@ public class EnemyMeleeAttack : MonoBehaviour
             return false;
         }
 
-        // Consume cooldown even if target currently has no damage component wired.
+        var otherEnemy = target.GetComponentInParent<EnemyBrain>();
+        if (otherEnemy != null)
+        {
+            if (debugLogging)
+            {
+                Debug.Log($"[EnemyMeleeAttack] '{name}' skipping attack on friendly '{target.name}'.", this);
+            }
+            return false;
+        }
+
         float cooldown = AttackCooldownSeconds;
         _nextAttackTime = Time.time + cooldown;
 

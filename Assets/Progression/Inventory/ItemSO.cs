@@ -16,16 +16,11 @@ public class ItemSO : ScriptableObject
     public int currentHearts;
     public int Resource;
     public int armor;
-    //public int maxHearts; current hearts jest max hp teraz
     public float speed;
     public int damage;
     public float fireRate;
-
-
     public float CriticalChance;
     public float CriticalDamage;
-
-
 
     [Header("For Temporary Items")]
     public float duration;

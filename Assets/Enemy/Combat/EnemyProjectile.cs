@@ -39,7 +39,6 @@ public class EnemyProjectile : MonoBehaviour
         speed = projectileSpeed;
         lifetimeSeconds = lifetime;
 
-        // If the script is on a child, destroy the whole spawned projectile instance.
         _destroyTarget = destroyTarget != null ? destroyTarget : gameObject;
         _owner = owner;
 
@@ -76,10 +75,8 @@ public class EnemyProjectile : MonoBehaviour
             return;
         }
 
-        // Fallback movement if prefab has no Rigidbody2D.
         if (_rb == null)
         {
-            // Move the whole projectile object even if the script is on a child.
             var t = _destroyTarget != null ? _destroyTarget.transform : transform;
             t.position += (Vector3)(_direction * (speed * Time.deltaTime));
         }
@@ -100,11 +97,19 @@ public class EnemyProjectile : MonoBehaviour
     {
         if (other == null) return;
 
-        // Ignore self-hits.
         if (other.transform == transform || other.transform.IsChildOf(transform)) return;
 
-        // Ignore hits on the owner (the enemy that spawned this projectile).
         if (_owner != null && (other.gameObject == _owner || other.transform.IsChildOf(_owner.transform))) return;
+
+        var hitEnemy = other.GetComponentInParent<EnemyBrain>();
+        if (hitEnemy != null)
+        {
+            if (debugLogging)
+            {
+                Debug.Log($"[EnemyProjectile] '{name}' ignored hit on enemy '{other.name}'.", this);
+            }
+            return;
+        }
 
         if (debugLogging)
         {
@@ -144,7 +149,6 @@ public class EnemyProjectile : MonoBehaviour
             Debug.LogWarning($"[EnemyProjectile] '{name}' hit '{other.name}' but found NO IDamageable on it or any parent. Check if Health component exists and is on the same object or a parent of the collider.", this);
         }
 
-        // If we hit anything, destroy (optional).
         if (destroyOnHit)
         {
             Destroy(_destroyTarget);

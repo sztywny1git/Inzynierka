@@ -68,7 +68,6 @@ public sealed class EnemyPatrolState : IState
         }
         else
         {
-            // Fallback: small random step
             Vector2 random = Random.insideUnitCircle.normalized;
             _currentTarget = _ctx.Transform.position + (Vector3)(random * 2f);
         }
