@@ -36,6 +36,11 @@ public class HubState : IGameState
             AugmentManager.Instance.ResetAugments();
         }
 
+        if (ExpManager.Instance != null)
+        {
+            ExpManager.Instance.ResetExperience();
+        }
+
         _scopeService.DestroyActiveScope();
         var scope = await _scopeService.CreateGameplayScope();
 

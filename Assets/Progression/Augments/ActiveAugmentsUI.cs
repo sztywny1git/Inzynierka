@@ -6,12 +6,12 @@ using TMPro;
 public class ActiveAugmentsUI : MonoBehaviour
 {
     [Header("UI References")]
-    public Image[] augmentIcons; // Wszystkie ikonki (np. 10 sztuk)
+    public Image[] augmentIcons; 
     public TMP_Text[] augmentStackTexts;
 
     private void Start()
     {
-        // Na starcie ukryj wszystkie ikonki
+        // Na starcie ukrywamy wszystkie ikony
         for (int i = 0; i < augmentIcons.Length; i++)
         {
             augmentIcons[i].gameObject.SetActive(false);
@@ -23,16 +23,16 @@ public class ActiveAugmentsUI : MonoBehaviour
 
     public void RefreshUI()
     {
-        // Pobierz wszystkie aktywne augmenty z managera
+        // wszystkie aktywne augmenty z AugmentManager
         Dictionary<AugmentSO, int> activeAugments = AugmentManager.Instance.GetActiveAugments();
 
-        // Ukryj wszystkie ikonki najpierw
+        // ukrywamy wszystkie ikonki
         for (int i = 0; i < augmentIcons.Length; i++)
         {
             augmentIcons[i].gameObject.SetActive(false);
             augmentStackTexts[i].gameObject.SetActive(false);
 
-            // Wyczyœæ augmentSO
+            // czyscimy augmentSO
             AugmentInfoSlot slot = augmentIcons[i].GetComponent<AugmentInfoSlot>();
             if (slot != null)
             {
@@ -40,7 +40,7 @@ public class ActiveAugmentsUI : MonoBehaviour
             }
         }
 
-        // Wype³nij ikonki aktywnymi augmentami
+        // wypelniamy ikonki aktywnymi augmentami
         int index = 0;
         foreach (var kvp in activeAugments)
         {

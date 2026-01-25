@@ -51,14 +51,14 @@ public static class GraphAlgorithms
     {
         List<Edge> mst = new List<Edge>();
         
-        // Sortujemy krawędzie od najkrótszej (najważniejszy krok Kruskala)
+        // Sortujemy krawędzie od najkrótszej
         edges.Sort((a, b) => a.Distance.CompareTo(b.Distance));
 
         UnionFind uf = new UnionFind(nodes);
 
         foreach (var edge in edges)
         {
-            // Jeśli wierzchołki są w różnych zbiorach, dodaj krawędź (nie tworzy cyklu)
+            // Jeśli wierzchołki są w różnych zbiorach, dodaj krawędź
             if (uf.Find(edge.U) != uf.Find(edge.V))
             {
                 mst.Add(edge);
@@ -82,7 +82,7 @@ public static class GraphAlgorithms
         {
             if (!parent.ContainsKey(k)) return k; // Zabezpieczenie
             if (parent[k] == k) return k;
-            return parent[k] = Find(parent[k]); // Kompresja ścieżki (optymalizacja)
+            return parent[k] = Find(parent[k]); // Kompresja ścieżki
         }
 
         public void Union(Vector2Int a, Vector2Int b)
