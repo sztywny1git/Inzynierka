@@ -6,6 +6,18 @@ using VContainer;
 
 public class ExpManager : MonoBehaviour
 {
+    public static ExpManager Instance;
+
+    private void Awake()
+    {
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(Instance.gameObject);
+        }
+        Instance = this;
+    }
+
     public int level = 1;
     public int currentExp;
     public int expToNextLevel = 50;
@@ -37,6 +49,11 @@ public class ExpManager : MonoBehaviour
         if (_eventBus != null)
         {
             _eventBus.OnEnemyDied -= HandleEnemyDied;
+        }
+        
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 
@@ -78,5 +95,13 @@ public class ExpManager : MonoBehaviour
         {
             currentLevelText.text = "Level " + level;
         }
+    }
+
+    public void ResetExperience()
+    {
+        level = 1;
+        currentExp = 0;
+        expToNextLevel = 50;
+        UpdateUI();
     }
 }

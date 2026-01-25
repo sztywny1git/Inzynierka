@@ -20,4 +20,4 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
     BaseValue: 8
   - Definition: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
-    BaseValue: 200
+    BaseValue: 125

@@ -118,7 +118,7 @@ public class ShopInfo : MonoBehaviour
             stats.Add("CriticalChance: " + itemSO.CriticalChance.ToString());
 
         if (itemSO.CriticalDamage != 0)
-            stats.Add("CriticalChance: " + itemSO.CriticalDamage.ToString());
+            stats.Add("CriticalDamage: " + itemSO.CriticalDamage.ToString());
 
         if (itemSO.duration != 0)
             stats.Add("Duration: " + itemSO.duration.ToString());

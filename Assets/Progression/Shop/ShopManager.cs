@@ -1,25 +1,28 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
-using System;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.EventSystems;
-
 
 public class ShopManager : MonoBehaviour
 {
     [SerializeField] private ShopSlot[] shopSlots;
-
     [SerializeField] private InventoryManager inventoryManager;
+    
+    [Header("Shop Rules")]
+    [SerializeField] private float priceMultiplier = 1.2f; 
 
+    [Header("Restock Settings")]
+    [SerializeField] private LootTableSO restockTable;
 
     public void PopulateShopItems(List<ShopItems> shopItems)
     {
         for (int i = 0; i < shopItems.Count && i < shopSlots.Length; i++)
         {
             ShopItems shopItem = shopItems[i];
-            shopSlots[i].Initialize(shopItem.itemSO, shopItem.price);
+            
+            int finalPrice = Mathf.CeilToInt(shopItem.itemSO.value * priceMultiplier);
+            
+            shopSlots[i].Initialize(shopItem.itemSO, finalPrice);
             shopSlots[i].gameObject.SetActive(true);
         }
 
@@ -38,6 +41,38 @@ public class ShopManager : MonoBehaviour
                 inventoryManager.gold -= price;
                 inventoryManager.goldText.text = inventoryManager.gold.ToString();
                 inventoryManager.AddItem(itemSO, 1);
+
+                RestockSlot(itemSO);
+            }
+        }
+    }
+
+    private void RestockSlot(ItemSO purchasedItem)
+    {
+        foreach (var slot in shopSlots)
+        {
+            if (slot.gameObject.activeSelf && slot.itemSO == purchasedItem)
+            {
+                if (restockTable != null)
+                {
+                    ItemSO newItem = restockTable.GetRandomItem();
+                    
+                    if (newItem != null)
+                    {
+                        int restockPrice = Mathf.CeilToInt(newItem.value * priceMultiplier);
+                        slot.Initialize(newItem, restockPrice);
+                    }
+                    else
+                    {
+                        slot.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    slot.gameObject.SetActive(false);
+                }
+                
+                return;
             }
         }
     }
@@ -59,18 +94,8 @@ public class ShopManager : MonoBehaviour
         if (itemSO == null)
             return;
 
-        /*foreach (var slot in shopSlots)
-        {
-            if (slot.itemSO == itemSO)
-            {*/
-                //ile gosc daje przy sprzedazy
-                //inventoryManager.gold += slot.price - 1;
-                inventoryManager.gold += itemSO.value;
-                inventoryManager.goldText.text = inventoryManager.gold.ToString();
-                return;
-        /*    }
-        }*/
-
+        inventoryManager.gold += itemSO.value;
+        inventoryManager.goldText.text = inventoryManager.gold.ToString();
     }
 }
 
