@@ -8,8 +8,6 @@ public class BinaryConsoleComponent : MonoBehaviour
     [SerializeField, HideInInspector] private int targetValue;
     private bool isSolved = false;
     private bool isPlayerInRange = false; 
-    
-    // Referencje
     private PuzzleManager puzzleManager;
     private Spawner spawner;
     private BinaryPuzzleUI puzzleUI;
@@ -19,17 +17,16 @@ public class BinaryConsoleComponent : MonoBehaviour
         this.targetValue = data.TargetValue;
         this.spawner = spawnerRef;
 
-        Debug.Log($"[CONSOLE] Initialize wywołane. Otrzymano TargetValue: {data.TargetValue}");
+        //Debug.Log($"[CONSOLE] Initialize wywołane. Otrzymano TargetValue: {data.TargetValue}");
     }
 
     private void Start()
     {
-        // FindObjectsInactive.Include pozwala znaleźć obiekt nawet jak jest wyłączony
         puzzleUI = FindFirstObjectByType<BinaryPuzzleUI>(FindObjectsInactive.Include);
 
         if (puzzleUI == null)
         {
-            Debug.LogError("BRAK BinaryPuzzleUI NA SCENIE! Upewnij się, że dodałeś prefab UI do Canvasu.");
+            //Debug.LogError("BRAK BinaryPuzzleUI NA SCENIE! Upewnij się, że dodałeś prefab UI do Canvasu.");
         }
     }
 
@@ -37,7 +34,6 @@ public class BinaryConsoleComponent : MonoBehaviour
     {
         if (isSolved) return;
 
-        // Interakcja
         if (isPlayerInRange && Input.GetKeyDown(interactKey))
         {
             if (puzzleUI != null)
@@ -47,7 +43,6 @@ public class BinaryConsoleComponent : MonoBehaviour
         }
     }
 
-    // Wywoływane przez UI po sukcesie
     public void NotifySolved()
     {
         if (isSolved) return;
@@ -55,11 +50,9 @@ public class BinaryConsoleComponent : MonoBehaviour
         isSolved = true;
         Debug.Log("ZAGADKA ROZWIĄZANA!");
 
-        // Zmień kolor konsoli na zielony (opcjonalne)
         var renderer = GetComponent<SpriteRenderer>();
         if (renderer != null) renderer.color = Color.green;
 
-        // Powiadom Managera
         if (puzzleManager == null) puzzleManager = FindFirstObjectByType<PuzzleManager>();
         
         if (puzzleManager != null)

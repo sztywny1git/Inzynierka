@@ -126,10 +126,6 @@ public static class ProceduralGenerationAlgorithms
                 {
                     Vector2Int pos = new Vector2Int(x, y);
                     int neighborCount = CountNeighbors(pos, newFloor);
-
-                    // --- REGUŁY AUTOMATU KOMÓRKOWEGO ---
-                    // Te wartości (4) to standard dla generowania jaskiń.
-                    // Możesz eksperymentować: > 4 bardziej "zjada" mapę, < 4 bardziej ją "puchnie".
                     
                     if (neighborCount > 4)
                     {
@@ -175,11 +171,9 @@ public static class ProceduralGenerationAlgorithms
         {
             if (!processedTiles.Contains(position))
             {
-                // Znaleziono nową grupę (wyspę) - pobierz wszystkie należące do niej kafelki
                 var island = RunBFS(position, floorPositions);
                 islands.Add(island);
 
-                // Oznacz te kafelki jako przetworzone, by nie sprawdzać ich ponownie
                 foreach (var tile in island)
                 {
                     processedTiles.Add(tile);
@@ -187,11 +181,9 @@ public static class ProceduralGenerationAlgorithms
             }
         }
 
-        // Jeśli pokój jest pusty, zwróć pusty zbiór
         if (islands.Count == 0)
             return new HashSet<Vector2Int>();
 
-        // Znajdź największą wyspę
         HashSet<Vector2Int> largestIsland = islands[0];
         foreach (var island in islands)
         {
@@ -201,13 +193,10 @@ public static class ProceduralGenerationAlgorithms
             }
         }
 
-        // Zwracamy tylko największą część, reszta (małe śmieci) przepada
         return largestIsland;
     }
 
-    /// <summary>
-    /// Algorytm BFS (Breadth-First Search) znajdujący wszystkie połączone kafelki.
-    /// </summary>
+    //Algorytm BFS (Breadth-First Search) znajdujący wszystkie połączone kafelki.
     private static HashSet<Vector2Int> RunBFS(Vector2Int startPos, HashSet<Vector2Int> floorPositions)
     {
         HashSet<Vector2Int> island = new HashSet<Vector2Int>();
@@ -219,11 +208,7 @@ public static class ProceduralGenerationAlgorithms
         while (queue.Count > 0)
         {
             var currentPos = queue.Dequeue();
-            
-            // Sprawdzamy 4 kierunki (Góra, Dół, Lewo, Prawo)
-            // WAŻNE: Używamy cardinalDirectionList, a nie diagonalnych.
-            // Jeśli połączymy wyspy na skos, gracz może nie móc tam przejść (szczelina),
-            // więc traktujemy skosy jako brak połączenia.
+
             foreach (var direction in Direction2D.cardinalDirectionList)
             {
                 var neighbor = currentPos + direction;
@@ -244,30 +229,30 @@ public static class Direction2D
 {
     public static List<Vector2Int> cardinalDirectionList = new List<Vector2Int>()
     {
-         new Vector2Int(0,1), //UP
-         new Vector2Int(1,0), //RIGHT
-         new Vector2Int(0,-1), //DOWN
-         new Vector2Int(-1,0) // LEFT
+         new Vector2Int(0,1), //GÓRA
+         new Vector2Int(1,0), //PRAWO
+         new Vector2Int(0,-1), //DÓŁ
+         new Vector2Int(-1,0) //LEWO
     };
 
     public static List<Vector2Int> diagonalDirectionList = new List<Vector2Int>()
     {
-         new Vector2Int(1,1), //UP-RIGHT
-         new Vector2Int(1,-1), //RIGHT-DOWN
-         new Vector2Int(-1,-1), //DOWN-LEFT
-         new Vector2Int(-1,1) // LEFT-UP
+         new Vector2Int(1,1), //GÓRA-PRAWO
+         new Vector2Int(1,-1), //DÓŁ-PRAWO
+         new Vector2Int(-1,-1), //DÓŁ-LEWO
+         new Vector2Int(-1,1) // LEWO-GÓRA
     };
 
     public static List<Vector2Int> eightDirectionList = new List<Vector2Int>()
     {
-         new Vector2Int(0,1), //UP
-         new Vector2Int(1,1), //UP-RIGHT
-         new Vector2Int(1,0), //RIGHT
-         new Vector2Int(1,-1), //RIGHT-DOWN
-         new Vector2Int(0,-1), //DOWN
-         new Vector2Int(-1,-1), //DOWN-LEFT
-         new Vector2Int(-1,0), // LEFT
-         new Vector2Int(-1,1) // LEFT-UP
+         new Vector2Int(0,1), //GÓRA
+         new Vector2Int(1,1), //GÓRA-PRAWO
+         new Vector2Int(1,0), //PRAWO
+         new Vector2Int(1,-1), //PRAWO-DÓŁ
+         new Vector2Int(0,-1), //DÓŁ
+         new Vector2Int(-1,-1), //DÓŁ-LEWO
+         new Vector2Int(-1,0), // LEWO
+         new Vector2Int(-1,1) // LEWO-GÓRA
     };
     public static Vector2Int GetRandomCardinalDirection()
     {

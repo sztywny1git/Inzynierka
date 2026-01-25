@@ -58,7 +58,7 @@ public class TilemapVisualizer : MonoBehaviour
             roomTypeTilemap.ClearAllTiles();
     }
 
-    // ---- WALLS ----
+    //Ściany
 
     internal void PaintSingleBasicWall(Vector2Int position, string binaryType)
     {
@@ -92,10 +92,6 @@ public class TilemapVisualizer : MonoBehaviour
         if (tile != null)
             PaintSingleTile(wallTilemap, tile, position);
     }
-
-    // =========================================================
-    // =========== ROOM TYPE COLORING (NEW SECTION) ============
-    // =========================================================
 
     public void PaintRoomTypes(Dictionary<BoundsInt, RoomType> roomTypes)
     {
