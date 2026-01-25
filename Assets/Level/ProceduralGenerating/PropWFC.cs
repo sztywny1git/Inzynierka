@@ -27,8 +27,6 @@ public class PropWFC
         // Dynamiczne wagi dla tej komórki
         public Dictionary<PropType, int> LocalWeights; 
 
-        // Śledzenie "pokolenia" dywanu. 
-        // 0 = środek, 1 = pierwsza obwódka, 2 = druga obwódka itd.
         public int RugDistance = 0;
 
         public Cell(Vector2Int pos, bool nextToWall, Dictionary<PropType, int> globalWeights)
@@ -37,14 +35,10 @@ public class PropWFC
             IsNextToWall = nextToWall;
             PossibleOptions = new List<PropType>((PropType[])System.Enum.GetValues(typeof(PropType)));
             
-            // Kopia wag globalnych
             LocalWeights = new Dictionary<PropType, int>(globalWeights);
         }
     }
 
-    // KONFIGURACJA ROZMIARU DYWANU
-    // 1 = rozmiar 3x3 (środek + 1 pole w każdą stronę)
-    // 2 = rozmiar 5x5 (środek + 2 pola)
     private const int MaxRugRadius = 1; 
 
     public Dictionary<Vector2Int, PropType> Run(
@@ -60,13 +54,12 @@ public class PropWFC
 
         foreach (var pos in floor)
         {
-            // Sprawdzanie granic 2D
+
             if (pos.x >= room.xMin && pos.x < room.xMax && 
                 pos.y >= room.yMin && pos.y < room.yMax)
             {
                 bool nextToWall = CheckIfNextToWall(pos, walls);
                 
-                // PRZEKAZUJEMY dynamiczne wagi do komórki
                 var cell = new Cell(pos, nextToWall, roomWeights);
                 
                 if (reservedPositions.Contains(pos))
@@ -85,10 +78,8 @@ public class PropWFC
             }
         }
 
-        // --- FAZA STARTOWA DLA KLASTRÓW ---
         var possibleStarts = grid.Where(c => !c.Collapsed && !c.IsNextToWall && c.PossibleOptions.Contains(PropType.Rug)).ToList();
         
-        // UWAGA: Sprawdzamy czy w ogóle Rug ma wagę > 0 w tym pokoju, zanim spróbujemy go zespawnować
         if (roomWeights.ContainsKey(PropType.Rug) && roomWeights[PropType.Rug] > 0 && possibleStarts.Count > 0)
         {
             if (Random.value < 0.7f)
@@ -98,7 +89,6 @@ public class PropWFC
             }
         }
 
-        // --- GŁÓWNA PĘTLA ---
         int iterations = grid.Count(c => !c.Collapsed); 
         while (iterations > 0)
         {
@@ -160,7 +150,6 @@ public class PropWFC
         cell.PossibleOptions.Add(selected);
         cell.Collapsed = true;
 
-        // === NOWOŚĆ: Obliczanie dystansu dywanu ===
         if (selected == PropType.Rug)
         {
             int minNeighborDist = 1000;
@@ -171,7 +160,6 @@ public class PropWFC
                 Vector2Int nPos = cell.Position + dir;
                 if (gridLookup.TryGetValue(nPos, out Cell neighbor) && neighbor.Collapsed)
                 {
-                    // Jeśli sąsiad jest dywanem, dziedziczymy jego dystans + 1
                     if (neighbor.PossibleOptions[0] == PropType.Rug)
                     {
                         if (neighbor.RugDistance < minNeighborDist)
@@ -186,7 +174,7 @@ public class PropWFC
             if (foundParent)
                 cell.RugDistance = minNeighborDist + 1;
             else
-                cell.RugDistance = 0; // To jest "ziarno" (środek)
+                cell.RugDistance = 0;
         }
     }
 
@@ -194,7 +182,6 @@ public class PropWFC
     {
         PropType type = sourceCell.PossibleOptions[0];
 
-        // --- LOGIKA OGRANICZONEGO DYWANU ---
         if (type == PropType.Rug)
         {
             bool reachedLimit = sourceCell.RugDistance >= MaxRugRadius;
@@ -206,29 +193,22 @@ public class PropWFC
                 {
                     if (reachedLimit)
                     {
-                        // Osiągnęliśmy limit wielkości!
-                        // Zamiast zachęcać, ZABRANIAMY sąsiadowi bycia dywanem.
-                        // To tworzy ładną, twardą krawędź klastra.
                         neighbor.PossibleOptions.Remove(PropType.Rug);
                     }
                     else
                     {
-                        // Nie osiągnęliśmy limitu - propagujemy "wirusa" dywanowego.
                         if (neighbor.PossibleOptions.Contains(PropType.Rug))
                         {
-                            neighbor.LocalWeights[PropType.Rug] += 500; // Silna atrakcja
+                            neighbor.LocalWeights[PropType.Rug] += 500;
                         }
                     }
                     
-                    // Standardowe: dywan nie lubi ognia i filarów
                     neighbor.PossibleOptions.Remove(PropType.Fireplace);
                     neighbor.PossibleOptions.Remove(PropType.Pillar);
                 }
             }
         }
-        // ------------------------------------
 
-        // --- OGNISKO ---
         if (type == PropType.Fireplace)
         {
             foreach (var dir in Direction2D.eightDirectionList)
@@ -244,7 +224,6 @@ public class PropWFC
             }
         }
 
-        // --- FILAR ---
         if (type == PropType.Pillar)
         {
             foreach (var dir in Direction2D.eightDirectionList)
@@ -258,7 +237,6 @@ public class PropWFC
             }
         }
 
-        // --- SKRZYNIE/BECZKI ---
         if (type == PropType.Crate || type == PropType.Barrel)
         {
              foreach (var dir in Direction2D.eightDirectionList)
@@ -272,7 +250,6 @@ public class PropWFC
             }           
         }
 
-        // --- INNE (Blokada filarów) ---
         if (type != PropType.Empty && type != PropType.Rug) 
         {
              foreach (var dir in Direction2D.eightDirectionList)

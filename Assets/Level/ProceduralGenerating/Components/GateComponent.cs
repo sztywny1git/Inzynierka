@@ -19,20 +19,19 @@ public class GateComponent : MonoBehaviour
         this.isHorizontal = horizontal;
         this.isOpen = startOpened;
         
-        // Debug: Sprawdź czy wiemy, jak ustawić drzwi
-        Debug.Log($"Gate Init: Horizontal={horizontal}, Open={startOpened}");
+        //Debug.Log($"Gate Init: Horizontal={horizontal}, Open={startOpened}");
         
         UpdateVisuals();
     }
 
     public void Open()
     {
-        Debug.Log($"GateComponent: Próba otwarcia. Obecny stan isOpen: {isOpen}");
+        //Debug.Log($"GateComponent: Próba otwarcia. Obecny stan isOpen: {isOpen}");
         
-        if (isOpen) return; // Jeśli już otwarte, nic nie rób
+        if (isOpen) return;
 
         isOpen = true;
-        Debug.Log("GateComponent: Zmieniam flagę isOpen na TRUE. Aktualizuję wygląd...");
+        //Debug.Log("GateComponent: Zmieniam flagę isOpen na TRUE. Aktualizuję wygląd...");
         UpdateVisuals();
     }
 
@@ -49,12 +48,12 @@ public class GateComponent : MonoBehaviour
         if (isHorizontal)
         {
             targetSprite = isOpen ? horizontalOpen : horizontalClosed;
-            Debug.Log($"Wybieram sprite POZIOMY. Otwarty? {isOpen}");
+            //Debug.Log($"Wybieram sprite POZIOMY. Otwarty? {isOpen}");
         }
         else
         {
             targetSprite = isOpen ? verticalOpen : verticalClosed;
-            Debug.Log($"Wybieram sprite PIONOWY. Otwarty? {isOpen}");
+            //Debug.Log($"Wybieram sprite PIONOWY. Otwarty? {isOpen}");
         }
 
         if (targetSprite == null)
@@ -64,13 +63,13 @@ public class GateComponent : MonoBehaviour
         else
         {
             spriteRenderer.sprite = targetSprite;
-            Debug.Log($"Sukces: Zmieniono sprite na {targetSprite.name}");
+            //Debug.Log($"Sukces: Zmieniono sprite na {targetSprite.name}");
         }
 
         if (physicsCollider != null)
         {
             physicsCollider.enabled = !isOpen;
-            Debug.Log($"Collider {(isOpen ? "WYŁĄCZONY" : "WŁĄCZONY")}");
+            //Debug.Log($"Collider {(isOpen ? "WYŁĄCZONY" : "WŁĄCZONY")}");
         }
     }
 }
