@@ -27,7 +27,6 @@ public class UseItem : MonoBehaviour
 
     public void RemoveItemEffects(string source)
     {
-        // Ta metoda może być już niepotrzebna, bo modyfikatory same wygasają 
-        // ale dla kompatybilności można zostawić pustą lub przekierować do mediatora
+
     }
 }

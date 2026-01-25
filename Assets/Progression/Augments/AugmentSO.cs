@@ -9,10 +9,9 @@ public class AugmentSO : ScriptableObject
     public Sprite icon;
     public AugmentType augmentType;
 
-    // Warto�ci modyfikator�w
     public float value;
 
-    // Dla stackowalnych augment�w
+    // Dla stackowalnych augmentoww
     public bool isStackable = false;
     public int maxStacks = 1;
 }

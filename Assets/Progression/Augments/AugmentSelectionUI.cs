@@ -69,7 +69,7 @@ public class AugmentOptionUI
         nameText.text = augment.augmentName;
         descriptionText.text = augment.description;
 
-        // Poka� informacj� o stackach je�li augment jest stackowalny
+        // Pokaz informacje o stackach jesli augment jest stackowalny
         if (augment.isStackable)
         {
             int currentStacks = AugmentManager.Instance.GetAugmentStacks(augment);

@@ -22,7 +22,6 @@ public class AugmentInfoSlot : MonoBehaviour, IPointerEnterHandler, IPointerExit
         augmentInfo = FindAnyObjectByType<AugmentInfo>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (augmentSO != null && augmentInfo != null && augmentInfo.infoAugmentPanel.alpha > 0)

@@ -45,7 +45,7 @@ public class ShopInfo : MonoBehaviour
         if (ColorUtility.TryParseHtmlString(hex, out color))
             return color;
         else
-            return Color.white; // fallback jeœli hex niepoprawny
+            return Color.white; // jesli hex nie dziala
     }
 
 
@@ -73,7 +73,7 @@ public class ShopInfo : MonoBehaviour
 
             case Rarity.Legendary:
                 rarityText.text = "Legendary";
-                rarityText.color = new Color(1f, 0.6f, 0f); // z³oty
+                rarityText.color = new Color(1f, 0.6f, 0f); 
                 panelOutline.effectColor = new Color(1f, 0.6f, 0f);
                 break;
         }
@@ -126,37 +126,24 @@ public class ShopInfo : MonoBehaviour
         if (stats.Count <= 0)
             return;
 
-        /*for (int i = 0; i < statTexts.Length; i++)
-        {
-            if(i < stats.Count)
-            {
-                statTexts[i].text = stats[i];
-                statTexts[i].gameObject.SetActive(true);
-            }
-            else
-            {
-                statTexts[i].gameObject.SetActive(false);
-            }
-
-        }*/
 
         int totalSlots = statTexts.Length;
         int statCount = Mathf.Min(stats.Count, totalSlots);
 
-        // wy³¹czamy wszystkie sloty
+
         for (int i = 0; i < totalSlots; i++)
             statTexts[i].gameObject.SetActive(false);
 
-        // jeœli brak statów
+
         if (statCount == 0)
         {
             Vector2 panelSize = infoPanelRect.sizeDelta;
-            panelSize.y = 340f; // minimalna wysokoœæ panelu
+            panelSize.y = 340f; // minimalna wysokosc panelu
             infoPanelRect.sizeDelta = panelSize;
             return;
         }
 
-        // wype³niamy sloty od do³u
+        // wypelniamy sloty od dolu
         for (int i = 0; i < statCount; i++)
         {
             int slotIndex = totalSlots - statCount + i;
@@ -164,7 +151,7 @@ public class ShopInfo : MonoBehaviour
             statTexts[slotIndex].gameObject.SetActive(true);
         }
 
-        // dopasowanie wysokoœci panelu
+        // dopasowanie wysokosci panelu
         TMP_Text exampleStat = statTexts[0];
         float statHeight = exampleStat.preferredHeight;
         Vector2 panelSizeFinal = infoPanelRect.sizeDelta;

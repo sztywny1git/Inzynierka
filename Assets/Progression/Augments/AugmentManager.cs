@@ -128,7 +128,7 @@ public class AugmentManager : MonoBehaviour
             audioSource.PlayOneShot(augmentGetOpenSound);
         }
         
-        // Zawsze upewniamy się, że panel jest włączony
+        // upewniamy sie czy panel wlaczony
         if (selectionUI != null)
         {
             selectionUI.gameObject.SetActive(true);

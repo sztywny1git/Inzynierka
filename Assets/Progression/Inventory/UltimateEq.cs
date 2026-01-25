@@ -24,38 +24,7 @@ public class UltimateEq : MonoBehaviour
         CloseEq();
     }
 
-    /*private void Update()
-    {
-        if (Input.GetButtonDown("ToggleUltimateEq"))
-        {
-            if (UltimateEqPanel)
-            {
-                Time.timeScale = 1; //pazuje gre
-
-                //audioSource.PlayOneShot(inventoryOpenSound);
-
-                UltimateEqCanvas.alpha = 0;
-                UltimateEqCanvas.blocksRaycasts = false;
-                UltimateEqPanel = false;
-
-                //UltimateShop.SetActive(false);
-                EqPanel.SetActive(true);
-                StatsPanel.SetActive(true);
-
-            }
-            else
-            {
-                Time.timeScale = 1; //odpauzuje gre
-
-                //audioSource.Stop();
-
-                UltimateEqCanvas.alpha = 1;
-                UltimateEqCanvas.blocksRaycasts = true;
-                UltimateEqPanel = true;
-            }
-        }
-    }*/
-
+    
     private void Update()
     {
         if (OtherWindowIsOpen())
