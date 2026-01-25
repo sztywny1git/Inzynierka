@@ -1,17 +1,17 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Base controller for all boss enemies.
-/// Manages the hierarchical state machine and phase transitions.
-/// </summary>
 [RequireComponent(typeof(Health))]
-public abstract class BossController : MonoBehaviour, IDamageable
+public abstract class BossController : MonoBehaviour
 {
     [Header("Boss Settings")]
     [SerializeField] protected float phase2HealthThreshold = 0.5f;
     [SerializeField] protected float phaseTransitionDuration = 2f;
     [SerializeField] protected bool isInvulnerableDuringTransition = true;
+    
+    [Header("Rewards")]
+    [SerializeField] private GameObject _portalPrefab;
+    [SerializeField] private Vector3 _portalOffset = Vector3.zero;
     
     [Header("Target Detection")]
     [SerializeField] protected float detectionRange = 15f;
@@ -25,7 +25,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
     protected BossAnimator BossAnimator;
     protected Health Health;
     
-    // Phase states
     protected BossPhaseState Phase1State;
     protected BossPhaseState Phase2State;
     protected BossPhaseTransitionState PhaseTransitionState;
@@ -33,7 +32,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
     private bool _isTransitioning;
     private bool _isDead;
     private bool _hasTransitionedToPhase2;
-    private bool _isInvulnerable;
     
     public event Action<int> OnPhaseChanged;
     public event Action OnBossDeath;
@@ -41,14 +39,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
     public bool IsTransitioning => _isTransitioning;
     public bool IsDead => _isDead;
     public int CurrentPhase => Context?.CurrentPhase ?? 1;
-    
-    public void TakeDamage(DamageData damageData)
-    {
-        if (_isDead) return;
-        if (_isInvulnerable) return;
-        
-        Health?.TakeDamage(damageData);
-    }
     
     protected virtual void Awake()
     {
@@ -58,7 +48,7 @@ public abstract class BossController : MonoBehaviour, IDamageable
         
         if (BossAnimator == null)
         {
-            Debug.LogError($"[BossController] No BossAnimator found on {name}. Please add one.", this);
+            Debug.LogError($"[BossController] No BossAnimator found on {name}.", this);
         }
     }
     
@@ -68,7 +58,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
         InitializePhaseStates();
         SubscribeToEvents();
         
-        // Start in Phase 1
         HFSM.ChangeState(Phase1State);
         
         if (debugLogging)
@@ -91,16 +80,11 @@ public abstract class BossController : MonoBehaviour, IDamageable
         UnsubscribeFromEvents();
     }
     
-    #region Initialization
-    
     private void InitializeContext()
     {
         Context = new BossContext(this, BossAnimator, Health);
     }
     
-    /// <summary>
-    /// Initialize phase states. Must be implemented by derived classes.
-    /// </summary>
     protected abstract void InitializePhaseStates();
     
     private void SubscribeToEvents()
@@ -133,10 +117,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
         HFSM.OnStateChanged -= HandleStateChanged;
     }
     
-    #endregion
-    
-    #region Phase Management
-    
     private void CheckPhaseTransition()
     {
         if (_hasTransitionedToPhase2 || _isTransitioning) return;
@@ -168,7 +148,6 @@ public abstract class BossController : MonoBehaviour, IDamageable
             Debug.Log($"[BossController] {name} starting transition to Phase {targetPhase}.", this);
         }
         
-        // Create transition state if needed
         if (PhaseTransitionState == null)
         {
             PhaseTransitionState = new BossPhaseTransitionState(Context, phaseTransitionDuration, targetPhase);
@@ -179,9 +158,9 @@ public abstract class BossController : MonoBehaviour, IDamageable
             PhaseTransitionState.SetTargetPhase(targetPhase, phaseTransitionDuration);
         }
         
-        if (isInvulnerableDuringTransition)
+        if (isInvulnerableDuringTransition && Health != null)
         {
-            _isInvulnerable = true;
+            Health.SetInvulnerable(true);
         }
         
         BossAnimator?.PlayPhaseTransition();
@@ -195,12 +174,11 @@ public abstract class BossController : MonoBehaviour, IDamageable
         Context.SetPhase(targetPhase);
         BossAnimator?.SetPhase(targetPhase);
         
-        if (isInvulnerableDuringTransition)
+        if (isInvulnerableDuringTransition && Health != null)
         {
-            _isInvulnerable = false;
+            Health.SetInvulnerable(false);
         }
         
-        // Transition to the appropriate phase state
         BossPhaseState targetState = targetPhase switch
         {
             1 => Phase1State,
@@ -222,13 +200,8 @@ public abstract class BossController : MonoBehaviour, IDamageable
         }
     }
     
-    #endregion
-    
-    #region Target Detection
-    
     private void UpdateTargetDetection()
     {
-        // Find player within detection range
         Collider2D hit = Physics2D.OverlapCircle(transform.position, detectionRange, playerLayer);
         
         if (hit != null)
@@ -237,15 +210,14 @@ public abstract class BossController : MonoBehaviour, IDamageable
         }
     }
     
-    #endregion
-    
-    #region Event Handlers
-    
     private void HandleDeath()
     {
         if (_isDead) return;
         
         _isDead = true;
+        
+        enabled = false;
+        
         BossAnimator?.PlayDeath();
         HFSM.Clear();
         
@@ -255,6 +227,18 @@ public abstract class BossController : MonoBehaviour, IDamageable
         {
             Debug.Log($"[BossController] {name} has been defeated!", this);
         }
+
+        Destroy(gameObject, 10f);
+    }
+
+    public void OnDeathAnimationFinished()
+    {
+        if (_portalPrefab != null)
+        {
+            Instantiate(_portalPrefab, transform.position + _portalOffset, Quaternion.identity);
+        }
+
+        Destroy(gameObject);
     }
     
     private void HandleStateChanged(IState previousState, IState newState)
@@ -267,16 +251,9 @@ public abstract class BossController : MonoBehaviour, IDamageable
         }
     }
     
-    #endregion
-    
-    #region Debug
-    
     protected virtual void OnDrawGizmosSelected()
     {
-        // Detection range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
-    
-    #endregion
 }

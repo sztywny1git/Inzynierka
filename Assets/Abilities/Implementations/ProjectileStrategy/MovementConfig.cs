@@ -2,10 +2,5 @@ using UnityEngine;
 
 public abstract class ProjectileMovementConfig : ScriptableObject
 {
-    public abstract IMovementStrategy CreateStrategy(
-        Vector3 origin, 
-        Quaternion rotation, 
-        Vector3 targetPos, 
-        float finalSpeed
-    );
+    public abstract IMovementStrategy InitializeStrategy(IMovementStrategy existing, Vector3 start, Vector3 target, float speed);
 }

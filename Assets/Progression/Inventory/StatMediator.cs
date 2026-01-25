@@ -89,12 +89,16 @@ public class StatMediator : MonoBehaviour
 
         if (item.currentHearts != 0 && character.Health != null)
         {
-            character.Health.Heal(item.currentHearts);
+            float percentage = item.currentHearts / 100f;
+            float healAmount = character.Health.MaxHealth * percentage;
+            
+            healAmount = Mathf.Ceil(healAmount);
+
+            character.Health.Heal(healAmount);
         }
 
         if (item.Resource != 0) 
         {
-             // Logika resource (np. mana)
         }
 
         if (character.Stats != null)

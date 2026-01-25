@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyMovement))]
 [RequireComponent(typeof(EnemyTargetProvider))]
 [RequireComponent(typeof(EnemyMeleeAttack))]
-public sealed class EnemyBrain : MonoBehaviour, IDamageable
+public sealed class EnemyBrain : MonoBehaviour
 {
     [Header("Debug")]
     [SerializeField] private bool debugLogging = false;
@@ -25,10 +25,6 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     [Header("Smart Combat")]
     [SerializeField] private bool useSmartCombat = true;
 
-    [Header("Death")]
-    [SerializeField] private bool destroyOnDeath = true;
-    [SerializeField] private float destroyDelaySeconds = 1.5f;
-
     [Header("Patrol Provider")]
     [SerializeField] private MonoBehaviour patrolPointProviderBehaviour;
 
@@ -43,47 +39,28 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
     private EnemyMeleeAttack _melee;
     private EnemyRangedAttack _ranged;
     private EnemyAnimator _anim;
-
-    private IPatrolPointProvider _patrolProvider;
-    private Health _health;
     private ThreatDetector _threatDetector;
+    private Health _health;
+    private IPatrolPointProvider _patrolProvider;
 
-    // Cached states
     private EnemyIdleState _idle;
-    private IState _patrol; // Can be EnemyPatrolState or EnemyEnhancedPatrolState
+    private IState _patrol;
     private EnemyChaseState _chase;
     private EnemyAttackState _attack;
     private EnemyRangedAttackState _rangedAttack;
     private EnemySmartCombatState _smartCombat;
 
     private bool _initialized;
-    private bool _isDead;
-
     private IState _lastLoggedState;
-
+    
     private float _lastHealth;
     private float _lastMaxHealth;
     private float _nextAllowedHitAnimTime;
 
     public bool DebugLogging => debugLogging;
-
-    public void TakeDamage(DamageData damageData)
-    {
-        if (damageData.Amount <= 0f) return;
-        if (_isDead) return;
-
-        EnsureHealthCached();
-        if (_health == null)
-        {
-            if (debugLogging)
-            {
-                Debug.LogWarning($"[EnemyBrain] TakeDamage({damageData.Amount}) but no Health found on '{name}'.", this);
-            }
-            return;
-        }
-
-        _health.TakeDamage(damageData);
-    }
+    
+    // ZMIANA: Publiczny dostęp dla histerezy w SmartCombatState
+    public float ChaseDistance => chaseDistance; 
 
     private void Awake()
     {
@@ -93,58 +70,42 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _targetProvider = GetComponent<EnemyTargetProvider>();
         _melee = GetComponent<EnemyMeleeAttack>();
         _ranged = GetComponent<EnemyRangedAttack>();
-
         _anim = GetComponent<EnemyAnimator>();
-        if (_anim == null)
-        {
-            _anim = gameObject.AddComponent<EnemyAnimator>();
-        }
+        
+        if (_anim == null) _anim = gameObject.AddComponent<EnemyAnimator>();
 
         if (useSmartCombat)
         {
             _threatDetector = GetComponent<ThreatDetector>();
-            if (_threatDetector == null)
-            {
-                _threatDetector = gameObject.AddComponent<ThreatDetector>();
-            }
+            if (_threatDetector == null) _threatDetector = gameObject.AddComponent<ThreatDetector>();
         }
 
         if (_movement == null || _targetProvider == null || _melee == null)
         {
-            Debug.LogError(
-                $"[EnemyBrain] Missing required components on '{name}'. " +
-                $"movement={_movement != null} targetProvider={_targetProvider != null} melee={_melee != null}. Disabling EnemyBrain.",
-                this);
             enabled = false;
             return;
         }
 
         ClampConfiguredDistancesToCombatComponents();
-
         _ctx = new EnemyContext(this, _movement, _targetProvider, _melee);
-
         BuildStates();
-
         _initialized = true;
-
-        if (debugLogging)
-        {
-            Debug.Log(
-                $"[EnemyBrain] Awake OK '{name}'. meleeRange={_melee.AttackRange:0.###} attackDistance={attackDistance:0.###} " +
-                $"ranged={_ranged != null} rangedDistance={rangedAttackDistance:0.###}",
-                this);
-        }
     }
 
     private void OnEnable()
     {
         if (!_initialized) return;
 
-        _isDead = false;
         _nextAllowedHitAnimTime = 0f;
-
-        EnsureHealthCached();
-        SubscribeHealthEvents();
+        
+        _health = GetComponent<Health>() ?? GetComponentInChildren<Health>();
+        
+        if (_health != null)
+        {
+            _health.OnHealthChanged += HandleHealthChanged;
+            _lastHealth = _health.CurrentHealth;
+            _lastMaxHealth = _health.MaxHealth;
+        }
 
         if (_fsm.Current == null && _idle != null)
         {
@@ -154,22 +115,22 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
 
     private void OnDisable()
     {
-        UnsubscribeHealthEvents();
+        if (_health != null)
+        {
+            _health.OnHealthChanged -= HandleHealthChanged;
+        }
     }
 
     private void Update()
     {
         if (!_initialized) return;
-        if (_isDead) return;
 
         if (debugLogging)
         {
             var current = _fsm.Current;
             if (!ReferenceEquals(current, _lastLoggedState))
             {
-                string prevName = _lastLoggedState != null ? _lastLoggedState.GetType().Name : "<null>";
-                string nextName = current != null ? current.GetType().Name : "<null>";
-                Debug.Log($"[EnemyBrain] '{name}' state {prevName} -> {nextName}", this);
+                Debug.Log($"[EnemyBrain] State: {_lastLoggedState?.GetType().Name} -> {current?.GetType().Name}", this);
                 _lastLoggedState = current;
             }
         }
@@ -177,83 +138,25 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         _fsm.Tick(Time.deltaTime);
     }
 
-    private void EnsureHealthCached()
-    {
-        if (_health != null) return;
-        _health = GetComponent<Health>() ?? GetComponentInChildren<Health>();
-        if (_health != null)
-        {
-            _lastHealth = _health.CurrentHealth;
-            _lastMaxHealth = _health.MaxHealth;
-        }
-    }
-
-    private void SubscribeHealthEvents()
-    {
-        if (_health == null) return;
-        _health.Death -= HandleDeath;
-        _health.OnHealthChanged -= HandleHealthChanged;
-        _health.Death += HandleDeath;
-        _health.OnHealthChanged += HandleHealthChanged;
-    }
-
-    private void UnsubscribeHealthEvents()
-    {
-        if (_health == null) return;
-        _health.Death -= HandleDeath;
-        _health.OnHealthChanged -= HandleHealthChanged;
-    }
-
     private void HandleHealthChanged(float current, float max)
     {
-        if (_isDead) return;
-
         bool maxUnchanged = Mathf.Abs(max - _lastMaxHealth) < 0.001f;
-        if (maxUnchanged && current < _lastHealth)
+        
+        if (maxUnchanged && current < _lastHealth && current > 0)
         {
-            TriggerHitIfAllowed();
+            TriggerHitAnimIfAllowed();
         }
 
         _lastHealth = current;
         _lastMaxHealth = max;
     }
 
-    public void TriggerHitIfAllowed()
+    private void TriggerHitAnimIfAllowed()
     {
-        if (_isDead) return;
-        if (_anim == null)
-        {
-            if (debugLogging)
-            {
-                Debug.LogWarning($"[EnemyBrain] TriggerHit requested but EnemyAnimator is missing on '{name}'.", this);
-            }
-            return;
-        }
-        if (Time.time < _nextAllowedHitAnimTime) return;
+        if (_anim == null || Time.time < _nextAllowedHitAnimTime) return;
 
         _anim.TriggerHit();
         _nextAllowedHitAnimTime = Time.time + Mathf.Max(0f, hitAnimMinIntervalSeconds);
-    }
-
-    private void HandleDeath()
-    {
-        if (_isDead) return;
-        _isDead = true;
-
-        _anim?.TriggerDie();
-        _movement?.Stop();
-
-        foreach (var col in GetComponentsInChildren<Collider2D>())
-        {
-            col.enabled = false;
-        }
-
-        enabled = false;
-
-        if (destroyOnDeath)
-        {
-            Destroy(gameObject, Mathf.Max(0f, destroyDelaySeconds));
-        }
     }
 
     private void ClampConfiguredDistancesToCombatComponents()
@@ -261,26 +164,19 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         chaseDistance = Mathf.Max(0f, chaseDistance);
         giveUpDistance = Mathf.Max(0.1f, giveUpDistance);
 
-        if (_melee != null)
+        if (_melee != null && (attackDistance <= 0f || attackDistance > _melee.AttackRange))
         {
-            if (attackDistance <= 0f || attackDistance > _melee.AttackRange)
-            {
-                attackDistance = _melee.AttackRange;
-            }
+            attackDistance = _melee.AttackRange;
         }
 
         if (_ranged != null)
         {
-            if (rangedAttackDistance <= 0f)
-            {
-                rangedAttackDistance = _ranged.AttackRange;
-            }
+            if (rangedAttackDistance <= 0f) rangedAttackDistance = _ranged.AttackRange;
         }
         else
         {
             rangedAttackDistance = 0f;
         }
-
         rangedPreferredMinDistance = Mathf.Max(0f, rangedPreferredMinDistance);
     }
 
@@ -303,29 +199,12 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
 
         if (useSmartCombat)
         {
-            _smartCombat = new EnemySmartCombatState(
-                _ctx,
-                _fsm,
-                _threatDetector,
-                _chase,
-                _patrol,
-                _melee != null ? _melee.AttackRange : attackDistance);
+            _smartCombat = new EnemySmartCombatState(_ctx, _fsm, _threatDetector, _chase, _patrol, _melee != null ? _melee.AttackRange : attackDistance);
         }
 
         if (_ranged != null)
         {
-            _rangedAttack = new EnemyRangedAttackState(
-                _ctx,
-                _fsm,
-                _ranged,
-                rangedAttackDistance,
-                rangedPreferredMinDistance,
-                _attack,
-                _chase);
-        }
-        else
-        {
-            _rangedAttack = null;
+            _rangedAttack = new EnemyRangedAttackState(_ctx, _fsm, _ranged, rangedAttackDistance, rangedPreferredMinDistance, _attack, _chase);
         }
 
         _idle = new EnemyIdleState(_ctx, _fsm, idleSeconds, _patrol);
@@ -340,9 +219,7 @@ public sealed class EnemyBrain : MonoBehaviour, IDamageable
         var target = _ctx.TargetProvider.Target;
         if (target == null) return false;
 
-        float dist = _melee != null
-            ? _melee.GetDistanceToTarget(target)
-            : Vector2.Distance(transform.position, target.position);
+        float dist = _melee != null ? _melee.GetDistanceToTarget(target) : Vector2.Distance(transform.position, target.position);
 
         if (useSmartCombat && _smartCombat != null && dist <= chaseDistance)
         {

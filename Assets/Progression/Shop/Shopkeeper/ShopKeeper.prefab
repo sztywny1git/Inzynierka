@@ -73,9 +73,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 51
+  m_SortingLayerID: -1175039927
+  m_SortingLayer: 5
+  m_SortingOrder: 1
   m_Sprite: {fileID: -7942359355602504142, guid: 885a2677f4be4ee42a27070cb0a95366, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -165,8 +165,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1384830679
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1203b9153fc1ff74685f6711b06d047a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -250,30 +250,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 5019591969984843561}
-  shopCanvasGroup: {fileID: 0}
-  shopManager: {fileID: 0}
-  UltimateEqCanvas: {fileID: 0}
-  EqPanel: {fileID: 0}
-  StatsPanel: {fileID: 0}
-  shopItems:
-  - itemSO: {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
-    price: 2
-  - itemSO: {fileID: 11400000, guid: 0dbfb342e35a62944b3325e68027723c, type: 2}
-    price: 3
-  - itemSO: {fileID: 11400000, guid: 71b40181a30395c4cb4d5cd92665e338, type: 2}
-    price: 4
-  - itemSO: {fileID: 11400000, guid: 27b6cb6c77b212d4496c6b34d7708a4f, type: 2}
-    price: 66
-  - itemSO: {fileID: 11400000, guid: 52e83fedc1739a3449209b9fca0cdfa6, type: 2}
-    price: 66
-  - itemSO: {fileID: 11400000, guid: d248ef9b734354e46b5ab400df0e1e8f, type: 2}
-    price: 66
-  - itemSO: {fileID: 11400000, guid: b9c78b763d12a4b4ba4f6245f8120b41, type: 2}
-    price: 66
-  - itemSO: {fileID: 11400000, guid: 27366c746bfe9064eb8b9d94df456817, type: 2}
-    price: 66
   audioSource: {fileID: 5414822647489112945}
   shopOpenSound: {fileID: 8300000, guid: 4d7e26c4680c0fc4581c22a9aecba40f, type: 3}
+  lootTable: {fileID: 11400000, guid: c199e1fb3b449444d8025249a89455aa, type: 2}
+  itemsCount: 8
 --- !u!82 &5414822647489112945
 AudioSource:
   m_ObjectHideFlags: 0
@@ -446,9 +426,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 50
+  m_SortingLayerID: -1175039927
+  m_SortingLayer: 5
+  m_SortingOrder: 0
   m_Sprite: {fileID: -3989900381785602977, guid: c5a5854bd93640445937dfc2ee14cb8e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

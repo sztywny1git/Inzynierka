@@ -1,11 +1,12 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Abilities/Projectile")]
 public class ProjectileAbility : DamageAbility
 {
     [Header("Behavior")]
     [SerializeField] private ProjectileMovementConfig _movementConfig;
+    [SerializeField] private LayerMask _obstacleMask;
+    [SerializeField] private float _wallOffset = 0.05f;
 
     [Header("Projectile Settings")]
     [SerializeField] private Projectile _projectilePrefab;
@@ -13,10 +14,11 @@ public class ProjectileAbility : DamageAbility
     [SerializeField] private float _lifetime = 5f;
     [SerializeField] private float _spreadAngle = 15f;
     [SerializeField] private int _pierceCount = 0;
+    [SerializeField] private float _projectileRadius = 0.25f;
 
-    public override UniTask Execute(AbilityContext context, AbilitySnapshot snapshot)
+    public override void Execute(AbilityContext context, AbilitySnapshot snapshot)
     {
-        if (_movementConfig == null || _projectilePrefab == null) return UniTask.CompletedTask;
+        if (_movementConfig == null || _projectilePrefab == null) return;
 
         Vector3 aimDiff = context.AimLocation - context.Origin.position;
         aimDiff.z = 0;
@@ -24,7 +26,18 @@ public class ProjectileAbility : DamageAbility
 
         if (aimDir == Vector3.zero) aimDir = Vector3.right;
 
-        int count = Mathf.Max(1, _attackCount);
+        Vector3 spawnOrigin = context.Origin.position;
+        Vector3 instigatorPos = context.Instigator.transform.position;
+
+        RaycastHit2D hit = Physics2D.Linecast(instigatorPos, spawnOrigin, _obstacleMask);
+        
+        if (hit.collider != null)
+        {
+            float safeDistance = _projectileRadius + _wallOffset;
+            spawnOrigin = Vector3.MoveTowards(hit.point, instigatorPos, safeDistance);
+        }
+
+        int count = AttackCount;
         
         float startAngle = (count > 1) ? -_spreadAngle / 2f : 0f;
         float angleStep = (count > 1) ? _spreadAngle / (count - 1) : 0f;
@@ -36,34 +49,28 @@ public class ProjectileAbility : DamageAbility
             float currentAngleOffset = startAngle + (angleStep * i);
             Vector3 currentDir = Quaternion.Euler(0, 0, currentAngleOffset) * aimDir;
 
-            Projectile projectile = context.Spawner.Spawn(_projectilePrefab, context.Origin.position, Quaternion.identity);
+            Projectile projectile = context.Spawner.Spawn(_projectilePrefab, spawnOrigin, Quaternion.identity);
 
-            if (projectile == null) continue;
-            
-            projectile.transform.right = currentDir;
+            if (projectile != null)
+            {
+                projectile.transform.right = currentDir;
 
-            float distToTarget = Vector3.Distance(context.Origin.position, context.AimLocation);
-            distToTarget = Mathf.Max(distToTarget, 10f);
-            
-            Vector3 targetPos = context.Origin.position + (currentDir * distToTarget);
+                float distToTarget = Vector3.Distance(spawnOrigin, context.AimLocation);
+                distToTarget = Mathf.Max(distToTarget, 10f);
+                
+                Vector3 targetPos = spawnOrigin + (currentDir * distToTarget);
 
-            IMovementStrategy strategy = _movementConfig.CreateStrategy(
-                context.Origin.position,
-                projectile.transform.rotation,
-                targetPos,
-                _baseSpeed
-            );
-
-            projectile.Initialize(
-                context.Instigator,
-                strategy,
-                damagePayload,
-                _pierceCount,
-                _lifetime,
-                context.Spawner
-            );
+                projectile.Initialize(
+                    context.Instigator,
+                    _movementConfig,
+                    targetPos,
+                    _baseSpeed,
+                    damagePayload,
+                    _pierceCount,
+                    _lifetime,
+                    context.Spawner
+                );
+            }
         }
-
-        return UniTask.CompletedTask;
     }
 }

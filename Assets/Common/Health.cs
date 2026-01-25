@@ -12,7 +12,11 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
     [SerializeField] private float invulnerabilityDuration = 1.0f;
 
     private IStatsProvider _statsProvider;
-    private bool _isInvulnerable;
+    private bool _isFrameInvulnerable;
+    private bool _isExternalInvulnerable;
+    
+    // FIX: Flaga do sprawdzania, czy to pierwsze ustawienie życia
+    private bool _isInitialized = false;
 
     public float CurrentHealth { get; private set; }
     public float MaxHealth { get; private set; }
@@ -46,11 +50,13 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
             if (healthStat != null) healthStat.OnStatChanged -= OnMaxHealthChanged;
         }
         
-        if (_isInvulnerable)
+        if (_isFrameInvulnerable)
         {
-            _isInvulnerable = false;
+            _isFrameInvulnerable = false;
             OnInvulnerabilityChanged?.Invoke(false);
         }
+        
+        _isExternalInvulnerable = false;
     }
 
     private void ReinitializeHealth()
@@ -68,22 +74,34 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
 
     private void OnMaxHealthChanged(float newMaxValue)
     {
-        float diff = newMaxValue - MaxHealth;
         MaxHealth = newMaxValue;
 
-        if (diff > 0)
-            CurrentHealth += diff;
+        if (!_isInitialized)
+        {
+            CurrentHealth = MaxHealth;
+            _isInitialized = true;
+        }
         else
-            CurrentHealth = Mathf.Min(CurrentHealth, MaxHealth);
+        {
+            if (CurrentHealth > MaxHealth)
+            {
+                CurrentHealth = MaxHealth;
+            }
+        }
 
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
+    public void SetInvulnerable(bool state)
+    {
+        _isExternalInvulnerable = state;
     }
 
     public void TakeDamage(DamageData damageData)
     {
         if (!IsAlive) return;
-
-        if (useInvulnerabilityFrames && _isInvulnerable) return;
+        if (_isExternalInvulnerable) return;
+        if (useInvulnerabilityFrames && _isFrameInvulnerable) return;
 
         float damage = damageData.Amount;
         CurrentHealth = Mathf.Max(CurrentHealth - damage, 0);
@@ -108,15 +126,16 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
         CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
+    
 
     private async UniTaskVoid InvulnerabilityAsync(System.Threading.CancellationToken token)
     {
-        _isInvulnerable = true;
+        _isFrameInvulnerable = true;
         OnInvulnerabilityChanged?.Invoke(true);
 
         await UniTask.Delay(TimeSpan.FromSeconds(invulnerabilityDuration), cancellationToken: token);
 
-        _isInvulnerable = false;
+        _isFrameInvulnerable = false;
         OnInvulnerabilityChanged?.Invoke(false);
     }
 }

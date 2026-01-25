@@ -9,10 +9,19 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
     private Dictionary<StatDefinition, Stat> _stats;
     public event Action OnStatsReinitialized;
 
+    private void EnsureInitialized()
+    {
+        if (_stats == null)
+        {
+            _stats = new Dictionary<StatDefinition, Stat>();
+        }
+    }
+
     private void Awake()
     {
-        _stats = new Dictionary<StatDefinition, Stat>();
-        if (initialStatSheet != null)
+        EnsureInitialized();
+
+        if (initialStatSheet != null && _stats.Count == 0)
         {
             ApplyStatSheet(initialStatSheet);
         }
@@ -20,6 +29,8 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
 
     public void ApplyStatSheet(StatSheet newStatSheet)
     {
+        EnsureInitialized();
+
         if (newStatSheet == null) return;
         
         initialStatSheet = newStatSheet;
@@ -34,6 +45,8 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
 
     private void Update()
     {
+        if (_stats == null) return;
+
         foreach (var stat in _stats.Values)
         {
             stat.UpdateModifiers(Time.deltaTime);
@@ -42,6 +55,8 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
     
     public Stat GetStat(StatDefinition definition)
     {
+        EnsureInitialized();
+
         _stats.TryGetValue(definition, out var stat);
         return stat;
     }
@@ -76,6 +91,8 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
 
     public void RemoveAllModifiersFromSource(StatDefinition definition, string source)
     {
+        EnsureInitialized();
+
         if (definition != null)
         {
             var stat = GetStat(definition);
@@ -89,5 +106,4 @@ public class CharacterStats : MonoBehaviour, IStatsProvider
             }
         }
     }
-
 }

@@ -60,6 +60,24 @@ public class EquipmentManager : MonoBehaviour
         }
     }
 
+    public void ResetEquipment()
+    {
+        if (equipmentSlots == null) return;
+
+        foreach (var slotList in equipmentSlots.Values)
+        {
+            foreach (var slot in slotList)
+            {
+                if (slot != null && slot.equippedItem != null)
+                {
+                    ApplyEquipmentStats(slot.equippedItem, false);
+                    slot.equippedItem = null;
+                    slot.UpdateUI();
+                }
+            }
+        }
+    }
+
     private void ReapplyAllEquipmentStats()
     {
         if (currentMediator == null) return;
@@ -129,10 +147,13 @@ public class EquipmentManager : MonoBehaviour
         {
             ItemSO itemToUnequip = slot.equippedItem;
 
-            InventoryManager inventoryManager = FindAnyObjectByType<InventoryManager>();
-            if (inventoryManager != null)
+            if (InventoryManager.Instance != null)
             {
-                inventoryManager.AddItem(itemToUnequip, 1);
+                InventoryManager.Instance.AddItem(itemToUnequip, 1);
+            }
+            else
+            {
+                Debug.LogError("Nie znaleziono InventoryManager przy zdejmowaniu przedmiotu!");
             }
 
             ApplyEquipmentStats(itemToUnequip, false);

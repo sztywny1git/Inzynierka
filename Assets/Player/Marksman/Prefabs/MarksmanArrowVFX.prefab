@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarksmanArrowVFX
       objectReference: {fileID: 0}
+    - target: {fileID: 3860491082195296753, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
+      propertyPath: _lifetime
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4040657098364932619, guid: 25dff14a70a94dd4ca5e7b1c4a2702bd, type: 3}
       propertyPath: m_Controller
       value: 

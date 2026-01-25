@@ -24,5 +24,10 @@ MonoBehaviour:
   - propPrefab: {fileID: 4099440313387024154, guid: 916c06bde1c1e974fb6ec39c37a88ad0, type: 3}
     randomOffsetRange: 0
   floorPropDensity: 5
-  wallProps: []
-  wallPropDensity: 3
+  wfcPropsRules:
+  - type: 4
+    weight: 41
+  - type: 5
+    weight: 26
+  - type: 3
+    weight: 48

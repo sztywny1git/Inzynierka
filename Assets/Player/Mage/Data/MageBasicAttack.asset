@@ -16,7 +16,6 @@ MonoBehaviour:
   _actionId: {fileID: 0}
   _animationTriggerName: BasicAttack
   _isPriority: 0
-  _isInstant: 0
   _maxCastDuration: 2
   _conditions: []
   _damageMultiplier: 1

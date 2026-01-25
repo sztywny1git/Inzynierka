@@ -4,27 +4,29 @@ public class ArcMovementStrategy : IMovementStrategy
 {
     private Transform _transform;
     private Vector3 _startPosition;
-    private readonly Vector3 _targetPosition;
-    private readonly float _duration;
-    private readonly float _height;
-    private readonly AnimationCurve _curve;
+    private Vector3 _targetPosition;
+    private float _duration;
+    private float _height;
+    private AnimationCurve _curve;
     private float _timer;
 
     public bool IsDone => _timer >= _duration;
 
-    public ArcMovementStrategy(Vector3 target, float duration, float height, AnimationCurve curve)
+    public ArcMovementStrategy() { }
+
+    public void Reset(Vector3 target, float duration, float height, AnimationCurve curve)
     {
         _targetPosition = target;
         _duration = duration;
         _height = height;
         _curve = curve;
+        _timer = 0f;
     }
 
     public void Initialize(Transform t)
     {
         _transform = t;
         _startPosition = t.position;
-        _timer = 0f;
     }
 
     public void Update(float dt)

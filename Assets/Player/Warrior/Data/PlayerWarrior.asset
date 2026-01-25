@@ -16,7 +16,13 @@ MonoBehaviour:
   characterSprite: {fileID: -2698654473982429323, guid: 5d0b2fa37dc03a8489d7574da19c0931, type: 3}
   Type: 0
   statSheet: {fileID: 11400000, guid: 96c6322ad6139d44094c2b82213e99bd, type: 2}
-  statBonuses: []
+  statBonuses:
+  - Stat: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
+    Type: 2
+    Value: 1.5
+  - Stat: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
+    Type: 2
+    Value: 2
   abilities:
   - {fileID: 11400000, guid: 8ab10225d049dc5488996af935ea7f0f, type: 2}
   - {fileID: 11400000, guid: 07c9783cc61ee7b45aa4284d79b523ca, type: 2}

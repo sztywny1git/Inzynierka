@@ -2,6 +2,7 @@ using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer.Unity;
+using System;
 
 public class SceneContextManager : ISceneContextManager
 {
@@ -15,10 +16,7 @@ public class SceneContextManager : ISceneContextManager
 
     public async UniTask LoadSceneAsync(string sceneName)
     {
-        if (_currentScene.IsValid())
-        {
-            await SceneManager.UnloadSceneAsync(_currentScene);
-        }
+        var oldScene = _currentScene;
 
         var parentScope = _gameScopeService.GetActiveScope();
 
@@ -33,12 +31,22 @@ public class SceneContextManager : ISceneContextManager
         {
             await LoadSceneInternal(sceneName);
         }
+
+        if (oldScene.IsValid())
+        {
+            await SceneManager.UnloadSceneAsync(oldScene);
+        }
+
+        await Resources.UnloadUnusedAssets();
+        GC.Collect();
     }
 
     private async UniTask LoadSceneInternal(string sceneName)
     {
         await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        
         _currentScene = SceneManager.GetSceneByName(sceneName);
+        
         SceneManager.SetActiveScene(_currentScene);
     }
 }

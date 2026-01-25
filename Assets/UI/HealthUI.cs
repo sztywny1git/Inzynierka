@@ -1,6 +1,9 @@
+using UnityEngine;
+using VContainer;
+
 public class HealthUI : BaseStatBarUI
 {
-    private void OnEnable()
+    private void Start()
     {
         if (UiEventBus != null)
         {
@@ -8,7 +11,7 @@ public class HealthUI : BaseStatBarUI
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (UiEventBus != null)
         {

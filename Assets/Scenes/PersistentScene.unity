@@ -2368,7 +2368,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &366309349
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2465,14 +2465,14 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 0
+  m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 30000
   m_TargetDisplay: 0
 --- !u!1 &397037999
 GameObject:
@@ -7499,7 +7499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UltimateEqCanvas: {fileID: 997673660}
-  EqPanel: {fileID: 1506858654}
+  EqAndAugmentsPanel: {fileID: 89903346}
   StatsPanel: {fileID: 648681946}
   hotbar: {fileID: 748649938}
   visibleStats: {fileID: 1566374803}
@@ -8980,8 +8980,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: 0
   currentExp: 0
-  expToNextLevel: 5
-  expGrowthFactor: 1.3
+  expToNextLevel: 50
+  expGrowthFactor: 1.15
   expSlider: {fileID: 1666013641}
   currentLevelText: {fileID: 1008823943}
 --- !u!1 &1153975025

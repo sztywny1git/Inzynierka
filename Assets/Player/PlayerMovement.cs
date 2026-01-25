@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour, IMovementProvider
 
     public void SetMoveInput(Vector2 input)
     {
-        _moveInput = input;
+        _moveInput = Vector2.ClampMagnitude(input, 1f);
     }
 
     public void StopMovement()

@@ -8,7 +8,6 @@ public interface IAbility
 
     string AnimationTriggerName { get; }
     bool IsPriority { get; }
-    bool IsInstant { get; }
     float MaxCastDuration { get; }
 
     IEnumerable<UsageCondition> Conditions { get; }

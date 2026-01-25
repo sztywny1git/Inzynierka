@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4624234762353651535}
   - component: {fileID: 3193064252951685169}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 2633797176018253802}
   - component: {fileID: 5879804375760086074}
   - component: {fileID: -9040888472262754925}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LootPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ MonoBehaviour:
   sr: {fileID: 3193064252951685169}
   anim: {fileID: 2633797176018253802}
   canBePickedUp: 1
-  quantity: 2
+  quantity: 1
   audioSource: {fileID: -9040888472262754925}
   goldPickupSound: {fileID: 8300000, guid: b88572096c09d924b9150e80930bca90, type: 3}
   itemPickupSound: {fileID: 8300000, guid: c9d0653a025a75043bd27d39998bf71d, type: 3}

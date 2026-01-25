@@ -43,7 +43,7 @@ public class InventoryInfo : MonoBehaviour
         if (ColorUtility.TryParseHtmlString(hex, out color))
             return color;
         else
-            return Color.white; // fallback jeœli hex niepoprawny
+            return Color.white; // fallback jeï¿½li hex niepoprawny
     }
 
 
@@ -71,7 +71,7 @@ public class InventoryInfo : MonoBehaviour
 
             case Rarity.Legendary:
                 rarityText.text = "Legendary";
-                rarityText.color = new Color(1f, 0.6f, 0f); // z³oty
+                rarityText.color = new Color(1f, 0.6f, 0f); // zï¿½oty
                 panelOutline.effectColor = new Color(1f, 0.6f, 0f);
                 break;
         }
@@ -87,7 +87,7 @@ public class InventoryInfo : MonoBehaviour
         ApplyRarity(itemSO);
 
         itemIcon.sprite = itemSO.icon;
-        itemIcon.enabled = itemSO.icon != null; // w³¹cz/wy³¹cz jeœli brak ikony
+        itemIcon.enabled = itemSO.icon != null; // wï¿½ï¿½cz/wyï¿½ï¿½cz jeï¿½li brak ikony
 
         itemNameText.text = itemSO.itemName;
 
@@ -121,7 +121,7 @@ public class InventoryInfo : MonoBehaviour
             stats.Add("CriticalChance: " + itemSO.CriticalChance.ToString());
 
         if (itemSO.CriticalDamage != 0)
-            stats.Add("CriticalChance: " + itemSO.CriticalDamage.ToString());
+            stats.Add("CriticalDamage: " + itemSO.CriticalDamage.ToString());
 
         if (itemSO.duration != 0)
             stats.Add("Duration: " + itemSO.duration.ToString());
@@ -134,7 +134,7 @@ public class InventoryInfo : MonoBehaviour
             }
 
             Vector2 panelSize = infoPanelRect.sizeDelta;
-            panelSize.y = 340f; // minimalna wysokoœæ panelu
+            panelSize.y = 340f; // minimalna wysokoï¿½ï¿½ panelu
             infoPanelRect.sizeDelta = panelSize;
 
             return;
@@ -156,20 +156,20 @@ public class InventoryInfo : MonoBehaviour
         int totalSlots = statTexts.Length;
         int statCount = Mathf.Min(stats.Count, totalSlots);
 
-        // wy³¹czamy wszystkie sloty
+        // wyï¿½ï¿½czamy wszystkie sloty
         for (int i = 0; i < totalSlots; i++)
             statTexts[i].gameObject.SetActive(false);
 
-        // jeœli brak statów
+        // jeï¿½li brak statï¿½w
         if (statCount == 0)
         {
             Vector2 panelSize = infoPanelRect.sizeDelta;
-            panelSize.y = 340f; // minimalna wysokoœæ panelu
+            panelSize.y = 340f; // minimalna wysokoï¿½ï¿½ panelu
             infoPanelRect.sizeDelta = panelSize;
             return;
         }
 
-        // wype³niamy sloty od do³u
+        // wypeï¿½niamy sloty od doï¿½u
         for (int i = 0; i < statCount; i++)
         {
             int slotIndex = totalSlots - statCount + i;
@@ -177,7 +177,7 @@ public class InventoryInfo : MonoBehaviour
             statTexts[slotIndex].gameObject.SetActive(true);
         }
 
-        // dopasowanie wysokoœci panelu
+        // dopasowanie wysokoï¿½ci panelu
         TMP_Text exampleStat = statTexts[0];
         float statHeight = exampleStat.preferredHeight;
         Vector2 panelSizeFinal = infoPanelRect.sizeDelta;
@@ -235,7 +235,7 @@ public class InventoryInfo : MonoBehaviour
             targetPosition.y = panelHeight * pivotY;
         }
 
-        // Górna granica
+        // Gï¿½rna granica
         if (targetPosition.y + panelHeight * (1 - pivotY) > Screen.height)
         {
             targetPosition.y = Screen.height - panelHeight * (1 - pivotY);

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Homing
   m_EditorClassIdentifier: 
   _turnSpeed: 200
-  _searchRadius: 10
+  _searchRadius: 1
   _targetLayer:
     serializedVersion: 2
     m_Bits: 64

@@ -18,4 +18,7 @@ public class GameConstants : ScriptableObject
     [SerializeField] private int _maxLevels = 5;
     public int MaxLevels => _maxLevels;
 
+    [Header("Prefabs")]
+    public Loot lootPrefab;
+
 }

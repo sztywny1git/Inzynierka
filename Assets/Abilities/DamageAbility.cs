@@ -5,6 +5,8 @@ public abstract class DamageAbility : Ability
     [SerializeField] protected float _damageMultiplier = 1.0f;
     [SerializeField] protected int _attackCount = 1;
 
+    public int AttackCount => Mathf.Max(1, _attackCount);
+
     protected DamageData CalculateDamage(AbilityContext context, AbilitySnapshot snapshot)
     {
         float baseDmg = snapshot.BaseDamage * _damageMultiplier;

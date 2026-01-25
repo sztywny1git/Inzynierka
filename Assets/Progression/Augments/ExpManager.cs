@@ -2,69 +2,81 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using System.Collections.Generic;
-using System.Collections;
+using VContainer;
 
 public class ExpManager : MonoBehaviour
 {
-    public int level;
+    public int level = 1;
     public int currentExp;
-    public int expToNextLevel = 5;
-    public float expGrowthFactor = 1.3f;
+    public int expToNextLevel = 50;
+    public float expGrowthFactor = 1.15f;
     public Slider expSlider;
     public TMP_Text currentLevelText;
 
     public static event Action<int> OnLevelUp; 
 
+    private GameplayEventBus _eventBus;
+
+    [Inject]
+    public void Construct(GameplayEventBus eventBus)
+    {
+        _eventBus = eventBus;
+    }
+
     private void Start()
     {
+        if (_eventBus != null)
+        {
+            _eventBus.OnEnemyDied += HandleEnemyDied;
+        }
         UpdateUI();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (_eventBus != null)
         {
-            GainExperience(2); //Dodawanie expa dla testu
+            _eventBus.OnEnemyDied -= HandleEnemyDied;
         }
     }
 
-    /*private void OnEnable()
-    {
-        Enemy_Health.OnEnemyDefeated += GainExperience;
-    }
 
-    private void OnDisable()
+    private void HandleEnemyDied(Vector3 position, LootTableSO loot, int amount)
     {
-        Enemy_Health.OnEnemyDefeated -= GainExperience;
-    }*/
+        GainExperience(amount);
+    }
 
     public void GainExperience(int amount)
     {
-        currentExp += amount; ;
-        if(currentExp >= expToNextLevel)
+        currentExp += amount;
+        
+        while(currentExp >= expToNextLevel)
         {
             LevelUp();
         }
+        
         UpdateUI();
     }
 
     private void LevelUp()
     {
-        level++;
         currentExp -= expToNextLevel;
+        level++;
         expToNextLevel = Mathf.RoundToInt(expToNextLevel * expGrowthFactor);
-        OnLevelUp?.Invoke(1);//Dostajemy 1pkt umj za lvl
-
+        OnLevelUp?.Invoke(1);
     }
-
 
     public void UpdateUI()
     {
-        expSlider.maxValue = expToNextLevel;
-        expSlider.value = currentExp;
-        currentLevelText.text = "Level " + level;
+        if (expSlider != null)
+        {
+            expSlider.maxValue = expToNextLevel;
+            expSlider.value = currentExp;
+        }
+        
+        if (currentLevelText != null)
+        {
+            currentLevelText.text = "Level " + level;
+        }
     }
-
-
 }

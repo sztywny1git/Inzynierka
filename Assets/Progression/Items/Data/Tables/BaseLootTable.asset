@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92f79388ab8cba4f818563518b2da73, type: 3}
+  m_Name: BaseLootTable
+  m_EditorClassIdentifier: 
+  dropChance: 1
+  pools:
+  - poolName: Gold
+    weight: 60
+    items:
+    - {fileID: 11400000, guid: f0d9f339ebdcf524b9e9ea808dbec3c8, type: 2}
+  - poolName: Consumable
+    weight: 20
+    items:
+    - {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
+    - {fileID: 11400000, guid: 1d335d7baaef54d47ba572d07ff6b127, type: 2}
+  - poolName: Common
+    weight: 15
+    items:
+    - {fileID: 11400000, guid: 27b6cb6c77b212d4496c6b34d7708a4f, type: 2}
+    - {fileID: 11400000, guid: 80f457f8a4794f441b17cc97e6b001f9, type: 2}
+    - {fileID: 11400000, guid: d248ef9b734354e46b5ab400df0e1e8f, type: 2}
+    - {fileID: 11400000, guid: c10a6ebd8757f4a4f9968be206175259, type: 2}
+    - {fileID: 11400000, guid: 89ae908e52779474f98f3c8317bb9b54, type: 2}
+    - {fileID: 11400000, guid: 15e00f2e68c007a4590d16b808f1eb7b, type: 2}
+  - poolName: Rare
+    weight: 4
+    items:
+    - {fileID: 11400000, guid: c07ccb6305c99314bbb606d0589ff7ac, type: 2}
+    - {fileID: 11400000, guid: 27366c746bfe9064eb8b9d94df456817, type: 2}
+    - {fileID: 11400000, guid: d0a08a35a8accb34a90eabfc0fd6e180, type: 2}
+    - {fileID: 11400000, guid: b47c624d5242609429b9a2fd768c2cb7, type: 2}
+    - {fileID: 11400000, guid: 5c421a560314c29478e6222c82329b59, type: 2}
+    - {fileID: 11400000, guid: 52e83fedc1739a3449209b9fca0cdfa6, type: 2}
+    - {fileID: 11400000, guid: b9c78b763d12a4b4ba4f6245f8120b41, type: 2}
+  - poolName: Epic
+    weight: 1
+    items:
+    - {fileID: 11400000, guid: 003a937770348fc48943c38724c7779c, type: 2}
+    - {fileID: 11400000, guid: f632daf3578031140b6e48d2e2c38dc5, type: 2}
+    - {fileID: 11400000, guid: c063a99036da5004a91af223df9ba818, type: 2}
+    - {fileID: 11400000, guid: 4fe869947dc6d7d46894cde8d49bd1e6, type: 2}
+    - {fileID: 11400000, guid: ab64c190a88d2a34ea5754c6a859f8f8, type: 2}
+    - {fileID: 11400000, guid: 935a7cc5293c3194f973b44aef0a6f33, type: 2}
+    - {fileID: 11400000, guid: 6969d3238d0336f499fc65698122f20b, type: 2}
+    - {fileID: 11400000, guid: 3f5c7d45885f2f84b925c673850d15bb, type: 2}

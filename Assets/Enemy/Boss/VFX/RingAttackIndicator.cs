@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Displays warning indicators for ring attack projectiles.
-/// Shows lines indicating where projectiles will travel.
-/// </summary>
 public class RingAttackIndicator : MonoBehaviour
 {
     [Header("Settings")]
@@ -13,17 +9,29 @@ public class RingAttackIndicator : MonoBehaviour
     [SerializeField] private float lineLength = 10f;
     [SerializeField] private float pulseSpeed = 5f;
     
+    private string _sortingLayerName = "Default";
+    private int _sortingOrder = 100;
+    
     private List<LineRenderer> _lines = new List<LineRenderer>();
     private float _displayTimer;
     private float _displayDuration;
     private bool _isShowing;
+
+    public void ConfigureSorting(string layerName, int order)
+    {
+        _sortingLayerName = layerName;
+        _sortingOrder = order;
+        
+        foreach(var line in _lines)
+        {
+            if (line != null)
+            {
+                line.sortingLayerName = layerName;
+                line.sortingOrder = order;
+            }
+        }
+    }
     
-    /// <summary>
-    /// Show warning lines for ring attack.
-    /// </summary>
-    /// <param name="projectileCount">Number of projectiles</param>
-    /// <param name="startAngle">Starting angle offset in degrees</param>
-    /// <param name="duration">How long to show warning</param>
     public void ShowRingWarning(int projectileCount, float startAngle, float duration)
     {
         ClearLines();
@@ -46,9 +54,6 @@ public class RingAttackIndicator : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Hide all warning lines.
-    /// </summary>
     public void HideWarning()
     {
         _isShowing = false;
@@ -62,11 +67,8 @@ public class RingAttackIndicator : MonoBehaviour
         _displayTimer += Time.deltaTime;
         float progress = _displayTimer / _displayDuration;
         
-        // Pulse effect
         float pulse = (Mathf.Sin(_displayTimer * pulseSpeed) + 1f) / 2f;
         float alpha = Mathf.Lerp(0.3f, 0.8f, pulse);
-        
-        // Lines get more intense as attack approaches
         alpha = Mathf.Lerp(alpha * 0.5f, alpha, progress);
         
         Color currentColor = warningColor;
@@ -79,14 +81,12 @@ public class RingAttackIndicator : MonoBehaviour
                 line.startColor = currentColor;
                 line.endColor = new Color(currentColor.r, currentColor.g, currentColor.b, currentColor.a * 0.3f);
                 
-                // Update position to follow boss
                 line.SetPosition(0, transform.position);
                 Vector2 dir = ((Vector2)line.GetPosition(1) - (Vector2)line.GetPosition(0)).normalized;
                 line.SetPosition(1, (Vector2)transform.position + dir * lineLength);
             }
         }
         
-        // Auto-hide
         if (_displayTimer >= _displayDuration)
         {
             HideWarning();
@@ -105,7 +105,9 @@ public class RingAttackIndicator : MonoBehaviour
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.startColor = warningColor;
         line.endColor = new Color(warningColor.r, warningColor.g, warningColor.b, 0.2f);
-        line.sortingOrder = 99;
+        
+        line.sortingLayerName = _sortingLayerName;
+        line.sortingOrder = _sortingOrder;
         
         return line;
     }

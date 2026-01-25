@@ -122,7 +122,7 @@ public class InventoryManager : MonoBehaviour
                 bool added = false;
                 foreach (var slot in itemSlots)
                 {
-                    if (slot.itemSO == null)
+                    if (slot.itemSO == null || slot.quantity <= 0) 
                     {
                         slot.itemSO = itemSO;
                         slot.quantity = 1;
@@ -139,7 +139,7 @@ public class InventoryManager : MonoBehaviour
 
         foreach (var slot in itemSlots)
         {
-            if (slot.itemSO == itemSO && slot.quantity < itemSO.stackSize)
+            if (slot.itemSO != null && slot.quantity > 0 && slot.itemSO.itemName == itemSO.itemName && slot.quantity < itemSO.stackSize)
             {
                 int availableSpace = itemSO.stackSize - slot.quantity;
                 int amountToAdd = Mathf.Min(availableSpace, quantity);
@@ -153,7 +153,7 @@ public class InventoryManager : MonoBehaviour
 
         foreach (var slot in itemSlots)
         {
-            if (slot.itemSO == null)
+            if (slot.itemSO == null || slot.quantity <= 0)
             {
                 int amountToAdd = Mathf.Min(itemSO.stackSize, quantity);
                 slot.itemSO = itemSO;
@@ -199,6 +199,8 @@ public class InventoryManager : MonoBehaviour
             if (Camera.main != null) 
                 dropPosition = Camera.main.transform.position;
         }
+
+        dropPosition.z = -1f;
 
         if (lootPrefab != null)
         {

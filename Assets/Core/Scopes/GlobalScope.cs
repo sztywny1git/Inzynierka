@@ -13,7 +13,8 @@ public class GlobalScope : LifetimeScope
     protected override void Configure(IContainerBuilder builder)
     {
         builder.RegisterInstance(gameConstants);
-
+        
+        builder.RegisterInstance(gameConstants.lootPrefab);
         builder.RegisterInstance(gameConstants.PlayerRegistry);
         builder.RegisterInstance(gameConstants.EnemyRegistry);
         
@@ -21,7 +22,7 @@ public class GlobalScope : LifetimeScope
         builder.RegisterComponent(screenFader).AsSelf();
         builder.RegisterComponentInHierarchy<CinemachineCamera>();
 
-        builder.Register<GameFlowManager>(Lifetime.Singleton).AsSelf().As<IInitializable, IDisposable>();
+        builder.RegisterEntryPoint<GameFlowManager>();
         builder.Register<SceneContextManager>(Lifetime.Singleton).As<ISceneContextManager>();
         builder.Register<SessionData>(Lifetime.Singleton);
         builder.Register<GameScopeService>(Lifetime.Singleton);
@@ -33,7 +34,7 @@ public class GlobalScope : LifetimeScope
 
         builder.Register<TimeService>(Lifetime.Singleton);
         builder.Register<CameraService>(Lifetime.Singleton).As<ICameraService>();
-        builder.Register<InputService>(Lifetime.Singleton).As<IInputService, IInitializable, ITickable, IDisposable>();
+        builder.RegisterEntryPoint<InputService>().As<IInputService>();
         builder.Register<ScreenTransitionService>(Lifetime.Singleton);
 
         builder.Register<GameplayEventBus>(Lifetime.Singleton);

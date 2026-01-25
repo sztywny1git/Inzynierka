@@ -23,6 +23,8 @@ public class AugmentManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip augmentGetOpenSound;
 
+    private int _pendingLevelUps = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -59,6 +61,25 @@ public class AugmentManager : MonoBehaviour
         }
     }
 
+    public void ResetAugments()
+    {
+        if (currentMediator != null)
+        {
+            foreach (var augment in activeAugments.Keys)
+            {
+                currentMediator.HandleAugment(augment, 0);
+            }
+        }
+
+        activeAugments.Clear();
+        _pendingLevelUps = 0;
+
+        if (activeAugmentsUI != null)
+        {
+            activeAugmentsUI.RefreshUI();
+        }
+    }
+
     private void ReapplyAllAugments()
     {
         if (currentMediator == null) return;
@@ -71,11 +92,50 @@ public class AugmentManager : MonoBehaviour
 
     private void HandleLevelUp(int points)
     {
+        _pendingLevelUps += points;
+        Debug.Log($"[AugmentManager] Level Up received! Pending: {_pendingLevelUps}");
+
+        if (!isAugmentSelectionOpen)
+        {
+            TryShowNextSelectionOrResume();
+        }
+    }
+
+    private void TryShowNextSelectionOrResume()
+    {
+        bool success = ShowNextAugmentSelection();
+        
+        if (!success)
+        {
+            ResumeGame();
+        }
+    }
+
+    private bool ShowNextAugmentSelection()
+    {
+        List<AugmentSO> offeredAugments = GetRandomAugments(3);
+
+        if (offeredAugments.Count == 0)
+        {
+            return false;
+        }
+
         Time.timeScale = 0f;
         isAugmentSelectionOpen = true;
-        List<AugmentSO> offeredAugments = GetRandomAugments(3);
-        audioSource.PlayOneShot(augmentGetOpenSound);
-        selectionUI.ShowAugmentSelection(offeredAugments);
+        
+        if (audioSource != null && augmentGetOpenSound != null)
+        {
+            audioSource.PlayOneShot(augmentGetOpenSound);
+        }
+        
+        // Zawsze upewniamy się, że panel jest włączony
+        if (selectionUI != null)
+        {
+            selectionUI.gameObject.SetActive(true);
+            selectionUI.ShowAugmentSelection(offeredAugments);
+        }
+        
+        return true;
     }
 
     private List<AugmentSO> GetRandomAugments(int count)
@@ -123,8 +183,29 @@ public class AugmentManager : MonoBehaviour
             activeAugmentsUI.RefreshUI();
         }
 
+        _pendingLevelUps--;
+        Debug.Log($"[AugmentManager] Augment selected. Remaining pending: {_pendingLevelUps}");
+
+        if (_pendingLevelUps > 0)
+        {
+            TryShowNextSelectionOrResume();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+
+    private void ResumeGame()
+    {
+        _pendingLevelUps = 0;
         Time.timeScale = 1f;
         isAugmentSelectionOpen = false;
+        
+        if (selectionUI != null)
+        {
+            selectionUI.gameObject.SetActive(false);
+        }
     }
 
     private void ApplyAugmentEffect(AugmentSO augment)

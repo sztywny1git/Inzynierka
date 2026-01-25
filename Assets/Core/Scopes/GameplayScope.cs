@@ -16,5 +16,6 @@ public class GameplayScope : LifetimeScope
         builder.Register<AbilitySpawner>(Lifetime.Singleton).As<IAbilitySpawner>();
         builder.Register<PlayerFactory>(Lifetime.Singleton).As<IPlayerFactory>();
         builder.Register<EnemyFactory>(Lifetime.Singleton).As<IEnemyFactory>();
+        builder.Register<LootSystem>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
     }
 }

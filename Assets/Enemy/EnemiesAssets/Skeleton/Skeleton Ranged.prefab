@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: -7428215343394855609}
   - component: {fileID: -5669213459820263116}
   - component: {fileID: 7017029192841013805}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Skeleton Ranged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,8 +106,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.0625, y: 1.4375}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 3, y: 2}
     newSize: {x: 1.0625, y: 1.4375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -179,7 +179,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1384830679
-  m_SortingLayer: 4
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 785040229, guid: 2781462e8afcdb745b020b016c418fe3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -274,8 +274,7 @@ MonoBehaviour:
     LookStepDurationMax: 0.8
     InvestigateChance: 0.2
     InvestigateTimeoutSeconds: 3
-  destroyOnDeath: 1
-  destroyDelaySeconds: 1.5
+  useSmartCombat: 1
   patrolPointProviderBehaviour: {fileID: 0}
   hitAnimMinIntervalSeconds: 0.1
 --- !u!114 &-7428215343394855609
@@ -304,6 +303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthStatDef: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
+  useInvulnerabilityFrames: 0
+  invulnerabilityDuration: 1
 --- !u!114 &7017029192841013805
 MonoBehaviour:
   m_ObjectHideFlags: 0

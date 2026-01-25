@@ -20,13 +20,18 @@ public class Character : MonoBehaviour, ICharacter
         Stats = GetComponent<IStatsProvider>();
         Health = GetComponent<Health>();
         AbilityCaster = GetComponent<AbilityCaster>();
+
+        if (!_isInitialized && defaultDefinition != null)
+        {
+            ApplyCharacterDefinition(defaultDefinition);
+        }
     }
 
     private void Start()
     {
         if (!_isInitialized && defaultDefinition != null)
         {
-            ApplyCharacterDefinition(defaultDefinition);
+             ApplyCharacterDefinition(defaultDefinition);
         }
     }
 

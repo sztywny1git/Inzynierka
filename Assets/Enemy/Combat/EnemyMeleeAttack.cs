@@ -5,12 +5,12 @@ public class EnemyMeleeAttack : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool debugLogging = false;
 
-    [Header("Stat Definitions (optional - uses CharacterStats if assigned)")]
+    [Header("Stat Definitions")]
     [SerializeField] private StatDefinition damageStat;
     [SerializeField] private StatDefinition attackRangeStat;
     [SerializeField] private StatDefinition attackCooldownStat;
 
-    [Header("Fallback Values (used if stat not found)")]
+    [Header("Fallback Values")]
     [SerializeField] private float fallbackDamage = 10f;
     [SerializeField] private float fallbackAttackRange = 1f;
     [SerializeField] private float fallbackAttackCooldownSeconds = 1.2f;
@@ -20,10 +20,11 @@ public class EnemyMeleeAttack : MonoBehaviour
 
     private IStatsProvider _stats;
     private float _nextAttackTime;
-    private float _nextCooldownLogTime;
+    
+    // ZMIANA: Przechowujemy cel, żeby "pamiętać" kogo uderzamy w momencie Animation Eventu
+    private Transform _currentAggroTarget; 
 
     public float AttackRange => GetStatValue(attackRangeStat, fallbackAttackRange);
-    
     private float Damage => GetStatValue(damageStat, fallbackDamage);
     private float AttackCooldownSeconds => GetStatValue(attackCooldownStat, fallbackAttackCooldownSeconds);
 
@@ -34,7 +35,6 @@ public class EnemyMeleeAttack : MonoBehaviour
         if (attackOrigin == null) attackOrigin = transform;
         _stats = GetComponent<IStatsProvider>();
         _nextAttackTime = 0f;
-        _nextCooldownLogTime = 0f;
     }
 
     private float GetStatValue(StatDefinition statDef, float fallback)
@@ -56,96 +56,68 @@ public class EnemyMeleeAttack : MonoBehaviour
         if (target == null) return float.PositiveInfinity;
 
         Vector2 origin = AttackOriginPosition;
-
         var ownCollider = target.GetComponent<Collider2D>();
+        
         if (ownCollider != null)
         {
             Vector2 closest = ownCollider.ClosestPoint(origin);
             return Vector2.Distance(origin, closest);
         }
 
-        var childColliders = target.GetComponentsInChildren<Collider2D>();
-        if (childColliders != null && childColliders.Length > 0)
-        {
-            float best = float.PositiveInfinity;
-            for (int i = 0; i < childColliders.Length; i++)
-            {
-                var col = childColliders[i];
-                if (col == null) continue;
-                Vector2 closest = col.ClosestPoint(origin);
-                float d = Vector2.Distance(origin, closest);
-                if (d < best) best = d;
-            }
-            return best;
-        }
-
         return Vector2.Distance(origin, target.position);
     }
 
+    // KROK 1: Ta metoda jest wywoływana przez Brain/State
+    // Służy tylko do rozpoczęcia procedury (ustawienie cooldownu, zapamiętanie celu)
     public bool TryAttack(Transform target)
     {
-        if (target == null)
-        {
-            if (debugLogging)
-            {
-                Debug.Log($"[EnemyMeleeAttack] '{name}' TryAttack failed: target=null.", this);
-            }
-            return false;
-        }
-        if (!CanAttackNow())
-        {
-            if (debugLogging && Time.time >= _nextCooldownLogTime)
-            {
-                float remaining = Mathf.Max(0f, _nextAttackTime - Time.time);
-                Debug.Log($"[EnemyMeleeAttack] '{name}' TryAttack blocked by cooldown. remaining={remaining:0.###}s", this);
-                _nextCooldownLogTime = Time.time + 0.75f;
-            }
-            return false;
-        }
+        if (target == null) return false;
+        
+        if (!CanAttackNow()) return false;
 
         float dist = GetDistanceToTarget(target);
-        float range = AttackRange;
-        if (dist > range)
-        {
-            if (debugLogging)
-            {
-                Debug.Log($"[EnemyMeleeAttack] '{name}' TryAttack miss: target '{target.name}' out of range. dist={dist:0.###} range={range:0.###}", this);
-            }
-            return false;
-        }
+        if (dist > AttackRange) return false;
 
         var otherEnemy = target.GetComponentInParent<EnemyBrain>();
-        if (otherEnemy != null)
+        if (otherEnemy != null) return false;
+
+        // Ustawiamy cooldown
+        _nextAttackTime = Time.time + AttackCooldownSeconds;
+
+        // ZMIANA: Zapamiętujemy cel, ale NIE zadajemy obrażeń tutaj.
+        _currentAggroTarget = target;
+
+        // Zwracamy true -> Brain odegra animację -> Animacja wywoła OnAttackImpact()
+        return true; 
+    }
+
+    // KROK 2: Ta metoda musi być Publiczna. Będzie wywołana przez Animation Event.
+    public void OnAttackImpact()
+    {
+        // Jeśli cel zniknął w trakcie zamachu (np. został zniszczony), przerywamy
+        if (_currentAggroTarget == null) return;
+
+        // Opcjonalnie: Sprawdzamy, czy cel nadal jest w zasięgu + mały margines
+        // (Gracz mógł zrobić uskok w ostatniej chwili)
+        float dist = GetDistanceToTarget(_currentAggroTarget);
+        if (dist > AttackRange + 0.5f)
         {
-            if (debugLogging)
-            {
-                Debug.Log($"[EnemyMeleeAttack] '{name}' skipping attack on friendly '{target.name}'.", this);
-            }
-            return false;
+            if (debugLogging) Debug.Log($"[EnemyMeleeAttack] Missed! Target moved out of range during animation.");
+            return;
         }
 
-        float cooldown = AttackCooldownSeconds;
-        _nextAttackTime = Time.time + cooldown;
-
-        var damageable = target.GetComponentInChildren<IDamageable>();
-        if (damageable == null)
+        var damageable = _currentAggroTarget.GetComponentInChildren<IDamageable>();
+        if (damageable != null)
         {
-            if (debugLogging)
-            {
-                Debug.LogWarning($"[EnemyMeleeAttack] '{name}' attacked '{target.name}' in range but no IDamageable found in children.", this);
-            }
-            return true;
-        }
+            float dmg = Damage;
+            var damageData = new DamageData(dmg, false, gameObject, AttackOriginPosition);
+            damageable.TakeDamage(damageData);
 
-        float dmg = Damage;
-        if (debugLogging)
-        {
-            Debug.Log($"[EnemyMeleeAttack] '{name}' HIT '{target.name}'. damage={dmg:0.###} dist={dist:0.###} cooldown={cooldown:0.###}", this);
+            if (debugLogging) Debug.Log($"[EnemyMeleeAttack] Animation Event HIT! Dealt {dmg} damage.");
         }
         
-        var damageData = new DamageData(dmg, false, gameObject, attackOrigin.position);
-        damageable.TakeDamage(damageData);
-        return true;
+        // Czyścimy cel po ataku
+        _currentAggroTarget = null;
     }
 
 #if UNITY_EDITOR

@@ -16,9 +16,21 @@ PrefabInstance:
       propertyPath: interactText
       value: Use
       objectReference: {fileID: 0}
+    - target: {fileID: 5714269526649929736, guid: 417defd2e297f1b4d9a9031eeaabc25b, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5714269526649929736, guid: 417defd2e297f1b4d9a9031eeaabc25b, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1384830679
+      objectReference: {fileID: 0}
     - target: {fileID: 6062397512163100811, guid: 417defd2e297f1b4d9a9031eeaabc25b, type: 3}
       propertyPath: m_Name
       value: RunWonPortal
+      objectReference: {fileID: 0}
+    - target: {fileID: 6062397512163100811, guid: 417defd2e297f1b4d9a9031eeaabc25b, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8665283519287821105, guid: 417defd2e297f1b4d9a9031eeaabc25b, type: 3}
       propertyPath: m_LocalPosition.x

@@ -7,19 +7,17 @@ public class AugmentSelectionUI : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject selectionPanel;
-    public AugmentOptionUI[] augmentOptions; // 3 sloty
+    public AugmentOptionUI[] augmentOptions; 
 
     private List<AugmentSO> currentOfferedAugments;
 
     private void Start()
     {
-        // Upewnij siê, ¿e panel jest ukryty na starcie
         selectionPanel.SetActive(false);
 
-        // Przypisz listenery do buttonów
         for (int i = 0; i < augmentOptions.Length; i++)
         {
-            int index = i; // Zmienna lokalna dla closure
+            int index = i; 
             augmentOptions[i].selectButton.onClick.AddListener(() => OnAugmentSelected(index));
         }
     }
@@ -28,10 +26,8 @@ public class AugmentSelectionUI : MonoBehaviour
     {
         currentOfferedAugments = augments;
 
-        // Wyœwietl panel
         selectionPanel.SetActive(true);
 
-        // Wype³nij sloty augmentami
         for (int i = 0; i < augmentOptions.Length; i++)
         {
             if (i < augments.Count)
@@ -51,12 +47,8 @@ public class AugmentSelectionUI : MonoBehaviour
         if (index < currentOfferedAugments.Count)
         {
             AugmentSO selectedAugment = currentOfferedAugments[index];
-
-            // Powiadom AugmentManager o wyborze
             AugmentManager.Instance.SelectAugment(selectedAugment);
-
-            // Ukryj panel
-            selectionPanel.SetActive(false);
+            
         }
     }
 }
@@ -77,7 +69,7 @@ public class AugmentOptionUI
         nameText.text = augment.augmentName;
         descriptionText.text = augment.description;
 
-        // Poka¿ informacjê o stackach jeœli augment jest stackowalny
+        // Pokaï¿½ informacjï¿½ o stackach jeï¿½li augment jest stackowalny
         if (augment.isStackable)
         {
             int currentStacks = AugmentManager.Instance.GetAugmentStacks(augment);

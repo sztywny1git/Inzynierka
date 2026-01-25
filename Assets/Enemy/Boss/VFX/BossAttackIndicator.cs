@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Displays attack range indicators for boss attacks.
-/// Shows a visual warning to players before attacks land.
-/// </summary>
 public class BossAttackIndicator : MonoBehaviour
 {
     [Header("Indicator Prefab (Optional)")]
@@ -15,6 +11,9 @@ public class BossAttackIndicator : MonoBehaviour
     [SerializeField] private float borderWidth = 0.15f;
     [SerializeField] private float pulseSpeed = 4f;
     [SerializeField] private float growSpeed = 8f;
+    
+    private string _sortingLayerName = "Default";
+    private int _sortingOrder = 100;
     
     private GameObject _indicatorObject;
     private SpriteRenderer _fillRenderer;
@@ -34,39 +33,52 @@ public class BossAttackIndicator : MonoBehaviour
     
     private void Start()
     {
-        // Ensure hidden at start
         HideIndicator();
+    }
+
+    public void ConfigureSorting(string layerName, int order)
+    {
+        _sortingLayerName = layerName;
+        _sortingOrder = order;
+
+        if (_fillRenderer != null)
+        {
+            _fillRenderer.sortingLayerName = layerName;
+            _fillRenderer.sortingOrder = order;
+        }
+
+        if (_borderRenderer != null)
+        {
+            _borderRenderer.sortingLayerName = layerName;
+            _borderRenderer.sortingOrder = order + 1;
+        }
     }
     
     private void CreateIndicator()
     {
-        // Don't create if already exists
         if (_indicatorObject != null) return;
         
-        // Main indicator object
         _indicatorObject = new GameObject("AttackIndicator");
         _indicatorObject.transform.SetParent(transform);
         _indicatorObject.transform.localPosition = Vector3.zero;
         _indicatorTransform = _indicatorObject.transform;
         
-        // Create fill circle
         GameObject fillObj = new GameObject("Fill");
         fillObj.transform.SetParent(_indicatorObject.transform);
         fillObj.transform.localPosition = Vector3.zero;
         _fillRenderer = fillObj.AddComponent<SpriteRenderer>();
         _fillRenderer.sprite = CreateCircleSprite(64, true);
-        _fillRenderer.sortingLayerName = "Default";
-        _fillRenderer.sortingOrder = 100;
+        _fillRenderer.sortingLayerName = _sortingLayerName;
+        _fillRenderer.sortingOrder = _sortingOrder;
         _fillRenderer.color = fillColor;
         
-        // Create border ring
         GameObject borderObj = new GameObject("Border");
         borderObj.transform.SetParent(_indicatorObject.transform);
         borderObj.transform.localPosition = Vector3.zero;
         _borderRenderer = borderObj.AddComponent<SpriteRenderer>();
         _borderRenderer.sprite = CreateRingSprite(64, 0.85f);
-        _borderRenderer.sortingLayerName = "Default";
-        _borderRenderer.sortingOrder = 101;
+        _borderRenderer.sortingLayerName = _sortingLayerName;
+        _borderRenderer.sortingOrder = _sortingOrder + 1;
         _borderRenderer.color = borderColor;
     }
     
@@ -90,7 +102,6 @@ public class BossAttackIndicator : MonoBehaviour
                 if (distance <= radius)
                 {
                     float alpha = filled ? 1f : 0f;
-                    // Smooth edge
                     if (distance > radius - 2f)
                     {
                         alpha = filled ? (radius - distance) / 2f : 0f;
@@ -107,7 +118,6 @@ public class BossAttackIndicator : MonoBehaviour
         texture.SetPixels(pixels);
         texture.Apply();
         
-        // resolution pixels = 1 world unit, so scale 1 = 1 unit diameter
         return Sprite.Create(
             texture,
             new Rect(0, 0, resolution, resolution),
@@ -137,12 +147,10 @@ public class BossAttackIndicator : MonoBehaviour
                 if (distance <= outerRadius && distance >= innerRadius)
                 {
                     float alpha = 1f;
-                    // Smooth outer edge
                     if (distance > outerRadius - 1.5f)
                     {
                         alpha = (outerRadius - distance) / 1.5f;
                     }
-                    // Smooth inner edge
                     else if (distance < innerRadius + 1.5f)
                     {
                         alpha = (distance - innerRadius) / 1.5f;
@@ -159,7 +167,6 @@ public class BossAttackIndicator : MonoBehaviour
         texture.SetPixels(pixels);
         texture.Apply();
         
-        // resolution pixels = 1 world unit, so scale 1 = 1 unit diameter
         return Sprite.Create(
             texture,
             new Rect(0, 0, resolution, resolution),
@@ -175,80 +182,57 @@ public class BossAttackIndicator : MonoBehaviour
         _displayTimer += Time.deltaTime;
         float progress = Mathf.Clamp01(_displayTimer / _displayDuration);
         
-        // Grow animation - starts small, grows to full size
         _currentRadius = Mathf.Lerp(_currentRadius, _targetRadius, Time.deltaTime * growSpeed);
         float scale = _currentRadius * 2f;
         _indicatorTransform.localScale = new Vector3(scale, scale, 1f);
         
-        // Pulse effect - border pulses faster as attack approaches
         float pulseRate = pulseSpeed * (1f + progress * 3f);
         float pulse = (Mathf.Sin(_displayTimer * pulseRate) + 1f) / 2f;
         
-        // Fill becomes more opaque as attack approaches
         Color currentFill = fillColor;
         currentFill.a = Mathf.Lerp(fillColor.a * 0.5f, fillColor.a * 1.5f, progress);
         _fillRenderer.color = currentFill;
         
-        // Border pulses
         Color currentBorder = borderColor;
         currentBorder.a = Mathf.Lerp(0.5f, 1f, pulse);
         _borderRenderer.color = currentBorder;
         
-        // Scale border slightly for pulse effect
         float borderPulse = 1f + pulse * 0.05f;
         _borderRenderer.transform.localScale = new Vector3(borderPulse, borderPulse, 1f);
     }
     
-    /// <summary>
-    /// Show circular attack indicator.
-    /// </summary>
     public void ShowCircleIndicator(float radius, float duration)
     {
         ShowCircleIndicator(Vector3.zero, radius, duration);
     }
     
-    /// <summary>
-    /// Show circular attack indicator at offset position.
-    /// </summary>
     public void ShowCircleIndicator(Vector3 offset, float radius, float duration)
     {
         _isShowing = true;
         _displayTimer = 0f;
         _displayDuration = duration;
         _targetRadius = radius;
-        _currentRadius = radius * 0.3f; // Start small
+        _currentRadius = radius * 0.3f;
         
         _indicatorTransform.localPosition = new Vector3(offset.x, offset.y, 0f);
         _indicatorObject.SetActive(true);
         
-        // Enable renderers
-        if (_fillRenderer != null)
-        {
-            _fillRenderer.enabled = true;
-        }
-        if (_borderRenderer != null)
-        {
-            _borderRenderer.enabled = true;
-        }
+        if (_fillRenderer != null) _fillRenderer.enabled = true;
+        if (_borderRenderer != null) _borderRenderer.enabled = true;
         
         _fillRenderer.color = fillColor;
         _borderRenderer.color = borderColor;
     }
     
-    /// <summary>
-    /// Hide the indicator immediately.
-    /// </summary>
     public void HideIndicator()
     {
         _isShowing = false;
-        Debug.Log("[BossAttackIndicator] HideIndicator called");
         
         if (_indicatorObject != null)
         {
             _indicatorObject.SetActive(false);
         }
         
-        // Also disable renderers directly as backup
         if (_fillRenderer != null)
         {
             _fillRenderer.enabled = false;

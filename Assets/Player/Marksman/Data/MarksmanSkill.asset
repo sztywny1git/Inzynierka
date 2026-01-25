@@ -16,14 +16,14 @@ MonoBehaviour:
   _actionId: {fileID: 0}
   _animationTriggerName: BasicAttack
   _isPriority: 0
-  _isInstant: 0
   _maxCastDuration: 2
-  _conditions: []
-  _damageMultiplier: 1
+  _conditions:
+  - {fileID: 11400000, guid: dc7cf1c44dff79b4999564978a350a9f, type: 2}
+  _damageMultiplier: 0.4
   _attackCount: 3
   _movementConfig: {fileID: 11400000, guid: 2864684b243179a459c38c841def023d, type: 2}
   _projectilePrefab: {fileID: 8262135215747859921, guid: 703e86c853222824bb1dbf20191b09d3, type: 3}
-  _baseSpeed: 20
+  _baseSpeed: 25
   _lifetime: 3
   _spreadAngle: 15
   _pierceCount: -1

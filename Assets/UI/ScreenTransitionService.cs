@@ -10,19 +10,31 @@ public class ScreenTransitionService
         _screenFader = screenFader;
     }
 
-    public async UniTask PerformTransition(Func<UniTask> operation)
+    public async UniTask PerformTransition(Func<UniTask> operation, bool autoFadeOut = true)
     {
         await _screenFader.FadeInAsync();
 
         try
         {
             await operation.Invoke();
-            
-            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+            await UniTask.WaitForEndOfFrame();
         }
         finally
         {
-            await _screenFader.FadeOutAsync();
+            if (autoFadeOut)
+            {
+                await FadeOutAsync();
+            }
         }
+    }
+
+    public async UniTask FadeInAsync()
+    {
+        await _screenFader.FadeInAsync();
+    }
+
+    public async UniTask FadeOutAsync()
+    {
+        await _screenFader.FadeOutAsync();
     }
 }

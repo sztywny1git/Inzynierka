@@ -64,6 +64,7 @@ public class Spawner : MonoBehaviour
 
     private void Awake()    
     {
+        Debug.unityLogger.logEnabled = false;
         // Jeśli słownik jest pusty na starcie (a zazwyczaj jest po naciśnięciu Play),
         // musimy go odbudować na podstawie obiektów, które już istnieją na scenie.
         if (puzzleObjects.Count == 0)
@@ -74,7 +75,7 @@ public class Spawner : MonoBehaviour
 
     private void RebuildObjectDictionary()
     {
-        Debug.Log("Spawner: Odbudowywanie słownika obiektów (Rebuild)...");
+        //Debug.Log("Spawner: Odbudowywanie słownika obiektów (Rebuild)...");
 
         // 1. Znajdź wszystkie BRAMY będące dziećmi tego Spawnera
         GateComponent[] gates = GetComponentsInChildren<GateComponent>(true); // true = szukaj też w nieaktywnych
@@ -132,12 +133,9 @@ public class Spawner : MonoBehaviour
 
     public void SpawnWfcProp(Vector2Int position, PropWFC.PropType type)
     {
-        // Debug.Log($"[Spawner] Otrzymano żądanie: {type} na pozycji {position}");
-
         if (_propLookup == null) 
         {
             InitializePropLookup();
-            Debug.Log($"[Spawner] Inicjalizacja słownika. Liczba wpisów: {_propLookup.Count}");
         }
 
         if (type == PropWFC.PropType.Empty) return;
@@ -146,7 +144,11 @@ public class Spawner : MonoBehaviour
         {
             if (mapping.prefab != null)
             {
-                Vector3 worldPos = GetCellCenterWorld(position);
+
+                float xPos = position.x + 0.5f;
+                float yPos = position.y; 
+
+                Vector3 worldPos = new Vector3(xPos, yPos, 0);
                 
                 float offX = Random.Range(-mapping.offsetRange, mapping.offsetRange);
                 float offY = Random.Range(-mapping.offsetRange, mapping.offsetRange);
@@ -155,7 +157,6 @@ public class Spawner : MonoBehaviour
                 worldPos.z = entityZPosition;
 
                 GameObject instance = Instantiate(mapping.prefab, worldPos, Quaternion.identity, transform);
-                // Debug.Log($"[SUKCES] Zespawnowano {instance.name} na {position}");
             }
             else
             {
@@ -164,7 +165,7 @@ public class Spawner : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"[Spawner BŁĄD] Nie znaleziono mapowania dla typu: {type}. Dodaj go w liście 'Wfc Prop Mappings' w Inspektorze!");
+            Debug.LogError($"[Spawner BŁĄD] Nie znaleziono mapowania dla typu: {type}.");
         }
     }
     // Metoda pomocnicza - odwrotność GetCellCenterWorld

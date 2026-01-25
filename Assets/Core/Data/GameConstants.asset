@@ -16,3 +16,4 @@ MonoBehaviour:
   _enemyRegistry: {fileID: 11400000, guid: b4d5131aa2e485d40b4b786226edbe50, type: 2}
   _defaultPlayerClass: {fileID: 11400000, guid: 8eade8ab0eb71b14b85c597cd71f1a88, type: 2}
   _maxLevels: 3
+  lootPrefab: {fileID: 5879804375760086074, guid: 024d1857a75deaf4db8406b2ab2beb02, type: 3}

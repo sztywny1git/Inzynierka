@@ -3,7 +3,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class AbilitySpawner : IAbilitySpawner
+public class AbilitySpawner : IAbilitySpawner, IPoolReturner
 {
     private IObjectResolver _container;
     private Transform _poolContainer;
@@ -49,19 +49,17 @@ public class AbilitySpawner : IAbilitySpawner
         }
 
         instance.transform.SetPositionAndRotation(position, rotation);
-        instance.gameObject.SetActive(true);
-        
-        instance.ReturnRequested += ReturnToPoolCallback;
+        instance.InitializePool(this);
         instance.OnSpawn();
+        instance.gameObject.SetActive(true);
 
         return instance as T;
     }
 
-    private void ReturnToPoolCallback(PoolableObject instance)
+    public void Return(PoolableObject instance)
     {
-        instance.ReturnRequested -= ReturnToPoolCallback;
-        instance.OnDespawn();
         instance.gameObject.SetActive(false);
+        instance.OnDespawn();
 
         if (_poolContainer != null)
         {

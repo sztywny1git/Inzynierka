@@ -9,7 +9,7 @@ public class AbilityHitbox : PoolableObject
 
     private DamageData _damageData;
     private IAbilitySpawner _spawner;
-    private HashSet<GameObject> _hitTargets = new HashSet<GameObject>();
+    private readonly HashSet<GameObject> _hitTargets = new HashSet<GameObject>();
 
     public void Initialize(DamageData damageData, IAbilitySpawner spawner)
     {

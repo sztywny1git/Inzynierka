@@ -91,6 +91,11 @@ public class Stat
             }
         }
 
+        if (finalValue < 0)
+        {
+            finalValue = 0;
+        }
+
         return finalValue;
     }
 }

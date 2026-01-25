@@ -14,18 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Frostedge
   itemDescription: Cold seeps into the air, slowing all who stand too close.
-  icon: {fileID: 21300000, guid: ac8ebc7e573a6c44ea1d9534d6f4076b, type: 3}
+  icon: {fileID: 21300000, guid: d386fb9d01dca5448977ccb1d60ca83c, type: 3}
   isGold: 0
   stackSize: 1
+  minDropAmount: 1
+  maxDropAmount: 1
   itemType: 3
   currentHearts: 0
-  Resource: 0
-  armor: 3
+  Resource: 100
+  armor: 0
   speed: 0
-  damage: 6
-  fireRate: -0.1
-  CriticalChance: 0
+  damage: 20
+  fireRate: 0
+  CriticalChance: 0.2
   CriticalDamage: 0
   duration: 0
-  value: 65
+  value: 50
   rarity: 2

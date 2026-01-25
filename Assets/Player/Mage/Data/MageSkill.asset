@@ -16,12 +16,12 @@ MonoBehaviour:
   _actionId: {fileID: 0}
   _animationTriggerName: Skill
   _isPriority: 0
-  _isInstant: 0
   _maxCastDuration: 2
   _conditions:
   - {fileID: 11400000, guid: d309f5534f79286489c10f1b428ca1da, type: 2}
   _damageMultiplier: 1
-  _attackCount: 3
+  _attackCount: 5
+  _runnerPrefab: {fileID: -889587377663761469, guid: cb61aa98d2136fa499b12baa5be6219a, type: 3}
   _hitboxPrefab: {fileID: 1765459303654101189, guid: 52c50dc5ff38124428fec8086d9b7fdc, type: 3}
   _radiusFromCenter: 0.5
-  _spawnDelay: 0.2
+  _spawnDelay: 0.5

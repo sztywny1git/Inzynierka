@@ -20,20 +20,34 @@ public class Projectile : PoolableObject
         _collider = GetComponent<Collider2D>();
     }
 
-    public void Initialize(GameObject instigator, IMovementStrategy strategy, DamageData damageData, int pierceCount, float lifetime, IAbilitySpawner spawner)
+    public void Initialize(
+        GameObject instigator, 
+        ProjectileMovementConfig movementConfig, 
+        Vector3 targetPos,
+        float speed,
+        DamageData damageData, 
+        int pierceCount, 
+        float lifetime, 
+        IAbilitySpawner spawner)
     {
         _instigator = instigator;
-        _movementStrategy = strategy;
         _damageData = damageData;
         _remainingPierce = pierceCount;
         _spawner = spawner; 
 
-        SetLifetime(lifetime);
-        
-        if (_movementStrategy != null)
+        if (movementConfig != null)
         {
+            _movementStrategy = movementConfig.InitializeStrategy(
+                _movementStrategy, 
+                transform.position, 
+                targetPos, 
+                speed
+            );
+            
             _movementStrategy.Initialize(transform);
         }
+
+        SetLifetime(lifetime);
     }
 
     public override void OnSpawn()
@@ -68,6 +82,8 @@ public class Projectile : PoolableObject
             _hitHistory.Add(other.gameObject);
             
             SpawnVfx(other.ClosestPoint(transform.position));
+
+            if (_remainingPierce < 0) return;
 
             if (_remainingPierce > 0)
             {

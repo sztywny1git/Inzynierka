@@ -8,19 +8,23 @@ public class StaticSceneInitializer : MonoBehaviour
     
     private PlayerSpawnManager _spawnManager;
     private IAbilitySpawner _abilitySpawner;
+    private GameplayEventBus _gameplayEvents;
 
     [Inject]
-    public void Construct(PlayerSpawnManager spawnManager, IAbilitySpawner abilitySpawner)
+    public void Construct(
+        PlayerSpawnManager spawnManager, 
+        IAbilitySpawner abilitySpawner,
+        GameplayEventBus gameplayEvents)
     {
         _spawnManager = spawnManager;
         _abilitySpawner = abilitySpawner;
+        _gameplayEvents = gameplayEvents;
     }
 
     private void Start()
     {
         if (_poolContainer == null) _poolContainer = transform;
 
-        // POPRAWKA: Używamy SetPoolContainer zamiast InitializeForScene
         _abilitySpawner.SetPoolContainer(_poolContainer);
 
         if (_spawnPoint == null)
@@ -30,5 +34,7 @@ public class StaticSceneInitializer : MonoBehaviour
         }
         
         _spawnManager.SpawnPlayer(_spawnPoint);
+
+        _gameplayEvents.InvokeLevelReady(_spawnPoint);
     }
 }

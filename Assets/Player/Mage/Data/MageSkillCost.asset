@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58f638c28419bb42a94ede1e18cb0bc, type: 3}
   m_Name: MageSkillCost
   m_EditorClassIdentifier: 
-  _cost: 20
+  _cost: 50

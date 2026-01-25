@@ -5,11 +5,11 @@ using System;
 
 public class Loot : MonoBehaviour
 {
-    public ItemSO itemSO;
+    public ItemSO itemSO; 
     public SpriteRenderer sr;
     public Animator anim;
 
-    public bool canBePickedUp = true;
+    public bool canBePickedUp = false;
     private bool pickedUp = false;
 
     public int quantity;
@@ -19,34 +19,35 @@ public class Loot : MonoBehaviour
     public AudioClip goldPickupSound;
     public AudioClip itemPickupSound;
 
-
-    private void OnValidate()
+    public void Initialize(ItemSO item, int quantity)
     {
-        if (itemSO == null)
-            return;
-
-        UpdateAppearance();
-    }
-
-    public void Initialize(ItemSO itemSO, int quantity)
-    {
-        this.itemSO = itemSO;
+        this.itemSO = item;
         this.quantity = quantity;
-        //canBePickedUp = false;
+        this.canBePickedUp = false;
+
+        if (sr != null)
+        {
+            sr.sortingLayerName = "Decor";
+            sr.sortingOrder = 10;
+        }
+
         UpdateAppearance();
         StartCoroutine(EnablePickupAfterDelay());
     }
 
     private IEnumerator EnablePickupAfterDelay()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.7f);
         canBePickedUp = true;
     }
 
     private void UpdateAppearance()
     {
-        sr.sprite = itemSO.icon;
-        this.name = itemSO.itemName;
+        if(itemSO != null)
+        {
+            sr.sprite = itemSO.icon;
+            this.name = itemSO.itemName;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -59,27 +60,19 @@ public class Loot : MonoBehaviour
             canBePickedUp = false;
             GetComponent<Collider2D>().enabled = false;
 
-            anim.Play("LootPickup");
+            if(anim != null) anim.Play("LootPickup");
 
             if (itemSO.isGold)
             {
-                audioSource.PlayOneShot(goldPickupSound);
+                if(audioSource && goldPickupSound) audioSource.PlayOneShot(goldPickupSound);
             }
             else
             {
-                audioSource.PlayOneShot(itemPickupSound);
+                if(audioSource && itemPickupSound) audioSource.PlayOneShot(itemPickupSound);
             }
 
             OnItemLooted?.Invoke(itemSO, quantity);
             Destroy(gameObject, .5f);
         }
     }
-
-    /*private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            canBePickedUp = true;
-        }
-    }*/
 }

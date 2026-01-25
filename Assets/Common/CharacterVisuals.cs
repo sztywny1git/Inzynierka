@@ -164,6 +164,7 @@ public class CharacterVisuals : MonoBehaviour, IFacingHandler
 
     public void OnAnimAttackPoint()
     {
+        _isRotationLocked = false;
         if (_castHandler != null) _castHandler.OnAnimAttackPoint();
     }
 

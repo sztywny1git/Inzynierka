@@ -39,12 +39,13 @@ public class ScreenFader : MonoBehaviour
         while (timer < _fadeDuration)
         {
             if (token.IsCancellationRequested) return;
-
-            timer += Time.unscaledDeltaTime;
+            
+            timer += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             _canvasGroup.alpha = Mathf.Lerp(startAlpha, 1f, timer / _fadeDuration);
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
         _canvasGroup.alpha = 1f;
+        await UniTask.WaitForEndOfFrame(this);
     }
 
     public async UniTask FadeOutAsync()
@@ -60,7 +61,7 @@ public class ScreenFader : MonoBehaviour
         {
             if (token.IsCancellationRequested) return;
 
-            timer += Time.unscaledDeltaTime;
+            timer += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             _canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, timer / _fadeDuration);
             await UniTask.Yield(PlayerLoopTiming.Update);
         }

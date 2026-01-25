@@ -6,21 +6,29 @@ using Cysharp.Threading.Tasks;
 
 public class GameFlowManager : IInitializable, IDisposable
 {
-    private readonly IObjectResolver _container;
     private readonly GameplayEventBus _gameplayEvents;
     private readonly ScreenTransitionService _transitionService;
-
-    private Dictionary<GameStateId, IGameState> _states;
+    private readonly Dictionary<GameStateId, IGameState> _states;
     private IGameState _currentState;
 
     public GameFlowManager(
-        IObjectResolver container, 
         GameplayEventBus gameplayEvents,
-        ScreenTransitionService transitionService)
+        ScreenTransitionService transitionService,
+        MainMenuState mainMenuState,
+        HubState hubState,
+        RunState runState,
+        RunSummaryState runSummaryState)
     {
-        _container = container;
         _gameplayEvents = gameplayEvents;
         _transitionService = transitionService;
+
+        _states = new Dictionary<GameStateId, IGameState>
+        {
+            { GameStateId.MainMenu, mainMenuState },
+            { GameStateId.Hub, hubState },
+            { GameStateId.Run, runState },
+            { GameStateId.RunSummary, runSummaryState },
+        };
         
         _gameplayEvents.GoToHubRequested += OnGoToHubRequested;
         _gameplayEvents.BeginRunRequested += OnBeginRunRequested;
@@ -29,7 +37,6 @@ public class GameFlowManager : IInitializable, IDisposable
 
     public void Initialize()
     {
-        InitializeStates();
         ChangeStateInternal(GameStateId.MainMenu).Forget();
     }
 
@@ -38,17 +45,6 @@ public class GameFlowManager : IInitializable, IDisposable
         _gameplayEvents.GoToHubRequested -= OnGoToHubRequested;
         _gameplayEvents.BeginRunRequested -= OnBeginRunRequested;
         _gameplayEvents.EndRunRequested -= OnEndRunRequested;
-    }
-
-    private void InitializeStates()
-    {
-        _states = new Dictionary<GameStateId, IGameState>
-        {
-            { GameStateId.MainMenu, _container.Resolve<MainMenuState>() },
-            { GameStateId.Hub, _container.Resolve<HubState>() },
-            { GameStateId.Run, _container.Resolve<RunState>() },
-            { GameStateId.RunSummary, _container.Resolve<RunSummaryState>() },
-        };
     }
 
     private void OnGoToHubRequested() => TransitionToState(GameStateId.Hub).Forget();

@@ -17,15 +17,17 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: ed6dfb4c28c1afb4cbb1c6a1a4338883, type: 3}
   isGold: 0
   stackSize: 1
+  minDropAmount: 1
+  maxDropAmount: 1
   itemType: 5
-  currentHearts: 20
+  currentHearts: 100
   Resource: 0
-  armor: 14
-  speed: 0.5
-  damage: -2
+  armor: 50
+  speed: -0.5
+  damage: 0
   fireRate: 0
   CriticalChance: 0
   CriticalDamage: 0
   duration: 0
-  value: 92
+  value: 100
   rarity: 3

@@ -18,7 +18,7 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: 4beb9b1dc9ececa4a96c1d90a06e60e5, type: 2}
     BaseValue: 1
   - Definition: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
-    BaseValue: 0.1
+    BaseValue: 1
   - Definition: {fileID: 11400000, guid: 4375364806f10a04597ec73926842676, type: 2}
     BaseValue: 2
   - Definition: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}

@@ -16,11 +16,11 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: af31f7e720094ed4382dc3ca2ce5600a, type: 2}
     BaseValue: 50
   - Definition: {fileID: 11400000, guid: 4beb9b1dc9ececa4a96c1d90a06e60e5, type: 2}
-    BaseValue: 2
+    BaseValue: 1
   - Definition: {fileID: 11400000, guid: 8b1576fe4573f204c829d2bc6dbc200c, type: 2}
-    BaseValue: 0
+    BaseValue: 0.1
   - Definition: {fileID: 11400000, guid: 4375364806f10a04597ec73926842676, type: 2}
-    BaseValue: 0
+    BaseValue: 2
   - Definition: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
     BaseValue: 10
   - Definition: {fileID: 11400000, guid: 9237775d94441ab4eae41dfdb29cb8e2, type: 2}
@@ -30,6 +30,6 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: f642d78613687db459aed5e219e2ad2b, type: 2}
     BaseValue: 3
   - Definition: {fileID: 11400000, guid: 47eec887c3ae67741afa1df5187394a4, type: 2}
-    BaseValue: 1
+    BaseValue: 50
   - Definition: {fileID: 11400000, guid: e1d62bc4d9c09384b9f64e5f6c1bb426, type: 2}
-    BaseValue: 1
+    BaseValue: 5

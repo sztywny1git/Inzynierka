@@ -1,14 +1,19 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Abilities/Movement/Homing")]
+[CreateAssetMenu(menuName = "Configs/Homing Movement")]
 public class HomingMovementConfig : ProjectileMovementConfig
 {
     [SerializeField] private float _turnSpeed = 200f;
     [SerializeField] private float _searchRadius = 10f;
     [SerializeField] private LayerMask _targetLayer;
 
-    public override IMovementStrategy CreateStrategy(Vector3 origin, Quaternion rotation, Vector3 targetPos, float finalSpeed)
+    public override IMovementStrategy InitializeStrategy(IMovementStrategy existing, Vector3 start, Vector3 target, float speed)
     {
-        return new HomingMovementStrategy(finalSpeed, _turnSpeed, _searchRadius, _targetLayer);
+        HomingMovementStrategy strategy = existing as HomingMovementStrategy;
+        
+        if (strategy == null) strategy = new HomingMovementStrategy();
+
+        strategy.Reset(speed, _turnSpeed, _searchRadius, _targetLayer);
+        return strategy;
     }
 }

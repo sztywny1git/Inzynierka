@@ -16,12 +16,12 @@ MonoBehaviour:
   _actionId: {fileID: 0}
   _animationTriggerName: BasicAttack
   _isPriority: 0
-  _isInstant: 0
   _maxCastDuration: 2
   _conditions: []
   _damageMultiplier: 1
   _attackCount: 1
+  _runnerPrefab: {fileID: -889587377663761469, guid: cb61aa98d2136fa499b12baa5be6219a, type: 3}
   _hitboxPrefab: {fileID: 4726916314365055259, guid: fb3f39fab6656c642bdb6af698ec8641, type: 3}
   _spawnDelay: 0.15
   _spreadAngle: 45
-  _spawnOffset: 0.5
+  _positionSpread: 0.5

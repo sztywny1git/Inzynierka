@@ -33,4 +33,7 @@ public class GameplayEventBus
     public event Action<Transform> LevelReady;
     public void InvokeLevelReady(Transform spawnPoint) => LevelReady?.Invoke(spawnPoint);
 
+    public event Action<Vector3, LootTableSO, int> OnEnemyDied;
+    public void InvokeEnemyDied(Vector3 position, LootTableSO lootTable, int expAmount) => OnEnemyDied?.Invoke(position, lootTable, expAmount);
+
 }

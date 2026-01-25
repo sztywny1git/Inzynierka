@@ -7,15 +7,18 @@ public class PlayerSpawnManager : IDisposable
 {
     private readonly IPlayerFactory _playerFactory;
     private readonly SessionData _sessionData;
+    private readonly ICameraService _cameraService;
    
     private Character _activePlayerInstance;
 
     public PlayerSpawnManager(
         IPlayerFactory playerFactory,
-        SessionData sessionData)
+        SessionData sessionData,
+        ICameraService cameraService)
     {
         _playerFactory = playerFactory;
         _sessionData = sessionData;
+        _cameraService = cameraService;
     }
 
     public void SpawnPlayer(Transform spawnPoint)
@@ -24,6 +27,8 @@ public class PlayerSpawnManager : IDisposable
         {
             _activePlayerInstance.transform.position = spawnPoint.position;
             _activePlayerInstance.GetComponent<PlayerMovement>()?.StopMovement();
+            
+            _cameraService.SetFollowTarget(_activePlayerInstance.transform);
         }
         else
         {

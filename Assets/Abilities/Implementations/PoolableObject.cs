@@ -1,65 +1,51 @@
-using System;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading;
 
 public abstract class PoolableObject : MonoBehaviour
 {
-    public event Action<PoolableObject> ReturnRequested;
+    private IPoolReturner _returner;
+    private float _lifetimeTimer;
+    private bool _hasActiveLifetime;
+    private bool _isPooled;
 
-    private CancellationTokenSource _lifetimeCts;
-    private bool _isActive;
+    public void InitializePool(IPoolReturner returner)
+    {
+        _returner = returner;
+    }
 
     public virtual void OnSpawn()
     {
-        _isActive = true;
+        _isPooled = true;
+        _hasActiveLifetime = false;
     }
 
     public virtual void OnDespawn()
     {
-        CancelLifetimeTimer();
-        _isActive = false;
-        ReturnRequested = null; 
+        _hasActiveLifetime = false;
+        _isPooled = false;
     }
 
     protected void SetLifetime(float lifetime)
     {
-        CancelLifetimeTimer();
-        _lifetimeCts = new CancellationTokenSource();
-
-        var token = CancellationTokenSource.CreateLinkedTokenSource(
-            _lifetimeCts.Token, 
-            this.GetCancellationTokenOnDestroy()
-        ).Token;
-
-        LifetimeRoutine(lifetime, token).Forget();
+        _lifetimeTimer = lifetime;
+        _hasActiveLifetime = true;
     }
 
-    private async UniTaskVoid LifetimeRoutine(float lifetime, CancellationToken token)
+    protected virtual void Update()
     {
-        bool canceled = await UniTask.Delay(TimeSpan.FromSeconds(lifetime), cancellationToken: token)
-                                     .SuppressCancellationThrow();
-
-        if (!canceled && _isActive)
+        if (_hasActiveLifetime)
         {
-            ReturnToPool();
+            _lifetimeTimer -= Time.deltaTime;
+            if (_lifetimeTimer <= 0)
+            {
+                ReturnToPool();
+            }
         }
     }
-
-    private void CancelLifetimeTimer()
-    {
-        if (_lifetimeCts != null)
-        {
-            _lifetimeCts.Cancel();
-            _lifetimeCts.Dispose();
-            _lifetimeCts = null;
-        }
-    }
-    protected virtual void Update() { }
 
     public void ReturnToPool()
     {
-        if (!_isActive) return;
-        ReturnRequested?.Invoke(this);
+        if (!_isPooled) return;
+        _hasActiveLifetime = false;
+        _returner?.Return(this);
     }
 }

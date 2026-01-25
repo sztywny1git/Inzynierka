@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92f79388ab8cba4f818563518b2da73, type: 3}
+  m_Name: BossLootTable
+  m_EditorClassIdentifier: 
+  dropChance: 1
+  pools:
+  - poolName: Epic
+    weight: 75
+    items:
+    - {fileID: 11400000, guid: 003a937770348fc48943c38724c7779c, type: 2}
+    - {fileID: 11400000, guid: f632daf3578031140b6e48d2e2c38dc5, type: 2}
+    - {fileID: 11400000, guid: 6969d3238d0336f499fc65698122f20b, type: 2}
+    - {fileID: 11400000, guid: c063a99036da5004a91af223df9ba818, type: 2}
+    - {fileID: 11400000, guid: ab64c190a88d2a34ea5754c6a859f8f8, type: 2}
+    - {fileID: 11400000, guid: 4fe869947dc6d7d46894cde8d49bd1e6, type: 2}
+    - {fileID: 11400000, guid: 3f5c7d45885f2f84b925c673850d15bb, type: 2}
+    - {fileID: 11400000, guid: 935a7cc5293c3194f973b44aef0a6f33, type: 2}
+  - poolName: Legendary
+    weight: 25
+    items:
+    - {fileID: 11400000, guid: 1910cb988d713a549955f17ba4bc96ec, type: 2}
+    - {fileID: 11400000, guid: 25952f9bef01d8a4ba6953a0eb18d982, type: 2}
+    - {fileID: 11400000, guid: 0dbfb342e35a62944b3325e68027723c, type: 2}
+    - {fileID: 11400000, guid: a946336b404c2a84aa0650dab53f7f35, type: 2}
+    - {fileID: 11400000, guid: 2038eabd5283c11439b359b3544d796e, type: 2}

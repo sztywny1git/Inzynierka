@@ -1,31 +1,30 @@
 using UnityEngine;
+using VContainer;
 
-public class AbilityContext
+public readonly struct AbilityContext
 {
-    public GameObject GameObject { get; }
-    public IAbilitySpawner Spawner { get; }
-    public IResourceProvider ResourceProvider { get; }
-    public ICooldownProvider CooldownProvider { get; }
-    public IStatsProvider StatsProvider { get; }
-    public StatSystemConfig StatConfig { get; }
-    
-    public Transform Origin { get; }
-    public Vector3 AimLocation { get; }
-    public GameObject Instigator { get; }
-    public ActionIdentifier ActionId { get; }
+    public readonly GameObject Instigator;
+    public readonly IAbilitySpawner Spawner;
+    public readonly IResourceProvider ResourceProvider;
+    public readonly ICooldownProvider CooldownProvider;
+    public readonly IStatsProvider StatsProvider;
+    public readonly StatSystemConfig StatConfig;
+    public readonly Transform Origin;
+    public readonly Vector3 AimLocation;
+    public readonly ActionIdentifier ActionId;
 
     public AbilityContext(
-        GameObject gameObject,
-        IAbilitySpawner spawner,
-        IResourceProvider resourceProvider,
-        ICooldownProvider cooldownProvider,
-        IStatsProvider statsProvider,
-        StatSystemConfig statConfig,
-        Transform origin,
-        Vector3 aimLocation,
+        GameObject instigator, 
+        IAbilitySpawner spawner, 
+        IResourceProvider resourceProvider, 
+        ICooldownProvider cooldownProvider, 
+        IStatsProvider statsProvider, 
+        StatSystemConfig statConfig, 
+        Transform origin, 
+        Vector3 aimLocation, 
         ActionIdentifier actionId)
     {
-        GameObject = gameObject;
+        Instigator = instigator;
         Spawner = spawner;
         ResourceProvider = resourceProvider;
         CooldownProvider = cooldownProvider;
@@ -33,7 +32,6 @@ public class AbilityContext
         StatConfig = statConfig;
         Origin = origin;
         AimLocation = aimLocation;
-        Instigator = gameObject;
         ActionId = actionId;
     }
 }

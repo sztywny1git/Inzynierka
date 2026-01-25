@@ -8,7 +8,11 @@ public class ShopKeeper : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip shopOpenSound;
 
-    [SerializeField] private List<ShopItems> shopItems;
+    [Header("Shop Generation")]
+    [SerializeField] private LootTableSO lootTable;
+    [SerializeField] private int itemsCount = 5;
+
+    private List<ShopItems> shopItems = new List<ShopItems>();
 
     private bool playerInRange;
     public static bool isShopOpen;
@@ -18,6 +22,34 @@ public class ShopKeeper : MonoBehaviour
     public static void TriggerShopStateEvent(ShopManager manager, bool isOpen)
     {
         OnShopStateChanged?.Invoke(manager, isOpen);
+    }
+
+    private void Start()
+    {
+        GenerateShopItems();
+    }
+
+    private void GenerateShopItems()
+    {
+        shopItems.Clear();
+
+        if (lootTable == null) return;
+
+        for (int i = 0; i < itemsCount; i++)
+        {
+            ItemSO randomItem = lootTable.GetRandomItem();
+
+            if (randomItem != null)
+            {
+                ItemSO instancedItem = randomItem.CreateRandomInstance();
+
+                ShopItems newShopEntry = new ShopItems();
+                newShopEntry.itemSO = instancedItem;
+                newShopEntry.price = instancedItem.value;
+
+                shopItems.Add(newShopEntry);
+            }
+        }
     }
 
     void Update()

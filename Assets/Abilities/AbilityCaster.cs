@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using VContainer;
-using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(ActionConstraintSystem))]
 public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
 {
+
     [SerializeField] private StatSystemConfig _statConfig;
     [SerializeField] private float _inputBufferTime = 0.4f;
 
@@ -22,20 +20,18 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
     private ICooldownProvider _cooldownProvider;
     private ActionConstraintSystem _constraintSystem;
     private IFacingHandler _facingHandler;
-   
     private AbilitySpawnPoint _cachedSpawnPoint;
    
     private CasterState _currentState = CasterState.Idle;
+    
     private Ability _currentAbility;
     private AbilitySnapshot _currentSnapshot;
     private Vector3 _currentAimLocation;
-    
-    private CancellationTokenSource _castCts;
+    private float _safetyTimer;
 
     private Ability _bufferedAbility;
     private Vector3 _bufferedAimLocation;
     private float _bufferExpireTimestamp;
-
     private List<Ability> _abilities = new List<Ability>();
 
     [Inject]
@@ -63,7 +59,33 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
     private void OnDisable()
     {
         if (_livingEntity != null) _livingEntity.Death -= HandleDeath;
-        CancelCurrentCastToken();
+    }
+
+    private void Update()
+    {
+        if (_bufferedAbility != null)
+        {
+            if (Time.time > _bufferExpireTimestamp)
+            {
+                ClearBuffer();
+            }
+            else if (_currentState == CasterState.Idle && _constraintSystem.CanAbility)
+            {
+                StartCastSequence(_bufferedAbility, _bufferedAimLocation);
+            }
+        }
+
+        if (_currentState != CasterState.Idle)
+        {
+            if (_safetyTimer > 0)
+            {
+                _safetyTimer -= Time.deltaTime;
+                if (_safetyTimer <= 0)
+                {
+                    ResetState();
+                }
+            }
+        }
     }
 
     public void Initialize(IEnumerable<Ability> abilities)
@@ -83,19 +105,9 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
 
     private void HandleCastRequest(Ability ability, Vector3 aimLocation)
     {
-        if (ability.IsInstant)
-        {
-            RotateTowards(aimLocation);
-            ExecuteInstant(ability, aimLocation);
-            return;
-        }
-
         if (ability.IsPriority)
         {
-            if (_currentState != CasterState.Idle)
-            {
-                InterruptCast();
-            }
+            if (_currentState != CasterState.Idle) InterruptCast();
             StartCastSequence(ability, aimLocation);
             return;
         }
@@ -109,35 +121,6 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
         }
 
         StartCastSequence(ability, aimLocation);
-    }
-
-    private void RotateTowards(Vector3 targetPosition)
-    {
-        if (_facingHandler != null)
-        {
-            Vector3 direction = targetPosition - transform.position;
-            _facingHandler.FaceDirection(direction);
-        }
-    }
-
-    private AbilitySnapshot CreateSnapshot()
-    {
-        float damage = _statsProvider.GetFinalStatValue(_statConfig.DamageStat);
-        float crit = _statsProvider.GetFinalStatValue(_statConfig.CritChanceStat);
-        float critMult = _statsProvider.GetFinalStatValue(_statConfig.CritMultiplierStat);
-
-        return new AbilitySnapshot(damage, crit, critMult);
-    }
-
-    private void ExecuteInstant(Ability ability, Vector3 aimLocation)
-    {
-        if (!CheckConditions(ability, aimLocation)) return;
-
-        var context = CreateContext(ability.ActionId, aimLocation);
-        ConsumeResources(ability, context);
-        
-        var snapshot = CreateSnapshot();
-        ability.Execute(context, snapshot);
     }
 
     private void StartCastSequence(Ability ability, Vector3 aimLocation)
@@ -163,12 +146,7 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
         float attackSpeed = _statsProvider.GetFinalStatValue(_statConfig.AttackSpeedStat);
         if (attackSpeed <= 0) attackSpeed = 1f;
 
-        float duration = ability.MaxCastDuration / attackSpeed;
-
-        CancelCurrentCastToken();
-        _castCts = new CancellationTokenSource();
-        
-        SafetyNetAsync(duration, _castCts.Token).Forget();
+        _safetyTimer = ability.MaxCastDuration / attackSpeed;
 
         if (!string.IsNullOrEmpty(ability.AnimationTriggerName))
         {
@@ -184,13 +162,13 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
     {
         if (_currentState != CasterState.PreCast || _currentAbility == null) return;
 
-        var context = CreateContext(_currentAbility.ActionId, _currentAimLocation);
-        
-        ConsumeResources(_currentAbility, context);
-        _currentAbility.Execute(context, _currentSnapshot);
-
         _currentState = CasterState.PostCast;
         _constraintSystem.RemoveMovementLock();
+
+        var context = CreateContext(_currentAbility.ActionId, _currentAimLocation);
+        ConsumeResources(_currentAbility, context);
+        
+        _currentAbility.Execute(context, _currentSnapshot);
     }
 
     public void OnAnimFinish()
@@ -202,22 +180,18 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
     public void InterruptCast()
     {
         if (_currentState == CasterState.Idle) return;
-
         ResetInternalState();
         ClearBuffer();
-        
         OnCastInterrupted?.Invoke();
     }
 
     private void ResetInternalState()
     {
-        CancelCurrentCastToken();
-
         ResetLocksBasedOnState();
-
         _currentState = CasterState.Idle;
         _currentAbility = null;
         _currentSnapshot = null;
+        _safetyTimer = 0f;
     }
 
     private void ResetState()
@@ -241,11 +215,7 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
         }
     }
 
-    private void ClearBuffer()
-    {
-        _bufferedAbility = null;
-        _bufferExpireTimestamp = 0f;
-    }
+    private void ClearBuffer() => _bufferedAbility = null;
 
     private void ResetLocksBasedOnState()
     {
@@ -257,25 +227,6 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
         else if (_currentState == CasterState.PostCast)
         {
             _constraintSystem.RemoveAbilityLock();
-        }
-    }
-
-    private async UniTaskVoid SafetyNetAsync(float duration, CancellationToken token)
-    {
-        bool canceled = await UniTask.Delay(TimeSpan.FromSeconds(duration), cancellationToken: token).SuppressCancellationThrow();
-        
-        if (canceled) return;
-
-        ResetState();
-    }
-
-    private void CancelCurrentCastToken()
-    {
-        if (_castCts != null)
-        {
-            _castCts.Cancel();
-            _castCts.Dispose();
-            _castCts = null;
         }
     }
 
@@ -304,6 +255,23 @@ public class AbilityCaster : MonoBehaviour, ICastAnimationHandler
             gameObject, _spawner, _resourceProvider, _cooldownProvider, _statsProvider, _statConfig,
             currentOrigin, aimLocation, actionId
         );
+    }
+    
+    private void RotateTowards(Vector3 targetPosition)
+    {
+        if (_facingHandler != null)
+        {
+            Vector3 direction = targetPosition - transform.position;
+            _facingHandler.FaceDirection(direction);
+        }
+    }
+
+    private AbilitySnapshot CreateSnapshot()
+    {
+        float damage = _statsProvider.GetFinalStatValue(_statConfig.DamageStat);
+        float crit = _statsProvider.GetFinalStatValue(_statConfig.CritChanceStat);
+        float critMult = _statsProvider.GetFinalStatValue(_statConfig.CritMultiplierStat);
+        return new AbilitySnapshot(damage, crit, critMult);
     }
 
     private void HandleDeath()
