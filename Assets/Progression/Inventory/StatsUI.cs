@@ -23,7 +23,7 @@ public class StatsUI : MonoBehaviour
     public CanvasGroup statsCanvas;
     private bool statsOpen = true;
 
-    // Lista pomocnicza do łatwego zarządzania eventami
+    // lista pomocnicza do zarzadzania eventami
     private List<StatDefinition> allDefinitions;
 
     private void Awake()
@@ -33,7 +33,6 @@ public class StatsUI : MonoBehaviour
         else
             Destroy(gameObject);
 
-        // Inicjalizujemy listę wszystkich definicji, żeby łatwo po nich iterować
         allDefinitions = new List<StatDefinition>
         {
             DamageDef, ArmorDef, MoveSpeedDef, MaxHealthDef, 
@@ -43,7 +42,6 @@ public class StatsUI : MonoBehaviour
 
     public void RegisterPlayerStats(CharacterStats newStats)
     {
-        // 1. Odpisz się od starego gracza (żeby uniknąć błędów gdy stary gracz zginie)
         if (currentStats != null)
         {
             currentStats.OnStatsReinitialized -= UpdateAllStats;
@@ -52,21 +50,17 @@ public class StatsUI : MonoBehaviour
 
         currentStats = newStats;
 
-        // 2. Zapisz się do nowego gracza
         if (currentStats != null)
         {
-            // Reaguj na pełny reset statystyk
             currentStats.OnStatsReinitialized += UpdateAllStats;
             
-            // Reaguj na zmianę pojedynczej statystyki (np. założenie miecza)
             SubscribeToStatEvents();
-            
-            // Odśwież widok na start
+
             UpdateAllStats();
         }
     }
 
-    // Pomocnicza metoda: Zapisuje UI do nasłuchiwania każdej statystyki
+    // pomocnicza metoda, zapisuje UI do nasluchiwania kazdej statystyki
     private void SubscribeToStatEvents()
     {
         foreach (var def in allDefinitions)
@@ -76,13 +70,13 @@ public class StatsUI : MonoBehaviour
             var stat = currentStats.GetStat(def);
             if (stat != null)
             {
-                // Gdy statystyka się zmieni, wywołaj metodę OnSingleStatChanged
+                // Gdy statystyka sie zmieni wywolaj metode
                 stat.OnStatChanged += OnSingleStatChanged;
             }
         }
     }
 
-    // Pomocnicza metoda: Wypisuje UI z nasłuchiwania (sprzątanie)
+    // wypisuje UI z nasluchiwania kazdej statystyki
     private void UnsubscribeFromStatEvents()
     {
         foreach (var def in allDefinitions)
@@ -97,13 +91,13 @@ public class StatsUI : MonoBehaviour
         }
     }
 
-    // Wrapper: Event wysyła float (nową wartość), ale my po prostu chcemy odświeżyć wszystko
+    // odswiezamy wszystko
     private void OnSingleStatChanged(float newValue)
     {
         UpdateAllStats();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
@@ -121,7 +115,7 @@ public class StatsUI : MonoBehaviour
                 UpdateAllStats(); 
             }
         }
-    }
+    }*/
 
     private void UpdateStatUI(int slotIndex, string label, StatDefinition def)
     {
