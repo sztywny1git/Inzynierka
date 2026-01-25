@@ -47076,15 +47076,16 @@ MonoBehaviour:
   startPosition: {x: 0, y: 0}
   spawner: {fileID: 1714842302}
   randomWalkParameters: {fileID: 11400000, guid: 90e060ae3b5652549ac79d65419a4270, type: 2}
-  minRoomWidth: 15
-  minRoomHeight: 15
-  dungeonWidth: 120
-  dungeonHeight: 120
-  offset: 4
+  minRoomWidth: 20
+  minRoomHeight: 20
+  dungeonWidth: 150
+  dungeonHeight: 150
+  offset: 2
   randomWalkRooms: 1
   puzzleRoomCount: 4
   bossRoomExpand: 4
   puzzleRoomExpand: 2
+  propSpawnOffset: {x: 0.5, y: 0.5}
   roomPropDataList:
   - roomType: 1
     propData: {fileID: 11400000, guid: dea04cd1b5ce1914f9f384907cea93c4, type: 2}
@@ -47238,7 +47239,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0.5, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
