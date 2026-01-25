@@ -48,6 +48,7 @@ public class Projectile : PoolableObject
         }
 
         SetLifetime(lifetime);
+        UpdateVisualOrientation();
     }
 
     public override void OnSpawn()
@@ -62,13 +63,21 @@ public class Projectile : PoolableObject
         if (_movementStrategy != null)
         {
             _movementStrategy.Update(Time.deltaTime);
-            
+            UpdateVisualOrientation();
+
             if (_movementStrategy.IsDone)
             {
                 SpawnVfx(transform.position);
                 ReturnToPool();
             }
         }
+    }
+
+    private void UpdateVisualOrientation()
+    {
+        Vector3 scale = transform.localScale;
+        scale.y = transform.right.x < 0 ? -Mathf.Abs(scale.y) : Mathf.Abs(scale.y);
+        transform.localScale = scale;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
