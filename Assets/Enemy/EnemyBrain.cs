@@ -2,7 +2,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(EnemyMovement))]
 [RequireComponent(typeof(EnemyTargetProvider))]
-[RequireComponent(typeof(EnemyMeleeAttack))]
 public sealed class EnemyBrain : MonoBehaviour
 {
     [Header("Debug")]
@@ -59,7 +58,6 @@ public sealed class EnemyBrain : MonoBehaviour
 
     public bool DebugLogging => debugLogging;
     
-    // ZMIANA: Publiczny dostęp dla histerezy w SmartCombatState
     public float ChaseDistance => chaseDistance; 
 
     private void Awake()
@@ -80,8 +78,15 @@ public sealed class EnemyBrain : MonoBehaviour
             if (_threatDetector == null) _threatDetector = gameObject.AddComponent<ThreatDetector>();
         }
 
-        if (_movement == null || _targetProvider == null || _melee == null)
+        if (_movement == null || _targetProvider == null)
         {
+            enabled = false;
+            return;
+        }
+
+        if (_melee == null && _ranged == null)
+        {
+            Debug.LogWarning($"[EnemyBrain] {name} has no attack component (EnemyMeleeAttack or EnemyRangedAttack). Disabling.", this);
             enabled = false;
             return;
         }
@@ -164,9 +169,16 @@ public sealed class EnemyBrain : MonoBehaviour
         chaseDistance = Mathf.Max(0f, chaseDistance);
         giveUpDistance = Mathf.Max(0.1f, giveUpDistance);
 
-        if (_melee != null && (attackDistance <= 0f || attackDistance > _melee.AttackRange))
+        if (_melee != null)
         {
-            attackDistance = _melee.AttackRange;
+            if (attackDistance <= 0f || attackDistance > _melee.AttackRange)
+            {
+                attackDistance = _melee.AttackRange;
+            }
+        }
+        else
+        {
+            attackDistance = 0f;
         }
 
         if (_ranged != null)
@@ -195,11 +207,16 @@ public sealed class EnemyBrain : MonoBehaviour
         }
 
         _chase = new EnemyChaseState(_ctx, _fsm, giveUpDistance, _patrol);
-        _attack = new EnemyAttackState(_ctx, _fsm, attackDistance, _chase);
+        
+        if (_melee != null)
+        {
+            _attack = new EnemyAttackState(_ctx, _fsm, attackDistance, _chase);
+        }
 
         if (useSmartCombat)
         {
-            _smartCombat = new EnemySmartCombatState(_ctx, _fsm, _threatDetector, _chase, _patrol, _melee != null ? _melee.AttackRange : attackDistance);
+            float combatRange = _melee != null ? _melee.AttackRange : (_ranged != null ? _ranged.AttackRange : attackDistance);
+            _smartCombat = new EnemySmartCombatState(_ctx, _fsm, _threatDetector, _chase, _patrol, combatRange);
         }
 
         if (_ranged != null)
@@ -227,7 +244,7 @@ public sealed class EnemyBrain : MonoBehaviour
             return !ReferenceEquals(desired, current);
         }
 
-        if (dist <= attackDistance)
+        if (_attack != null && dist <= attackDistance)
         {
             desired = _attack;
             return !ReferenceEquals(desired, current);

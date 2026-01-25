@@ -46893,6 +46893,16 @@ MonoBehaviour:
   enemyTable:
   - prefab: {fileID: 6507364902159006218, guid: 6c0b0f73ad652d34bb5e3a518c38367f, type: 3}
     weight: 1
+  - prefab: {fileID: 6549284781771361837, guid: 91f245385ff4c194f8f73d989c24af98, type: 3}
+    weight: 1
+  - prefab: {fileID: 6549284781771361837, guid: 9c4253cf2ee21e9409635cbb3d04448b, type: 3}
+    weight: 1
+  - prefab: {fileID: 6549284781771361837, guid: 2322a1c940825204ca392ca3a52e35e8, type: 3}
+    weight: 1
+  - prefab: {fileID: 1328831502090338468, guid: 6a54cea1e991e3345b0551413b43eadc, type: 3}
+    weight: 1
+  - prefab: {fileID: 6549284781771361837, guid: 904cb82c80f69694a85c60677db5b2c5, type: 3}
+    weight: 1
   bossPrefab: {fileID: 2565198281050210484, guid: 25f810ca833b5744fba961a265bcc17b, type: 3}
   spawnOnStart: 1
   minDistanceBetweenEnemies: 1
@@ -47085,6 +47095,7 @@ MonoBehaviour:
   puzzleRoomCount: 4
   bossRoomExpand: 4
   puzzleRoomExpand: 2
+  propSpawnOffset: {x: 0.5, y: 0.5}
   roomPropDataList:
   - roomType: 1
     propData: {fileID: 11400000, guid: dea04cd1b5ce1914f9f384907cea93c4, type: 2}
@@ -47238,7 +47249,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0.5, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
