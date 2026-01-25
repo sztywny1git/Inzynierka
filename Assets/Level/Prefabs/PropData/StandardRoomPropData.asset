@@ -26,8 +26,14 @@ MonoBehaviour:
   floorPropDensity: 5
   wfcPropsRules:
   - type: 4
-    weight: 41
+    weight: 30
   - type: 5
-    weight: 26
+    weight: 21
   - type: 3
-    weight: 48
+    weight: 23
+  - type: 1
+    weight: 4
+  - type: 6
+    weight: 14
+  - type: 2
+    weight: 9

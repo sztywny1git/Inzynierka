@@ -24,10 +24,10 @@ MonoBehaviour:
   floorPropDensity: 5
   wfcPropsRules:
   - type: 1
-    weight: 47
+    weight: 2
   - type: 3
-    weight: 28
+    weight: 14
   - type: 4
-    weight: 44
+    weight: 9
   - type: 6
-    weight: 24
+    weight: 18

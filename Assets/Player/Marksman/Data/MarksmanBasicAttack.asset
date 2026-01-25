@@ -21,8 +21,13 @@ MonoBehaviour:
   _damageMultiplier: 20
   _attackCount: 10
   _movementConfig: {fileID: 11400000, guid: a7a943c5f39dadc4d8762a6635a9e524, type: 2}
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1
+  _wallOffset: 0.05
   _projectilePrefab: {fileID: 8262135215747859921, guid: 703e86c853222824bb1dbf20191b09d3, type: 3}
   _baseSpeed: 25
   _lifetime: 3
   _spreadAngle: 15
   _pierceCount: -1
+  _projectileRadius: 0.25
