@@ -19,9 +19,12 @@ MonoBehaviour:
     items:
     - {fileID: 11400000, guid: f0d9f339ebdcf524b9e9ea808dbec3c8, type: 2}
   - poolName: Consumable
-    weight: 20
+    weight: 15
     items:
     - {fileID: 11400000, guid: 85e0521e147570f4fbec5605d32d01c5, type: 2}
+  - poolName: Speed
+    weight: 5
+    items:
     - {fileID: 11400000, guid: 1d335d7baaef54d47ba572d07ff6b127, type: 2}
   - poolName: Common
     weight: 15
@@ -49,7 +52,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: f632daf3578031140b6e48d2e2c38dc5, type: 2}
     - {fileID: 11400000, guid: c063a99036da5004a91af223df9ba818, type: 2}
     - {fileID: 11400000, guid: 4fe869947dc6d7d46894cde8d49bd1e6, type: 2}
-    - {fileID: 11400000, guid: ab64c190a88d2a34ea5754c6a859f8f8, type: 2}
     - {fileID: 11400000, guid: 935a7cc5293c3194f973b44aef0a6f33, type: 2}
     - {fileID: 11400000, guid: 6969d3238d0336f499fc65698122f20b, type: 2}
     - {fileID: 11400000, guid: 3f5c7d45885f2f84b925c673850d15bb, type: 2}

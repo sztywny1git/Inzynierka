@@ -14,13 +14,19 @@ public class ShopManager : MonoBehaviour
     [Header("Restock Settings")]
     [SerializeField] private LootTableSO restockTable;
 
+    private List<ShopItems> currentShopSource;
+
     public void PopulateShopItems(List<ShopItems> shopItems)
     {
+        currentShopSource = shopItems;
+
         for (int i = 0; i < shopItems.Count && i < shopSlots.Length; i++)
         {
             ShopItems shopItem = shopItems[i];
             
             int finalPrice = Mathf.CeilToInt(shopItem.itemSO.value * priceMultiplier);
+            
+            shopItem.price = finalPrice; 
             
             shopSlots[i].Initialize(shopItem.itemSO, finalPrice);
             shopSlots[i].gameObject.SetActive(true);
@@ -49,9 +55,9 @@ public class ShopManager : MonoBehaviour
 
     private void RestockSlot(ItemSO purchasedItem)
     {
-        foreach (var slot in shopSlots)
+        for (int i = 0; i < shopSlots.Length; i++)
         {
-            if (slot.gameObject.activeSelf && slot.itemSO == purchasedItem)
+            if (shopSlots[i].gameObject.activeSelf && shopSlots[i].itemSO == purchasedItem)
             {
                 if (restockTable != null)
                 {
@@ -60,16 +66,23 @@ public class ShopManager : MonoBehaviour
                     if (newItem != null)
                     {
                         int restockPrice = Mathf.CeilToInt(newItem.value * priceMultiplier);
-                        slot.Initialize(newItem, restockPrice);
+                        
+                        shopSlots[i].Initialize(newItem, restockPrice);
+
+                        if (currentShopSource != null && i < currentShopSource.Count)
+                        {
+                            currentShopSource[i].itemSO = newItem;
+                            currentShopSource[i].price = restockPrice;
+                        }
                     }
                     else
                     {
-                        slot.gameObject.SetActive(false);
+                        shopSlots[i].gameObject.SetActive(false);
                     }
                 }
                 else
                 {
-                    slot.gameObject.SetActive(false);
+                    shopSlots[i].gameObject.SetActive(false);
                 }
                 
                 return;

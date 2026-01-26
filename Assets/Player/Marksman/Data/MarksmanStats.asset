@@ -30,6 +30,6 @@ MonoBehaviour:
   - Definition: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
     BaseValue: 100
   - Definition: {fileID: 11400000, guid: f642d78613687db459aed5e219e2ad2b, type: 2}
-    BaseValue: 3
+    BaseValue: 3.5
   - Definition: {fileID: 11400000, guid: 47eec887c3ae67741afa1df5187394a4, type: 2}
     BaseValue: 50

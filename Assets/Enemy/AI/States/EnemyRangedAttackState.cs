@@ -74,8 +74,12 @@ public sealed class EnemyRangedAttackState : IState
             _ctx.Movement.Stop();
         }
 
-        if (_ranged != null && _ranged.TryAttack(target))
+        if (_ranged != null && _ranged.CanAttackNow())
         {
+            Vector2 dirToTarget = target.position - _ctx.Transform.position;
+            _ctx.Movement.FaceDirection(dirToTarget);
+            
+            _ranged.PrepareAttack(target);
             _anim?.TriggerAttack();
         }
     }

@@ -100,6 +100,10 @@ PrefabInstance:
       propertyPath: _hitVfxPrefab
       value: 
       objectReference: {fileID: 6849351954686296303, guid: e6a5efbcad1269546a6d4c35b36989d7, type: 3}
+    - target: {fileID: 8262135215747859921, guid: ec05ddc5923401c4ba7a8d6eee601f2d, type: 3}
+      propertyPath: _wallGracePeriod
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

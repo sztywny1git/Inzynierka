@@ -15,6 +15,6 @@ MonoBehaviour:
   characterName: 
   characterSprite: {fileID: 0}
   Type: 1
-  statSheet: {fileID: 11400000, guid: 9b7084120a5c4a344a514dc4fb1389b0, type: 2}
+  statSheet: {fileID: 11400000, guid: 2d2e38545bd662645bc5e3d4cd987145, type: 2}
   statBonuses: []
   abilities: []

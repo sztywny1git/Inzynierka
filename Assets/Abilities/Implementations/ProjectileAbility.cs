@@ -6,7 +6,7 @@ public class ProjectileAbility : DamageAbility
     [Header("Behavior")]
     [SerializeField] private ProjectileMovementConfig _movementConfig;
     [SerializeField] private LayerMask _obstacleMask;
-    [SerializeField] private float _wallOffset = 0.05f;
+    [SerializeField] private float _wallOffset = 0.1f;
 
     [Header("Projectile Settings")]
     [SerializeField] private Projectile _projectilePrefab;
@@ -20,22 +20,57 @@ public class ProjectileAbility : DamageAbility
     {
         if (_movementConfig == null || _projectilePrefab == null) return;
 
-        Vector3 aimDiff = context.AimLocation - context.Origin.position;
+        Collider2D instigatorCol = context.Instigator.GetComponent<Collider2D>();
+        Vector3 instigatorCenter = instigatorCol != null ? instigatorCol.bounds.center : context.Instigator.transform.position;
+        
+        Vector3 physicalMuzzlePos = context.Origin.position;
+        Vector3 spawnOrigin = physicalMuzzlePos;
+
+        bool isPhysicalMuzzleBlocked = Physics2D.OverlapCircle(physicalMuzzlePos, _projectileRadius * 0.9f, _obstacleMask);
+
+        if (isPhysicalMuzzleBlocked)
+        {
+            Vector3 aimDirFromCenter = (context.AimLocation - instigatorCenter).normalized;
+            if (aimDirFromCenter == Vector3.zero) aimDirFromCenter = Vector3.right;
+
+            float distanceToMuzzle = Vector3.Distance(instigatorCenter, physicalMuzzlePos);
+            float checkDistance = Mathf.Max(distanceToMuzzle, _projectileRadius + _wallOffset);
+
+            RaycastHit2D hit = Physics2D.CircleCast(instigatorCenter, _projectileRadius * 0.9f, aimDirFromCenter, checkDistance, _obstacleMask);
+
+            if (hit.collider != null)
+            {
+                spawnOrigin = hit.centroid - ((Vector2)aimDirFromCenter * _wallOffset);
+            }
+            else
+            {
+                spawnOrigin = instigatorCenter + (aimDirFromCenter * distanceToMuzzle);
+            }
+
+            int safetyChecks = 5;
+            for (int k = 0; k < safetyChecks; k++)
+            {
+                if (Physics2D.OverlapCircle(spawnOrigin, _projectileRadius * 0.9f, _obstacleMask))
+                {
+                    spawnOrigin = Vector3.Lerp(spawnOrigin, instigatorCenter, 0.25f);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (Physics2D.OverlapCircle(spawnOrigin, _projectileRadius * 0.5f, _obstacleMask))
+            {
+                spawnOrigin = instigatorCenter;
+            }
+        }
+
+        Vector3 aimDiff = context.AimLocation - spawnOrigin;
         aimDiff.z = 0;
         Vector3 aimDir = aimDiff.normalized;
 
         if (aimDir == Vector3.zero) aimDir = Vector3.right;
-
-        Vector3 spawnOrigin = context.Origin.position;
-        Vector3 instigatorPos = context.Instigator.transform.position;
-
-        RaycastHit2D hit = Physics2D.Linecast(instigatorPos, spawnOrigin, _obstacleMask);
-        
-        if (hit.collider != null)
-        {
-            float safeDistance = _projectileRadius + _wallOffset;
-            spawnOrigin = Vector3.MoveTowards(hit.point, instigatorPos, safeDistance);
-        }
 
         int count = AttackCount;
         

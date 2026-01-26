@@ -8,6 +8,10 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private float speed = 10f;
     [SerializeField] private float lifetimeSeconds = 3f;
     [SerializeField] private bool destroyOnHit = true;
+    
+    [Header("Visuals")]
+    [SerializeField] private GameObject hitVfxPrefab;
+    [SerializeField] private float vfxLifetime = 1.0f;
 
     [Header("Damage")]
     [Tooltip("Used only if Initialize() was not called (e.g., prefab misconfigured).")]
@@ -48,6 +52,8 @@ public class EnemyProjectile : MonoBehaviour
         {
             _rb.linearVelocity = _direction * speed;
         }
+
+        UpdateVisualOrientation();
     }
 
     private void Awake()
@@ -71,6 +77,7 @@ public class EnemyProjectile : MonoBehaviour
     {
         if (Time.time >= _dieAt)
         {
+            SpawnVfx(transform.position);
             Destroy(_destroyTarget);
             return;
         }
@@ -79,6 +86,19 @@ public class EnemyProjectile : MonoBehaviour
         {
             var t = _destroyTarget != null ? _destroyTarget.transform : transform;
             t.position += (Vector3)(_direction * (speed * Time.deltaTime));
+        }
+
+        UpdateVisualOrientation();
+    }
+
+    private void UpdateVisualOrientation()
+    {
+        if (_direction != Vector2.zero)
+        {
+            transform.right = _direction;
+            Vector3 scale = transform.localScale;
+            scale.y = _direction.x < 0 ? -Mathf.Abs(scale.y) : Mathf.Abs(scale.y);
+            transform.localScale = scale;
         }
     }
 
@@ -116,7 +136,6 @@ public class EnemyProjectile : MonoBehaviour
             Debug.Log($"[EnemyProjectile] '{name}' hit '{other.name}' (trigger={isTrigger}). damage={_damage:0.###} layer={LayerMask.LayerToName(other.gameObject.layer)}", this);
         }
 
-        // Apply damage if possible.
         if (other.TryGetComponent<IDamageable>(out var damageable))
         {
             if (debugLogging)
@@ -125,6 +144,9 @@ public class EnemyProjectile : MonoBehaviour
             }
             var damageData = new DamageData(_damage, false, _owner, transform.position);
             damageable.TakeDamage(damageData);
+            
+            SpawnVfx(other.ClosestPoint(transform.position));
+
             if (destroyOnHit) Destroy(_destroyTarget);
             return;
         }
@@ -140,6 +162,9 @@ public class EnemyProjectile : MonoBehaviour
             }
             var damageData = new DamageData(_damage, false, _owner, transform.position);
             parentDamageable.TakeDamage(damageData);
+            
+            SpawnVfx(other.ClosestPoint(transform.position));
+
             if (destroyOnHit) Destroy(_destroyTarget);
             return;
         }
@@ -151,7 +176,17 @@ public class EnemyProjectile : MonoBehaviour
 
         if (destroyOnHit)
         {
+            SpawnVfx(other.ClosestPoint(transform.position));
             Destroy(_destroyTarget);
+        }
+    }
+
+    private void SpawnVfx(Vector2 position)
+    {
+        if (hitVfxPrefab != null)
+        {
+            GameObject vfx = Instantiate(hitVfxPrefab, position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime);
         }
     }
 }

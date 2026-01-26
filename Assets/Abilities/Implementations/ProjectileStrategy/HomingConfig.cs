@@ -6,6 +6,7 @@ public class HomingMovementConfig : ProjectileMovementConfig
     [SerializeField] private float _turnSpeed = 200f;
     [SerializeField] private float _searchRadius = 10f;
     [SerializeField] private LayerMask _targetLayer;
+    [SerializeField] private float _homingStartDelay = 0.5f;
 
     public override IMovementStrategy InitializeStrategy(IMovementStrategy existing, Vector3 start, Vector3 target, float speed)
     {
@@ -13,7 +14,7 @@ public class HomingMovementConfig : ProjectileMovementConfig
         
         if (strategy == null) strategy = new HomingMovementStrategy();
 
-        strategy.Reset(speed, _turnSpeed, _searchRadius, _targetLayer);
+        strategy.Reset(speed, _turnSpeed, _searchRadius, _targetLayer, _homingStartDelay);
         return strategy;
     }
 }

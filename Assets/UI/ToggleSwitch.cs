@@ -132,11 +132,7 @@ public class ToggleSwitch : MonoBehaviour, IPointerClickHandler
         {
             while (time < animationDuration)
             {
-                // === KLUCZOWA POPRAWKA ===
-                // Zmieniamy Time.deltaTime na Time.unscaledDeltaTime.
-                // Dzięki temu animacja działa nawet gdy gra jest zapauzowana (Time.timeScale = 0).
                 time += Time.unscaledDeltaTime; 
-                // =========================
 
                 float lerpFactor = slideEase.Evaluate(time / animationDuration);
                 _slider.value = sliderValue = Mathf.Lerp(startValue, endValue, lerpFactor);

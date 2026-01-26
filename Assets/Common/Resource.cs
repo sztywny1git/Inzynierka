@@ -7,6 +7,9 @@ public class Resource : MonoBehaviour, IResourceProvider
     [Header("Stats Definitions")]
     [SerializeField] private StatDefinition _maxResourceStatDef;
     [SerializeField] private StatDefinition _regenStatDef;
+    
+    [Header("Settings")]
+    [SerializeField] private bool _isPercentageRegen = false;
 
     private IStatsProvider _statsProvider;
 
@@ -47,10 +50,25 @@ public class Resource : MonoBehaviour, IResourceProvider
     {
         if (_regenStatDef != null && CurrentValue < MaxValue)
         {
-            float regen = _statsProvider.GetFinalStatValue(_regenStatDef);
-            if (regen > 0)
+            float rawRegenValue = _statsProvider.GetFinalStatValue(_regenStatDef);
+            
+            if (rawRegenValue > 0)
             {
-                Restore(regen * Time.deltaTime);
+                float regenPerSecond;
+
+                if (_isPercentageRegen)
+                {
+                    regenPerSecond = Mathf.Floor(MaxValue * (rawRegenValue / 100f));
+                }
+                else
+                {
+                    regenPerSecond = rawRegenValue;
+                }
+
+                if (regenPerSecond > 0)
+                {
+                    Restore(regenPerSecond * Time.deltaTime);
+                }
             }
         }
     }

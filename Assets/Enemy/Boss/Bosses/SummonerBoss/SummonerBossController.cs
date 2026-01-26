@@ -28,7 +28,7 @@ public class SummonerBossController : BossController
     [Header("Ring Attack Settings")]
     [SerializeField] private int phase1RingProjectiles = 6;
     [SerializeField] private int phase2RingProjectiles = 10;
-    [SerializeField] private float ringProjectileSpeed = 4f;
+    [SerializeField] private float ringProjectileSpeed = 8f;
     [SerializeField] private float ringProjectileDamage = 15f;
     
     [Header("Attack Indicators")]

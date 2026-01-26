@@ -18,8 +18,18 @@ MonoBehaviour:
 '
   icon: {fileID: -4337066024835421542, guid: dbc8dbc56e9fbc7458c393537fe18e49, type: 3}
   isGold: 1
-  currentHealth: 0
-  maxHealth: 0
+  stackSize: 3
+  minDropAmount: 1
+  maxDropAmount: 5
+  itemType: 1
+  currentHearts: 0
+  Resource: 0
+  armor: 0
   speed: 0
   damage: 0
+  fireRate: 0
+  CriticalChance: 0
+  CriticalDamage: 0
   duration: 32
+  value: 0
+  rarity: 0

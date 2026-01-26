@@ -35,6 +35,22 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    public void FaceDirection(Vector2 direction)
+    {
+        if (direction.x > 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
+        else if (direction.x < 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = -Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
+    }
+
     private void FixedUpdate()
     {
         float finalMoveSpeed = 0f;
@@ -48,5 +64,10 @@ public class EnemyMovement : MonoBehaviour
         }
 
         _rb.linearVelocity = _moveInput * finalMoveSpeed;
+
+        if (_moveInput.sqrMagnitude > 0.001f)
+        {
+            FaceDirection(_moveInput);
+        }
     }
 }

@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
 {
     [SerializeField] private StatDefinition healthStatDef;
+    [SerializeField] private StatDefinition armorStatDef;
     
     [Header("Invulnerability Settings")]
     [SerializeField] private bool useInvulnerabilityFrames = false;
@@ -15,7 +16,6 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
     private bool _isFrameInvulnerable;
     private bool _isExternalInvulnerable;
     
-    // FIX: Flaga do sprawdzania, czy to pierwsze ustawienie życia
     private bool _isInitialized = false;
 
     public float CurrentHealth { get; private set; }
@@ -103,8 +103,21 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
         if (_isExternalInvulnerable) return;
         if (useInvulnerabilityFrames && _isFrameInvulnerable) return;
 
-        float damage = damageData.Amount;
-        CurrentHealth = Mathf.Max(CurrentHealth - damage, 0);
+        float rawDamage = damageData.Amount;
+        float armor = 0f;
+
+        if (_statsProvider != null && armorStatDef != null)
+        {
+            armor = _statsProvider.GetFinalStatValue(armorStatDef);
+        }
+
+        if (armor < 0) armor = 0;
+
+        float damageMultiplier = 100f / (100f + armor);
+        float calculatedDamage = rawDamage * damageMultiplier;
+        float finalDamage = Mathf.Floor(calculatedDamage);
+
+        CurrentHealth = Mathf.Max(CurrentHealth - finalDamage, 0);
 
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         OnDamageTaken?.Invoke(damageData);
@@ -126,7 +139,6 @@ public class Health : MonoBehaviour, IDamageable, IHealable, IHealthProvider
         CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
-    
 
     private async UniTaskVoid InvulnerabilityAsync(System.Threading.CancellationToken token)
     {

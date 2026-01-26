@@ -46889,20 +46889,20 @@ MonoBehaviour:
   spawnMode: 0
   manualFloorTilemap: {fileID: 570861963}
   manualSpawnPoints: []
-  globalDensity: 0.0229
+  globalDensity: 0.0224
   enemyTable:
-  - prefab: {fileID: 6507364902159006218, guid: 6c0b0f73ad652d34bb5e3a518c38367f, type: 3}
-    weight: 1
-  - prefab: {fileID: 6549284781771361837, guid: 91f245385ff4c194f8f73d989c24af98, type: 3}
-    weight: 1
-  - prefab: {fileID: 6549284781771361837, guid: 9c4253cf2ee21e9409635cbb3d04448b, type: 3}
-    weight: 1
-  - prefab: {fileID: 6549284781771361837, guid: 2322a1c940825204ca392ca3a52e35e8, type: 3}
-    weight: 1
-  - prefab: {fileID: 1328831502090338468, guid: 6a54cea1e991e3345b0551413b43eadc, type: 3}
-    weight: 1
-  - prefab: {fileID: 6549284781771361837, guid: 904cb82c80f69694a85c60677db5b2c5, type: 3}
-    weight: 1
+  - prefab: {fileID: 7878348880518566143, guid: db09f31e8bc410b469a4a17eba745332, type: 3}
+    weight: 20
+  - prefab: {fileID: 8490842635987073125, guid: 7c6c017c71e172849a33b5847d41c46b, type: 3}
+    weight: 10
+  - prefab: {fileID: 8490842635987073125, guid: 9c9e68acfd0a20245b916afcc6bcfffe, type: 3}
+    weight: 5
+  - prefab: {fileID: 1276211246565482380, guid: b25ab4da5bcf34b4bbf550479fee99c1, type: 3}
+    weight: 30
+  - prefab: {fileID: 7878348880518566143, guid: 4c0cc8171ae59b94f8ecd091e2f09747, type: 3}
+    weight: 5
+  - prefab: {fileID: 7878348880518566143, guid: fc5639dfa132ebb4193146aef5c7ee62, type: 3}
+    weight: 10
   bossPrefab: {fileID: 2565198281050210484, guid: 25f810ca833b5744fba961a265bcc17b, type: 3}
   spawnOnStart: 1
   minDistanceBetweenEnemies: 1

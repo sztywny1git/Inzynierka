@@ -24,10 +24,10 @@ MonoBehaviour:
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 1
-  _wallOffset: 0.34
+  _wallOffset: 0.1
   _projectilePrefab: {fileID: 2188093421320454074, guid: c776561d5cf3d9c4ab1105aca8be8ec2, type: 3}
   _baseSpeed: 20
   _lifetime: 3
   _spreadAngle: 15
   _pierceCount: 0
-  _projectileRadius: 0.25
+  _projectileRadius: 1

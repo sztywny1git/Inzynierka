@@ -60,6 +60,9 @@ public sealed class EnemyAttackState : IState
 
         _ctx.Movement.Stop();
 
+        Vector2 dirToTarget = target.position - _ctx.Transform.position;
+        _ctx.Movement.FaceDirection(dirToTarget);
+
         bool attacked = _ctx.MeleeAttack.TryAttack(target);
         if (attacked)
         {

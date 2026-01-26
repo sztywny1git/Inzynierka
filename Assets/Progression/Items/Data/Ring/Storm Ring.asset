@@ -20,14 +20,14 @@ MonoBehaviour:
   minDropAmount: 1
   maxDropAmount: 1
   itemType: 2
-  currentHearts: 10
-  Resource: 10
-  armor: 10
-  speed: 0.1
-  damage: 5
-  fireRate: 0.1
-  CriticalChance: 0.1
-  CriticalDamage: 0.1
+  currentHearts: 0
+  Resource: 0
+  armor: 0
+  speed: 0
+  damage: 10
+  fireRate: 1
+  CriticalChance: 0.2
+  CriticalDamage: 0.5
   duration: 0
-  value: 50
-  rarity: 2
+  value: 200
+  rarity: 3

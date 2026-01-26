@@ -26,7 +26,7 @@ public class BossProjectile : MonoBehaviour
         this.damage = damage;
         this.damageLayer = targetLayer;
         _spawnTime = Time.time;
-        
+        gameObject.layer = LayerMask.NameToLayer("Attacks");
         // Rotate sprite to face direction
         float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);

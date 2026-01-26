@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speedParameterName: AttackSpeed
+  _walkingParameterName: IsWalking
 --- !u!1 &3046662765766804656
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,6 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthStatDef: {fileID: 11400000, guid: b8511bc881f52574cb76afbc5656ae5d, type: 2}
+  armorStatDef: {fileID: 11400000, guid: af31f7e720094ed4382dc3ca2ce5600a, type: 2}
   useInvulnerabilityFrames: 1
   invulnerabilityDuration: 1
 --- !u!114 &4067101089647593856

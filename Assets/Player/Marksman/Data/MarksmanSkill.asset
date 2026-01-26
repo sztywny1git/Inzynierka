@@ -19,13 +19,13 @@ MonoBehaviour:
   _maxCastDuration: 2
   _conditions:
   - {fileID: 11400000, guid: dc7cf1c44dff79b4999564978a350a9f, type: 2}
-  _damageMultiplier: 0.4
+  _damageMultiplier: 0.5
   _attackCount: 3
   _movementConfig: {fileID: 11400000, guid: 2864684b243179a459c38c841def023d, type: 2}
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 1
-  _wallOffset: 0.05
+  _wallOffset: 0.3
   _projectilePrefab: {fileID: 8262135215747859921, guid: 703e86c853222824bb1dbf20191b09d3, type: 3}
   _baseSpeed: 25
   _lifetime: 3

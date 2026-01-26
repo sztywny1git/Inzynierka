@@ -16,6 +16,6 @@ MonoBehaviour:
   description: +15 Resource
   icon: {fileID: 21300000, guid: d531e4ec36b88f24aa796c90078dc79a, type: 3}
   augmentType: 6
-  value: 15
+  value: 20
   isStackable: 1
-  maxStacks: 2
+  maxStacks: 3

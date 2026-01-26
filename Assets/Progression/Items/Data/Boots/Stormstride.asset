@@ -29,5 +29,5 @@ MonoBehaviour:
   CriticalChance: 0
   CriticalDamage: 0
   duration: 0
-  value: 100
+  value: 200
   rarity: 3

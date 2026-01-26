@@ -24,10 +24,10 @@ MonoBehaviour:
   Resource: 0
   armor: 0
   speed: 0
-  damage: 20
+  damage: 10
   fireRate: -0.3
   CriticalChance: 0.2
   CriticalDamage: 0.5
   duration: 0
-  value: 20
+  value: 50
   rarity: 2

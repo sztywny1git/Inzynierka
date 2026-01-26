@@ -18,4 +18,4 @@ MonoBehaviour:
   augmentType: 3
   value: 0.1
   isStackable: 1
-  maxStacks: 2
+  maxStacks: 3

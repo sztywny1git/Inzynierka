@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4779472765082539960}
   - component: {fileID: 2180209751074288969}
   - component: {fileID: 5071024235804946696}
-  - component: {fileID: 6708096251683442025}
   - component: {fileID: 4752253457893607632}
-  m_Layer: 3
+  - component: {fileID: -1523055761363173952}
+  - component: {fileID: 587873938052552697}
+  m_Layer: 9
   m_Name: Wizard_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 109459388367652066}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.098736, y: -0.7626216, z: -0.006658404}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -79,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: -254876081
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3359756910814477947, guid: 55bdd56dba3f5194fa0f94ce2b9540e7, type: 3}
+  m_Sprite: {fileID: 1799939845, guid: 2c5c828dc8a2c4b4a841ab655893b8ea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,12 +104,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLogging: 0
-  speed: 10
+  speed: 20
   lifetimeSeconds: 3
   destroyOnHit: 1
+  hitVfxPrefab: {fileID: 109459388367652066, guid: f7ba3277d23e18c4ba6e674ff7d28ff3, type: 3}
+  vfxLifetime: 0.1
   defaultDamageIfNotInitialized: 0
---- !u!58 &6708096251683442025
-CircleCollider2D:
+--- !u!50 &4752253457893607632
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109459388367652066}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!95 &-1523055761363173952
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109459388367652066}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: c9c60833053ee7941892c2a60d44a800, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!60 &587873938052552697
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -137,36 +189,30 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.3
---- !u!50 &4752253457893607632
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109459388367652066}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.5, y: 1}
+    newSize: {x: 0.6, y: 0.45}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.38159376, y: 0.13653615}
+      - {x: -0.41963607, y: 0.09104663}
+      - {x: -0.44954062, y: -0.012975279}
+      - {x: -0.4423321, y: -0.08895757}
+      - {x: -0.375, y: -0.21875}
+      - {x: -0.055291533, y: -0.1524319}
+      - {x: 0.15102986, y: -0.09714041}
+      - {x: 0.34137362, y: -0.026924906}
+      - {x: 0.12702799, y: 0.07212453}
+      - {x: -0.3090303, y: 0.14136568}
+  m_UseDelaunayMesh: 0

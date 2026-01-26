@@ -1,6 +1,6 @@
 public class ResourceUI : BaseStatBarUI
 {
-    private void Start()
+    private void Awake()
     {
         if (UiEventBus != null)
         {

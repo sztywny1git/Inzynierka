@@ -27,7 +27,7 @@ MonoBehaviour:
   damage: 15
   fireRate: 0
   CriticalChance: 0.35
-  CriticalDamage: 1
+  CriticalDamage: 0.5
   duration: 0
-  value: 100
+  value: 200
   rarity: 3

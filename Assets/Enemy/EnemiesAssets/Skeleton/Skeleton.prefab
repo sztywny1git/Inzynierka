@@ -48,10 +48,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 529371278638493754, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: expValue
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 656453406629220122, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: defaultMoveSpeedIfStatMissingOrZero
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180874964680445522, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180874964680445522, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.62
+      objectReference: {fileID: 0}
+    - target: {fileID: 2522915548968711258, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: hitAnimMinIntervalSeconds
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 3798626713743287376, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
       propertyPath: m_Name
       value: Skeleton
       objectReference: {fileID: 0}
+    - target: {fileID: 6274356021225033472, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      propertyPath: initialStatSheet
+      value: 
+      objectReference: {fileID: 11400000, guid: 7bbe3eb7f17ad47479cdc7b3c2908917, type: 2}
     - target: {fileID: 7745794833684589187, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
       propertyPath: m_Size.x
       value: 3
@@ -69,7 +93,42 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5755099990643672365, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+    - {fileID: 3211467717139669814, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3798626713743287376, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 933066556996879396}
   m_SourcePrefab: {fileID: 100100000, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+--- !u!1 &1276211246565482380 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3798626713743287376, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+  m_PrefabInstance: {fileID: 2666532864780057564}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &933066556996879396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276211246565482380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c3d81b7419748458975ab5d5f7e27e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogging: 0
+  damageStat: {fileID: 11400000, guid: ae8bef4eeba46cc4eb78ac4b8dcfaf75, type: 2}
+  attackRangeStat: {fileID: 0}
+  attackCooldownStat: {fileID: 0}
+  fallbackDamage: 15
+  fallbackAttackRange: 1.2
+  fallbackAttackCooldownSeconds: 1.2
+  attackOrigin: {fileID: 4270938272438203790}
+--- !u!4 &4270938272438203790 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2180874964680445522, guid: fb2d1571a0868854894c413c0ea4b64b, type: 3}
+  m_PrefabInstance: {fileID: 2666532864780057564}
+  m_PrefabAsset: {fileID: 0}

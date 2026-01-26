@@ -23,11 +23,11 @@ MonoBehaviour:
   currentHearts: 0
   Resource: 0
   armor: 0
-  speed: 0.5
+  speed: 0
   damage: 10
   fireRate: 2
   CriticalChance: 0.2
   CriticalDamage: 0.5
   duration: 0
-  value: 100
+  value: 200
   rarity: 3

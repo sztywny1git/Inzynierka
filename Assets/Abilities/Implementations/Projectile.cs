@@ -14,6 +14,7 @@ public class Projectile : PoolableObject
     private int _remainingPierce;
     private HashSet<GameObject> _hitHistory = new HashSet<GameObject>();
     private Collider2D _collider;
+    private bool _isReturnedToPool;
 
     private void Awake()
     {
@@ -56,10 +57,13 @@ public class Projectile : PoolableObject
         base.OnSpawn();
         _hitHistory.Clear();
         _collider.enabled = true;
+        _isReturnedToPool = false;
     }
 
     protected override void Update()
     {
+        if (_isReturnedToPool) return;
+
         if (_movementStrategy != null)
         {
             _movementStrategy.Update(Time.deltaTime);
@@ -68,6 +72,7 @@ public class Projectile : PoolableObject
             if (_movementStrategy.IsDone)
             {
                 SpawnVfx(transform.position);
+                _isReturnedToPool = true;
                 ReturnToPool();
             }
         }
@@ -82,6 +87,7 @@ public class Projectile : PoolableObject
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_isReturnedToPool) return;
         if (other.gameObject == _instigator) return;
         if (_hitHistory.Contains(other.gameObject)) return;
 
@@ -100,12 +106,14 @@ public class Projectile : PoolableObject
             }
             else
             {
+                _isReturnedToPool = true;
                 ReturnToPool();
             }
         }
         else 
         {
             SpawnVfx(other.ClosestPoint(transform.position));
+            _isReturnedToPool = true;
             ReturnToPool();
         }
     }

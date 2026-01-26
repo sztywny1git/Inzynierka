@@ -3,7 +3,7 @@ using VContainer;
 
 public class HealthUI : BaseStatBarUI
 {
-    private void Start()
+    private void Awake()
     {
         if (UiEventBus != null)
         {

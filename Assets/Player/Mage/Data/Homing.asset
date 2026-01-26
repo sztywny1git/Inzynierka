@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5772b29cd61285a4f93ecc69c387b2a1, type: 3}
   m_Name: Homing
   m_EditorClassIdentifier: 
-  _turnSpeed: 200
-  _searchRadius: 1
+  _turnSpeed: 600
+  _searchRadius: 3
   _targetLayer:
     serializedVersion: 2
     m_Bits: 64
+  _homingStartDelay: 0.4

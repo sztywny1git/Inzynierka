@@ -3,22 +3,24 @@ using UnityEngine;
 public class VfxObject : PoolableObject
 {
     [SerializeField] private float _lifetime = 1.0f;
+    [SerializeField] private string _animationStateName = "Play";
     
-    private ParticleSystem _particleSystem;
+    private Animator _animator;
 
     private void Awake()
     {
-        _particleSystem = GetComponent<ParticleSystem>();
+        _animator = GetComponent<Animator>();
     }
 
     public override void OnSpawn()
     {
+        gameObject.SetActive(true);
+
         base.OnSpawn();
 
-        if (_particleSystem != null)
+        if (_animator != null)
         {
-            _particleSystem.Clear();
-            _particleSystem.Play();
+            _animator.Play(_animationStateName, 0, 0f);
         }
         
         SetLifetime(_lifetime);
@@ -26,11 +28,6 @@ public class VfxObject : PoolableObject
 
     public override void OnDespawn()
     {
-        if (_particleSystem != null)
-        {
-            _particleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-        
         base.OnDespawn();
     }
 }

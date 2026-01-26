@@ -85,7 +85,9 @@ public class StatMediator : MonoBehaviour
     {
         if (character == null) return;
 
-        string source = $"Consumable_{item.name}_{Time.time}";
+        string source = $"Consumable_{item.name}";
+
+        RemoveStatsFromSource(source);
 
         if (item.currentHearts != 0 && character.Health != null)
         {

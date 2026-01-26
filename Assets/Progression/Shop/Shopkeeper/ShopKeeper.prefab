@@ -252,7 +252,7 @@ MonoBehaviour:
   anim: {fileID: 5019591969984843561}
   audioSource: {fileID: 5414822647489112945}
   shopOpenSound: {fileID: 8300000, guid: 4d7e26c4680c0fc4581c22a9aecba40f, type: 3}
-  lootTable: {fileID: 11400000, guid: c199e1fb3b449444d8025249a89455aa, type: 2}
+  lootTable: {fileID: 11400000, guid: 8a75973d33f6b9a40acb6f2df2333a1b, type: 2}
   itemsCount: 8
 --- !u!82 &5414822647489112945
 AudioSource:

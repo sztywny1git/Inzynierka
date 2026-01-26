@@ -24,7 +24,7 @@ MonoBehaviour:
   Resource: 100
   armor: 0
   speed: 0
-  damage: 20
+  damage: 12
   fireRate: 0
   CriticalChance: 0.2
   CriticalDamage: 0

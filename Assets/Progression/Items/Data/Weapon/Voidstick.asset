@@ -21,13 +21,13 @@ MonoBehaviour:
   maxDropAmount: 1
   itemType: 3
   currentHearts: 0
-  Resource: -100
+  Resource: -1000
   armor: 0
   speed: 0
   damage: 20
   fireRate: -0.2
   CriticalChance: 0.5
-  CriticalDamage: 1
+  CriticalDamage: 0
   duration: 0
-  value: 100
+  value: 200
   rarity: 3
